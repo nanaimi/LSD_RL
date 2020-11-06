@@ -1,1 +1,1 @@
-# LSD for MAVs using RL
+# LSD for MAVs using Reinforcement Learning
