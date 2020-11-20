@@ -1,0 +1,12 @@
+Reading:
+	Unreal Engine basics
+	unreal-gym env basics
+
+Impl:	
+	simple unreal textured surface segmented into landable and non landable (make it as easy as possible)
+	attach cam to drone model (could also just be simple mesh with cam attached)
+	Simple action space
+	simple observation space with cam
+
+
+Fuuuuck
