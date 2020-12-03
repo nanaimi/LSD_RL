@@ -11,7 +11,7 @@ Done :   Collision detected or get a target place
 class UnrealCvSimple(gym.Env):
     # init the Unreal Gym Environment
    def __init__(self,
-                ENV_NAME = 'RealisticRendering' # if use your own environment,please change it 
+                ENV_NAME = 'RealisticRendering' # this env needs to be changed
    ):
      self.cam_id = 0
      # run virtual enrionment in docker container
@@ -22,16 +22,30 @@ class UnrealCvSimple(gym.Env):
      self.startpose = self.unrealcv.get_pose()
      # ACTION: (linear velocity ,angle velocity)
      self.ACTION_LIST = [
-             (20,  0),
-             (20, 15),
-             (20,-15),
-             (20, 30),
-             (20,-30),
+             (1,  0,  0),
+             (0,  1,  0),
+             (0,  0,  1),
+             (-1, 0,  0),
+             (0, -1,  0),
+             (0,  0, -1),
+             (1,  1,  1),
+             (-1,-1, -1),
+             (1,  1, -1),
+             (-1,-1,  1),
+             (1, -1,  1),
+             (-1, 1, -1),
+             (-1, 1,  1),
+             (1, -1, -1),
      ]
      self.count_steps = 0
      self.max_steps = 100
+
+     # no target pose? or always new query for best target pose
      self.target_pos = ( -60,   0,   50)
+
      self.action_space = gym.spaces.Discrete(len(self.ACTION_LIST))
+
+     # state need to redefine. get camera pose not just the image
      state = self.unrealcv.read_image(self.cam_id, 'lit')
      self.observation_space = gym.spaces.Box(low=0, high=255, shape=state.shape)
 

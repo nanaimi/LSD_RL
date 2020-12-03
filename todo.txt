@@ -1,9 +1,10 @@
 Reading:
-	Unreal Engine basics
+	Unreal Engine basics		CHECK
 	unreal-gym env basics
+	unrealCV basics					CHECK
 
 Impl:
 	simple unreal textured surface segmented into landable and non landable (make it as easy as possible)
-	attach cam to drone model (could also just be simple mesh with cam attached)
-	Simple action space
-	simple observation space with cam
+	attach cam to drone model (could also just be simple mesh with cam attached) --> CHECK BUT CAM IN UNREALCV DOESNT MOVE WITH MESH
+	Simple action space --> DISCRETE
+	simple observation space with cam --> IMAGE AND POSE
