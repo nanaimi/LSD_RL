@@ -3,7 +3,8 @@ from unrealcv import client
 from unrealcv.util import read_npy, read_png
 import matplotlib.pyplot as plt
 import numpy as np
-
+import cv2
+import time
 
 help_message = '''
 A demo showing how to control a game using python
@@ -25,29 +26,32 @@ def main():
         rot_offset = 10 # Rotate 5 degree for each key press
         loc_offset = 10 # Move 5.0 when press a key
 
-        if event.key == 'a': rot[1] -= rot_offset
-        if event.key == 'd': rot[1] += rot_offset
-        if event.key == 'q': loc[2] += loc_offset # Move up
-        if event.key == 'e': loc[2] -= loc_offset # Move down
+        # Up and Down in cam-plane
+        if event.key == 'w': loc[0] += loc_offset
+        if event.key == 's': loc[0] -= loc_offset
+        # Left and Right movement in cam-plane
+        if event.key == 'a': loc[1] -= loc_offset
+        if event.key == 'd': loc[1] += loc_offset
+        # In and Out movement into cam-plane
+        if event.key == 'q': loc[2] += loc_offset
+        if event.key == 'e': loc[2] -= loc_offset
 
-        if event.key == 'w': loc[1] -= loc_offset
-        if event.key == 's': loc[1] += loc_offset
-        if event.key == 'up': loc[1] -= loc_offset
-        if event.key == 'down': loc[1] += loc_offset
-        if event.key == 'left': loc[0] -= loc_offset
-        if event.key == 'right': loc[0] += loc_offset
-
-        cmd = 'vset /camera/0/rotation %s' % ' '.join([str(v) for v in rot])
-        client.request(cmd)
-        cmd = 'vset /camera/0/location %s' % ' '.join([str(v) for v in loc])
+        # cmd = 'vset /camera/0/rotation %s' % ' '.join([str(v) for v in rot])
+        # client.request(cmd)
+        cmd = 'vset /camera/0/moveto %s' % ' '.join([str(v) for v in loc])
         client.request(cmd)
 
-        res = client.request('vget /camera/0/lit png')
+        print(client.request('vget /camera/0/location'))
+        print(client.request('vget /camera/0/rotation'))
+        res = client.request('vget /camera/2/lit png')
         img = read_png(res)
 
         # print(event.key)
         # print('Requested image %s' % str(img.shape))
-
+        # hsv_img = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+        # low_red = (348,70,50)
+        # high_red = (368, 300, 300)
+        # mask = cv2.inRange(hsv_img, low_red, high_red)
         ax.imshow(img)
         fig.canvas.draw()
 
@@ -59,9 +63,13 @@ def main():
         print(help_message)
 
     print("-------------------------------------------------------------------")
-    print(client.request('vget /camera/0/location'))
+    print(client.request('vget /objects'))
     print("-------------------------------------------------------------------")
-    
+    print(client.request('vget /cameras'))
+    print("-------------------------------------------------------------------")
+    # print(client.request('vget /cameras'))
+    # print("-------------------------------------------------------------------")
+
     init_loc = [float(v) for v in client.request('vget /camera/0/location').split(' ')]
     init_rot = [float(v) for v in client.request('vget /camera/0/rotation').split(' ')]
 
