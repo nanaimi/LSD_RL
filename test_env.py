@@ -1,5 +1,5 @@
 import gym # openai gym
-from unrealcv_cmd import  UnrealCv # a lib for using unrealcv client command
+from unrealcv_cmd import UnrealCv # a lib for using unrealcv client command
 import numpy as np
 import math
 import run_docker # a lib for run env in a docker container
@@ -11,7 +11,7 @@ Done :   Collision detected or get a target place
 class UnrealCvSimple(gym.Env):
     # init the Unreal Gym Environment
    def __init__(self,
-                ENV_NAME = 'RealisticRendering' # this env needs to be changed
+                ENV_NAME = 'RealisticRendering' # if use your own environment,please change it
    ):
      self.cam_id = 0
      # run virtual enrionment in docker container
@@ -22,30 +22,16 @@ class UnrealCvSimple(gym.Env):
      self.startpose = self.unrealcv.get_pose()
      # ACTION: (linear velocity ,angle velocity)
      self.ACTION_LIST = [
-             (1,  0,  0),
-             (0,  1,  0),
-             (0,  0,  1),
-             (-1, 0,  0),
-             (0, -1,  0),
-             (0,  0, -1),
-             (1,  1,  1),
-             (-1,-1, -1),
-             (1,  1, -1),
-             (-1,-1,  1),
-             (1, -1,  1),
-             (-1, 1, -1),
-             (-1, 1,  1),
-             (1, -1, -1),
+             (20,  0),
+             (20, 15),
+             (20,-15),
+             (20, 30),
+             (20,-30),
      ]
      self.count_steps = 0
      self.max_steps = 100
-
-     # no target pose? or always new query for best target pose
      self.target_pos = ( -60,   0,   50)
-
      self.action_space = gym.spaces.Discrete(len(self.ACTION_LIST))
-
-     # state need to redefine. get camera pose not just the image
      state = self.unrealcv.read_image(self.cam_id, 'lit')
      self.observation_space = gym.spaces.Box(low=0, high=255, shape=state.shape)
 
@@ -60,7 +46,7 @@ class UnrealCvSimple(gym.Env):
         # limit max step per episode
         if self.count_steps > self.max_steps:
             done = True
-            print 'Reach Max Steps'
+            print('Reach Max Steps')
 
         return state, reward, done, {}
 
@@ -84,13 +70,13 @@ class UnrealCvSimple(gym.Env):
        if collision:
             done = True
             reward = -1
-            print 'Collision Detected!!'
+            print('Collision Detected!!')
        else:
             distance = self.cauculate_distance(self.target_pos, self.unrealcv.get_pos())
             if distance < 50:
                 reward = 10
                 done = True
-                print ('Get Target Place!')
+                print('Get Target Place!')
        return reward, done
 
    # calcuate the 2D distance between the target and camera
