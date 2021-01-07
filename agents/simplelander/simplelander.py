@@ -1,8 +1,8 @@
 import gym
 
-from stable_baselines.common.policies import MlpPolicy
-from stable_baselines.common import make_vec_env
-from stable_baselines import PPO2
+from stable_baselines3.common.policies import MlpPolicy
+from stable_baselines3.common import make_vec_env
+from stable_baselines3 import PPO2
 
 # multiprocess environment
 # example env name UnrealSearch-RealisticRoomDoor-DiscreteColor-v0
