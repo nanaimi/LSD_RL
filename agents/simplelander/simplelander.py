@@ -1,8 +1,8 @@
 import gym
 
-from stable_baselines3.common.policies import MlpPolicy
-from stable_baselines3.common import make_vec_env
-from stable_baselines3 import PPO2
+from stable_baselines3.ppo import MlpPolicy
+from stable_baselines3.common.env_util import make_vec_env
+from stable_baselines3 import PPO
 
 # multiprocess environment
 # example env name UnrealSearch-RealisticRoomDoor-DiscreteColor-v0
@@ -10,7 +10,7 @@ env = make_vec_env('UnrealLand-cpptestFloorGood-DiscretePoseColor-v0', n_envs=1)
 
 # PP02 with mlp network for both actor and critic, both with two layers and 64
 # neurons each
-model = PPO2(MlpPolicy, env, verbose=1)
+model = PPO(MlpPolicy, env, verbose=1)
 model.learn(total_timesteps=25000)
 model.save("testrun")
 
