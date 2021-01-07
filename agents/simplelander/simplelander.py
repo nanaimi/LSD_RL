@@ -5,8 +5,9 @@ from stable_baselines.common import make_vec_env
 from stable_baselines import PPO2
 
 # multiprocess environment
-# example env name UnrealSearch-RealisticRoomDoor-DiscreteColor-v0
-env = make_vec_env('UnrealLand-cpptestFloorGood-DiscretePoseColor-v0', n_envs=1)
+# example env name
+# UnrealLand-cpptestFloorGood-DiscretePoseColor-v0
+env = make_vec_env('UnrealSearch-RealisticRoomDoor-DiscreteColor-v0', n_envs=1)
 
 # PP02 with mlp network for both actor and critic, both with two layers and 64
 # neurons each
