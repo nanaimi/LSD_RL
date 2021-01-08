@@ -43,6 +43,7 @@ resized_image = img[...,:3]
 ax[2].imshow(resized_image)
 plt.show()
 swapped = np.moveaxis(resized_image, 0, 1).shape
+print(swapped.shape)
 tensor = torch.from_numpy(swapped)
 print(tensor.shape)
 print("####################### Predicted features #######################")
