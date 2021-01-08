@@ -24,7 +24,7 @@ if not client.isconnected():
 else:
     print(help_message)
 
-res = client.request('vget /camera/2/lit png')
+res = client.request('vget /camera/0/lit png')
 img = read_png(res)
 
 print("######################### Shape of image #########################")
