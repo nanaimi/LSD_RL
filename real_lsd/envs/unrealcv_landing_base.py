@@ -124,7 +124,7 @@ class UnrealCvLanding_base(gym.Env):
         info['Done'] = False
 
         # take action
-        info['Collision'] = self.unrealcv.move_3d(self, cam_id, delt_x, delt_y, delt_z):
+        info['Collision'] = self.unrealcv.move_3d(self, cam_id, delt_x, delt_y, delt_z)
         info['Pose'] = self.unrealcv.get_pose(self.cam_id, 'hard')
 
         # If triggered the agent believes that the episode should be DONE
