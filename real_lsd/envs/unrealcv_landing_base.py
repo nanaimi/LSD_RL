@@ -152,7 +152,7 @@ class UnrealCvLanding_base(gym.Env):
                 info['Reward'] = 0
 
             # condition for terminating episode
-            if info['Reward'] > 0 or self.trigger_count >+ 3:
+            if info['Reward'] > 0 or self.trigger_count > 3:
                 info['Done'] = True
                 # TODO: leave for now, use random reset_type and this will be ignored
                 if info['Reward'] > 0 and self.reset_type == 'waypoint':

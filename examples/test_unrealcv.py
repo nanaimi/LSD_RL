@@ -46,12 +46,6 @@ def main():
         res = client.request('vget /camera/2/lit png')
         img = read_png(res)
 
-        # print(event.key)
-        # print('Requested image %s' % str(img.shape))
-        # hsv_img = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-        # low_red = (348,70,50)
-        # high_red = (368, 300, 300)
-        # mask = cv2.inRange(hsv_img, low_red, high_red)
         ax.imshow(img)
         fig.canvas.draw()
 

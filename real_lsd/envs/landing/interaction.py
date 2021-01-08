@@ -39,7 +39,10 @@ class Landing(UnrealCv):
             self.img_gray = np.expand_dims(self.img_gray, -1)
             state = np.concatenate((self.img_color, self.img_gray), axis=2)
         elif observation_type == 'PoseColor':
+            
             self.img_color = self.read_image(cam_id, 'lit', mode).flatten()
+
+
             self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
             state = np.concatenate((self.pose, self.img_color), axis=0)
 
@@ -83,11 +86,6 @@ class Landing(UnrealCv):
                 observation_space = spaces.Box(low=low_bound, high=high_bound, shape=state.shape)
 
         return observation_space
-
-    def open_door(self):
-        self.keyboard('RightMouseButton')
-        time.sleep(2)
-        self.keyboard('RightMouseButton')  # close the door
 
     def set_texture(self, target, color=(1, 1, 1), param=(0, 0, 0), picpath=None, tiling=1, e_num=0): #[r, g, b, meta, spec, rough, tiling, picpath]
         param = param / param.max()
