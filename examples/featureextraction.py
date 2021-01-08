@@ -15,7 +15,7 @@ mobilenet = models.mobilenet_v2(pretrained=True)
 
 features = nn.Sequential(*(list(mobilenet.children())[0]))
 #Fix the parameters of the feature extractor:
-for param in self.features.parameters():
+for param in features.parameters():
     param.requires_grad = False
 
 client.connect()
