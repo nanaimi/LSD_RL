@@ -34,10 +34,13 @@ plt.axis('off')
 plt.show() # Add event handler
 empty = np.zeros((480, 640, 4))
 ax.imshow(empty)
+fig.canvas.draw()
 time.sleep(5)
 ax.imshow(img)
+fig.canvas.draw()
 time.sleep(5)
 ax.imshow(img[...,:3])
+fig.canvas.draw()
 
 print("####################### Predicted features #######################")
 print(features(img))
