@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from unrealcv import client
 from unrealcv.util import read_npy, read_png
 
+import torch
 import torch.nn as nn
 import torchvision.models as models
 import torchsummary as summary
