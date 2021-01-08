@@ -40,7 +40,7 @@ class Landing(UnrealCv):
             state = np.concatenate((self.img_color, self.img_gray), axis=2)
         elif observation_type == 'PoseColor':
             self.img_color = self.read_image(cam_id, 'lit', mode).flatten()
-            self.pose =  np.asarray(self.get_pose(cam_id, mode='hard'), dtype=np.float64)
+            self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
             state = np.concatenate((self.pose, self.img_color), axis=0)
 
         return state
