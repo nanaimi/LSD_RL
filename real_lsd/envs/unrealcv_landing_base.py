@@ -43,6 +43,7 @@ class UnrealCvLanding_base(gym.Env):
         self.target_object = setting['target_object']
         self.discrete_actions = setting['discrete_actions']
         self.continous_actions = setting['continous_actions']
+        self.height = 50
 
         self.docker = docker
         self.reset_type = reset_type                                            # Not Sure about reset_type
