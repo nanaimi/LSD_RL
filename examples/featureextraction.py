@@ -41,5 +41,7 @@ ax[1].imshow(img)
 ax[2].imshow(img[...,:3])
 plt.show()
 
+tensor = torch.from_numpy(img)
+print(tensor.shape)
 print("####################### Predicted features #######################")
 print(features(img))
