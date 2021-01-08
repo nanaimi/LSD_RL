@@ -23,7 +23,8 @@ if not client.isconnected():
     print('UnrealCV server is not running. Run the game from http://unrealcv.github.io first.')
 else:
     print('nope')
-
+    
+time.sleep(5)
 res = client.request('vget /camera/0/lit png')
 img = read_png(res)
 
