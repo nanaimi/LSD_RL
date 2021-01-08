@@ -16,7 +16,7 @@ for env in ['cpptest']:
                 for category in settings['targets']:
                     register(
                         id='UnrealLand-{env}{category}-{action}{obs}-v{reset}'.format(env=env, category=category, action=action, obs=obs, reset=i),
-                        entry_point='gym_unrealcv.envs:UnrealCvLanding_base',
+                        entry_point='real_lsd.envs:UnrealCvLanding_base',
                         kwargs={'setting_file': 'landing/{env}.json'.format(env=env),
                                 'category': category,
                                 'reset_type': reset,
