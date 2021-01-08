@@ -30,6 +30,8 @@ img = read_png(res)
 print("######################### Shape of image #########################")
 print(img.shape)
 fig, ax = plt.subplots()
+plt.axis('off')
+plt.show() # Add event handler
 empty = np.zeros((480, 640, 4))
 ax.imshow(empty)
 time.sleep(5)
