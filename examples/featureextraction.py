@@ -27,14 +27,18 @@ else:
 res = client.request('vget /camera/0/lit png')
 img = read_png(res)
 
+# Create figure and axes
+fig,ax = plt.subplots(1,3)
+
+
 print("######################### Shape of image #########################")
 print(img.shape)
 empty = np.zeros((480, 640, 4))
-plt.imshow(empty)
-time.sleep(5)
-plt.imshow(img)
-time.sleep(5)
-plt.imshow(img[...,:3])
+# Display the image
+ax[0].imshow(empty)
+ax[1].imshow(img)
+ax[2].imshow(img[...,:3])
+plt.show()
 
 print("####################### Predicted features #######################")
 print(features(img))
