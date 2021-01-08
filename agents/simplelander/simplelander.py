@@ -4,7 +4,7 @@ from stable_baselines.common.policies import MlpPolicy
 from stable_baselines.common import make_vec_env
 from stable_baselines import PPO2
 import gym_unrealcv
-# import real_lsd
+import real_lsd
 
 # multiprocess environment
 # example env name
