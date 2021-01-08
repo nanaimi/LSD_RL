@@ -27,3 +27,4 @@ for env in ['cpptest']:
                                 },
                         max_episode_steps=200
                     )
+                    print("successfully registered")
