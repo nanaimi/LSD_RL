@@ -3,7 +3,7 @@ import gym
 import numpy as np
 from gym import spaces
 from real_lsd.envs.landing import reward, reset_point
-from real_lsd.envs.navigation.visualization import show_info
+from real_lsd.envs.landing.visualization import show_info
 from gym_unrealcv.envs.utils import env_unreal
 from real_lsd.envs.landing.interaction import Landing
 
