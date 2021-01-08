@@ -13,7 +13,7 @@ import torchsummary as summary
 
 mobilenet = models.mobilenet_v2(pretrained=True)
 
-self.features = nn.Sequential(*(list(mobilenet.children())[0]))
+features = nn.Sequential(*(list(mobilenet.children())[0]))
 #Fix the parameters of the feature extractor:
 for param in self.features.parameters():
     param.requires_grad = False
