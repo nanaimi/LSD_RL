@@ -42,7 +42,7 @@ ax[1].imshow(img)
 resized_image = img[...,:3]
 ax[2].imshow(resized_image)
 plt.show()
-swapped = np.moveaxis(resized_image, 0, 1).shape
+swapped = np.moveaxis(resized_image, 0, 1)
 print(swapped.shape)
 tensor = torch.from_numpy(swapped)
 print(tensor.shape)
