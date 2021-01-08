@@ -73,7 +73,7 @@ class UnrealCvLanding_base(gym.Env):
         # define observation space,
         # color, depth, rgbd,...
         self.observation_type = observation_type
-        assert self.observation_type == 'Color' or self.observation_type == 'Depth' or self.observation_type == 'Rgbd'
+        assert self.observation_type == 'Color' or self.observation_type == 'Depth' or self.observation_type == 'Rgbd' or self.observation_type == 'PoseColor'
         self.observation_space = self.unrealcv.define_observation(self.cam_id, self.observation_type, 'direct')
 
         # define reward type
