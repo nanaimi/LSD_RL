@@ -43,7 +43,6 @@ class UnrealCvLanding_base(gym.Env):
         self.target_object = setting['target_object']
         self.discrete_actions = setting['discrete_actions']
         self.continous_actions = setting['continous_actions']
-        self.height = 50
 
         self.docker = docker
         self.reset_type = reset_type                                            # Not Sure about reset_type
@@ -84,7 +83,6 @@ class UnrealCvLanding_base(gym.Env):
         # set start position
         self.trigger_count = 0
         current_pose = self.unrealcv.get_pose(self.cam_id)
-        current_pose[2] = self.height
         self.unrealcv.set_location(self.cam_id, current_pose[:3])
 
         self.count_steps = 0
