@@ -21,7 +21,6 @@ for param in self.features.parameters():
 client.connect()
 if not client.isconnected():
     print('UnrealCV server is not running. Run the game from http://unrealcv.github.io first.')
-    return
 else:
     print(help_message)
 
