@@ -39,10 +39,11 @@ empty = np.zeros((480, 640, 4))
 # Display the image
 ax[0].imshow(empty)
 ax[1].imshow(img)
-ax[2].imshow(img[...,:3])
+resized_image = img[...,:3]
+ax[2].imshow(resized_image)
 plt.show()
 
-tensor = torch.from_numpy(img)
+tensor = torch.from_numpy(resized_image)
 print(tensor.shape)
 print("####################### Predicted features #######################")
-print(features(img))
+print(features(tensor))
