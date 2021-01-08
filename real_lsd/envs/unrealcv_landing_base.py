@@ -164,6 +164,7 @@ class UnrealCvLanding_base(gym.Env):
             if 'distance' in self.reward_type:
                 info['Reward'] = self.reward_function.reward_distance(distance)
             else:
+                continue
                 # info['Reward'] = 0
 
             # if collision detected, the episode is done and reward is -1
