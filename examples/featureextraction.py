@@ -29,6 +29,13 @@ img = read_png(res)
 
 print("######################### Shape of image #########################")
 print(img.shape)
+fig, ax = plt.subplots()
+empty = np.zeros((480, 640, 4))
+ax.imshow(empty)
+time.sleep(5)
+ax.imshow(img)
+time.sleep(5)
+ax.imshow(img[...,:3])
 
 print("####################### Predicted features #######################")
 print(features(img))
