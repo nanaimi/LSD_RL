@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from unrealcv import client
 from unrealcv.util import read_npy, read_png
+from gym_unrealcv.utils.misc import decode_png
 
 import torch
 import torch.nn as nn
@@ -27,10 +28,15 @@ else:
 
 time.sleep(5)
 res = client.request('vget /camera/0/lit png')
-img = read_png(res)
-print(type(img))
-print(img.shape)
 
+print("####################### reading with read_png #######################")
+img_read = read_png(res)
+print(type(img_read))
+print(img_read.shape)
+print("###################### reading with decode_png ######################")
+img_decode = decode_png(res)
+print(type(img_decode))
+print(img_decode.shape)
 # Create figure and axes
 fig,ax = plt.subplots(1,4)
 
@@ -47,10 +53,10 @@ ax[2].imshow(resized_image)
 ax[3].imshow(swapped)
 print(type(img))
 plt.show()
-swapped = np.moveaxis(resized_image, 2, 0)
-print(resized_image.shape)
-print(swapped.shape)
-tensor = torch.from_numpy(swapped)
-print(tensor.shape)
-print("####################### Predicted features #######################")
-print(mobilenet(tensor))
+# swapped = np.moveaxis(resized_image, 2, 0)
+# print(resized_image.shape)
+# print(swapped.shape)
+# tensor = torch.from_numpy(swapped)
+# print(tensor.shape)
+# print("####################### Predicted features #######################")
+# print(mobilenet(tensor))
