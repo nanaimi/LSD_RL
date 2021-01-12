@@ -53,7 +53,7 @@ img_tensor = preprocess(img_decode)
 img_tensor.unsqueeze(0)
 
 img_variable = Variable(img_tensor)
-fc_out = features(img_variable)
+fc_out = mobilenet(img_variable)
 print(fc_out)
 # Create figure and axes
 # fig,ax = plt.subplots(1,4)
