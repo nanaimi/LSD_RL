@@ -49,7 +49,7 @@ img_read = read_png(res)
 print(type(img_read))
 print(img_read.shape)
 print("###################### reading with decode_png ######################")
-img_decode =  PIL.Image.open(BytesIO(res))
+img_decode =  PIL.Image.open(BytesIO(res)).convert('RGB')
 print(type(img_decode))
 
 
