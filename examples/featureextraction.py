@@ -49,22 +49,28 @@ img_decode =  np.asarray(PIL.Image.open(BytesIO(res)))
 print(type(img_decode))
 print(img_decode.shape)
 
+img_tensor = preprocess(img_decode)
+img_tensor.unsqueeze_(0)
+
+img_variable = Variable(img_tensor)
+fc_out = features(img_variable)
+print(fc_out)
 # Create figure and axes
-fig,ax = plt.subplots(1,4)
+# fig,ax = plt.subplots(1,4)
 
 
 print("######################### Shape of image #########################")
 # print(img.shape)
-empty = np.zeros((480, 640, 4))
+# empty = np.zeros((480, 640, 4))
 # Display the image
-ax[0].imshow(empty)
-ax[1].imshow(img_read)
+# ax[0].imshow(empty)
+# ax[1].imshow(img_read)
 # resized_image = img[...,:3]
-ax[2].imshow(img_decode)
+# ax[2].imshow(img_decode)
 # swapped = np.moveaxis(resized_image, 2, 0)
-ax[3].imshow(preprocess(img_read))
+# ax[3].imshow(preprocess(img_read))
 # print(type(img))
-plt.show()
+# plt.show()
 # swapped = np.moveaxis(resized_image, 2, 0)
 # print(resized_image.shape)
 # print(swapped.shape)
