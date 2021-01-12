@@ -59,9 +59,13 @@ print(img_tensor.shape)
 img_tensor = img_tensor.unsqueeze(0)
 print(img_tensor.shape)
 
+print("########################## feature vectors ##########################")
 # img_variable = Variable(img_tensor)
 fc_out = model(img_tensor)
 print(fc_out)
+print(fc_out.shape)
+print(fc_out.numpy())
+print(fc_out.numpy().shape)
 # Create figure and axes
 # fig,ax = plt.subplots(1,4)
 
