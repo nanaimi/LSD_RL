@@ -18,7 +18,7 @@ import torchsummary as summary
 model = torch.hub.load('pytorch/vision:v0.6.0', 'mobilenet_v2', pretrained=True)
 model.eval()
 
-feature_extractor = nn.Sequential(*(list(model.features))
+feature_extractor = nn.Sequential(*(list(model.features)))
 
 mobilenet = models.mobilenet_v2(pretrained=True)
 mobilenet.eval()
