@@ -23,7 +23,7 @@ feature_extractor = nn.Sequential(*(list(model.children())[0]))
 mobilenet = models.mobilenet_v2(pretrained=True)
 mobilenet.eval()
 
-feature_network = nn.Sequential(*(list(mobilenet.features))
+feature_network = nn.Sequential(*(list(mobilenet.features)))
 
 preprocess = transforms.Compose([
     transforms.Resize(256),
