@@ -30,7 +30,7 @@ res = client.request('vget /camera/0/lit png')
 img = read_png(res)
 
 # Create figure and axes
-fig,ax = plt.subplots(1,3)
+fig,ax = plt.subplots(1,4)
 
 
 print("######################### Shape of image #########################")
@@ -41,6 +41,8 @@ ax[0].imshow(empty)
 ax[1].imshow(img)
 resized_image = img[...,:3]
 ax[2].imshow(resized_image)
+swapped = np.moveaxis(resized_image, 2, 0)
+ax[3].imshow(swapped)
 print(type(img))
 plt.show()
 swapped = np.moveaxis(resized_image, 2, 0)
