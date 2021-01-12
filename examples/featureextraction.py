@@ -15,11 +15,6 @@ from torchvision import transforms
 import torchvision.models as models
 import torchsummary as summary
 
-model = torch.hub.load('pytorch/vision:v0.6.0', 'mobilenet_v2', pretrained=True)
-model.eval()
-
-feature_extractor = nn.Sequential(*(list(model.features)))
-
 mobilenet = models.mobilenet_v2(pretrained=True)
 mobilenet.eval()
 
@@ -32,9 +27,6 @@ preprocess = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
-# #Fix the parameters of the feature extractor:
-# for param in features.parameters():
-#     param.requires_grad = False
 
 client.connect()
 if not client.isconnected():
@@ -62,10 +54,11 @@ print(img_tensor.shape)
 
 print("########################## feature vectors ##########################")
 # img_variable = Variable(img_tensor)
-fc_out = feature_extractor(img_tensor)
+fc_out = feature_network(img_tensor)
 print(fc_out)
 print(fc_out.shape)
 print(fc_out.detach().numpy())
 print(fc_out.detach().numpy().shape)
+print(fc_out.detach().numpy().flatten().shape)
 # Create figure and axes
 # fig,ax = plt.subplots(1,4)
