@@ -56,3 +56,5 @@ print(features.shape)
 print(features.detach().numpy())
 print(features.detach().numpy().shape)
 print(features.detach().numpy().flatten().shape)
+
+client.close()
