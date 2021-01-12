@@ -51,7 +51,7 @@ print(img_read.shape)
 print("###################### reading with decode_png ######################")
 img_decode =  PIL.Image.open(BytesIO(res))
 print(type(img_decode))
-print(img_decode.shape)
+
 
 
 img_tensor = preprocess(img_decode)
