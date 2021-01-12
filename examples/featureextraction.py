@@ -45,7 +45,7 @@ fig,ax = plt.subplots(1,3)
 
 
 print("######################### Shape of image #########################")
-print(img.shape)
+# print(img.shape)
 empty = np.zeros((480, 640, 4))
 # Display the image
 ax[0].imshow(empty)
@@ -54,7 +54,7 @@ ax[1].imshow(img_read)
 ax[2].imshow(img_decode)
 # swapped = np.moveaxis(resized_image, 2, 0)
 # ax[3].imshow(swapped)
-print(type(img))
+# print(type(img))
 plt.show()
 # swapped = np.moveaxis(resized_image, 2, 0)
 # print(resized_image.shape)
