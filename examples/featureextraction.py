@@ -41,6 +41,8 @@ ax[0].imshow(empty)
 ax[1].imshow(img)
 resized_image = img[...,:3]
 ax[2].imshow(resized_image)
+print(type(img))
+print(type(resized_image))
 plt.show()
 swapped = np.moveaxis(resized_image, 2, 0)
 print(swapped.shape)
