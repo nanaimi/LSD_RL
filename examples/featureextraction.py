@@ -15,11 +15,12 @@ from torchvision import transforms
 import torchvision.models as models
 import torchsummary as summary
 
+# Load in pretrained mobilenet V2 network and reduce to feature extractor
 mobilenet = models.mobilenet_v2(pretrained=True)
 mobilenet.eval()
-
 feature_network = nn.Sequential(*(list(mobilenet.children())[0]))
 
+# Preprocess data before inference --> not sure why
 preprocess = transforms.Compose([
     transforms.Resize(256),
     transforms.CenterCrop(224),
@@ -27,7 +28,7 @@ preprocess = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
-
+print("######################### connecting client ##########################")
 client.connect()
 if not client.isconnected():
     print('UnrealCV server is not running. Run the game from http://unrealcv.github.io first.')
@@ -35,30 +36,23 @@ else:
     print('UnrealCV server is running.')
 
 time.sleep(5)
-res = client.request('vget /camera/0/lit png')
 
-print("####################### reading with read_png #######################")
-img_read = read_png(res)
-print(type(img_read))
-print(img_read.shape)
-print("###################### reading with decode_png ######################")
+print("######################### readin png to RGB ##########################")
+res = client.request('vget /camera/0/lit png')
 img_decode =  PIL.Image.open(BytesIO(res)).convert('RGB')
 print(type(img_decode))
 
 
-
+print("######################### convert to tensor ##########################")
 img_tensor = preprocess(img_decode)
 print(img_tensor.shape)
 img_tensor = img_tensor.unsqueeze(0)
 print(img_tensor.shape)
 
-print("########################## feature vectors ##########################")
-# img_variable = Variable(img_tensor)
-fc_out = feature_network(img_tensor)
-print(fc_out)
-print(fc_out.shape)
-print(fc_out.detach().numpy())
-print(fc_out.detach().numpy().shape)
-print(fc_out.detach().numpy().flatten().shape)
-# Create figure and axes
-# fig,ax = plt.subplots(1,4)
+print("########################## inferin features ##########################")
+features = feature_network(img_tensor)
+print(features)
+print(features.shape)
+print(features.detach().numpy())
+print(features.detach().numpy().shape)
+print(features.detach().numpy().flatten().shape)
