@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from unrealcv import client
 from unrealcv.util import read_npy, read_png
-from gym_unrealcv.envs.utils.UnrealCv import decode_png
+from gym_unrealcv.envs.utils.unrealcv_basic import UnrealCv
 
 import torch
 import torch.nn as nn
@@ -34,7 +34,7 @@ img_read = read_png(res)
 print(type(img_read))
 print(img_read.shape)
 print("###################### reading with decode_png ######################")
-img_decode = decode_png(res)
+img_decode = UnrealCv.decode_png(res)
 print(type(img_decode))
 print(img_decode.shape)
 # Create figure and axes
