@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from unrealcv import client
 from unrealcv.util import read_npy, read_png
-from gym_unrealcv.utils.misc import decode_png
+from gym_unrealcv..envs.utils import decode_png
 
 import torch
 import torch.nn as nn
