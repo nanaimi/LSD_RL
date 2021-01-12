@@ -21,8 +21,9 @@ model.eval()
 feature_extractor = nn.Sequential(*(list(model.children())[0]))
 
 mobilenet = models.mobilenet_v2(pretrained=True)
+mobilenet.eval()
 
-features = nn.Sequential(*(list(mobilenet.children())[0]))
+feature_network = nn.Sequential(*(list(mobilenet.features))
 
 preprocess = transforms.Compose([
     transforms.Resize(256),
@@ -61,7 +62,7 @@ print(img_tensor.shape)
 
 print("########################## feature vectors ##########################")
 # img_variable = Variable(img_tensor)
-fc_out = model(img_tensor)
+fc_out = mobilnet(img_tensor)
 print(fc_out)
 print(fc_out.shape)
 print(fc_out.detach().numpy())
