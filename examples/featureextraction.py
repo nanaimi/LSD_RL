@@ -60,7 +60,7 @@ img_tensor.unsqueeze(0)
 print(img_tensor.shape)
 
 # img_variable = Variable(img_tensor)
-fc_out = feature_extractor(img_tensor)
+fc_out = model(img_tensor)
 print(fc_out)
 # Create figure and axes
 # fig,ax = plt.subplots(1,4)
