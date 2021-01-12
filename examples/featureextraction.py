@@ -55,7 +55,9 @@ print(img_decode.shape)
 
 
 img_tensor = preprocess(img_decode)
+print(img_tensor.shape)
 img_tensor.unsqueeze(0)
+print(img_tensor.shape)
 
 img_variable = Variable(img_tensor)
 fc_out = feature_extractor(img_variable)
