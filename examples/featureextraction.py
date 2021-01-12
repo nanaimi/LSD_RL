@@ -62,7 +62,7 @@ print(img_tensor.shape)
 
 print("########################## feature vectors ##########################")
 # img_variable = Variable(img_tensor)
-fc_out = mobilnet(img_tensor)
+fc_out = mobilenet(img_tensor)
 print(fc_out)
 print(fc_out.shape)
 print(fc_out.detach().numpy())
