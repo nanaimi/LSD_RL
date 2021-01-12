@@ -18,7 +18,7 @@ import torchsummary as summary
 model = torch.hub.load('pytorch/vision:v0.6.0', 'mobilenet_v2', pretrained=True)
 model.eval()
 
-feature_extractor = nn.Sequential(*(list(model.children())[0]))
+feature_extractor = nn.Sequential(*(list(model.features))
 
 mobilenet = models.mobilenet_v2(pretrained=True)
 mobilenet.eval()
@@ -62,7 +62,7 @@ print(img_tensor.shape)
 
 print("########################## feature vectors ##########################")
 # img_variable = Variable(img_tensor)
-fc_out = feature_network(img_tensor)
+fc_out = feature_extractor(img_tensor)
 print(fc_out)
 print(fc_out.shape)
 print(fc_out.detach().numpy())
