@@ -11,6 +11,7 @@ import PIL.Image
 
 import torch
 import torch.nn as nn
+from torchvision import transforms
 import torchvision.models as models
 import torchsummary as summary
 
@@ -18,6 +19,14 @@ import torchsummary as summary
 mobilenet = models.mobilenet_v2(pretrained=True)
 
 features = nn.Sequential(*(list(mobilenet.children())[0]))
+
+preprocess = transforms.Compose([
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+])
+
 #Fix the parameters of the feature extractor:
 for param in features.parameters():
     param.requires_grad = False
@@ -41,7 +50,7 @@ print(type(img_decode))
 print(img_decode.shape)
 
 # Create figure and axes
-fig,ax = plt.subplots(1,3)
+fig,ax = plt.subplots(1,4)
 
 
 print("######################### Shape of image #########################")
@@ -53,7 +62,7 @@ ax[1].imshow(img_read)
 # resized_image = img[...,:3]
 ax[2].imshow(img_decode)
 # swapped = np.moveaxis(resized_image, 2, 0)
-# ax[3].imshow(swapped)
+ax[3].imshow(preprocess(img_read))
 # print(type(img))
 plt.show()
 # swapped = np.moveaxis(resized_image, 2, 0)
