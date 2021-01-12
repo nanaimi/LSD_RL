@@ -56,7 +56,7 @@ print(type(img_decode))
 
 img_tensor = preprocess(img_decode)
 print(img_tensor.shape)
-img_tensor.unsqueeze(0)
+img_tensor = img_tensor.unsqueeze(0)
 print(img_tensor.shape)
 
 # img_variable = Variable(img_tensor)
