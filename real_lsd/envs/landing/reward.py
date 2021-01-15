@@ -1,3 +1,4 @@
+import numpy as np
 class Reward():
     '''
     define different type reward function
@@ -7,13 +8,27 @@ class Reward():
         self.reward_th = setting['reward_th']
         self.dis2target_last = 0
 
-    # Percentage of mask that is landable
-    def reward_mask(self, object_mask):
-        pass
+    # IN: object mask delivered by unrealcv client, mask, and pose
+    # OUT: reward
+    def reward_mask(self, object_mask, mask, pose):
+        reward = 0
+        done = False
+        factor = 10
+        height, width = object_mask.shape
+        tot_num_pixels = height*width
+        fov_score = (cv2.sumElems(mask) / 255) / tot_num_pixels
+
+        reward = factor*np.tanh(fov_score*2*np.pi-np.pi)
+        if pose[2] < 10:
+            reward += 100
+            done = True
+        else:
+            reward -= -(1/10)pose[2]
+
+        return reward, done
 
     def reward_bbox(self, boxes):
         reward = 0
-
         # summarize the reward of each detected box
         for box in boxes:
             reward += self.get_bbox_reward(box)

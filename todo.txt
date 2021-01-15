@@ -17,14 +17,24 @@ Implementation:
 		simple observation space
 		Simple reward function
 		reset_methods --> random is what we want for training? testpoints for evaluation?
+		change observation to features extracted with mobilenet_v2
+
 	TODO:
+		pose observation needs to be independent of coordinate origin (at least origin needs to be placed randomly)
+		change reward function (2 types)
+			1) tanh with input being percentage of image being landable
+			2) square distance to nearest landable "patch"
 		Implement agent with actor critic base on PPO
 			Actor Network
 			Critic Network
 			How the F do I do this, lmfao
-		visualization
+
+		visualization --> dunno yet
+			set of 50 random starting points --> visualize trajectory taken
+			plot of reward over training epochs? does this make sense
 
 Test:
 	DONE:
+		with ppoagent, feature input, discrete actions, tanh reward function
 
 	TODO:

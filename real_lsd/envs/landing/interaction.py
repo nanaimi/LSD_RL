@@ -5,6 +5,12 @@ from gym import spaces
 import gym
 import distutils.version
 
+import torch
+import torch.nn as nn
+from torchvision import transforms
+import torchvision.models as models
+import torchsummary as summary
+
 
 class Landing(UnrealCv):
     def __init__(self, env, cam_id=0, port=9000,
@@ -18,9 +24,23 @@ class Landing(UnrealCv):
             self.targets = targets
             self.color_dict = self.build_color_dic(self.targets)
 
+        # Initialise feature extraction Network
+        # Load in pretrained mobilenet V2 network and reduce to feature extractor
+        mobilenet = models.mobilenet_v2(pretrained=True)
+        mobilenet.eval()
+        self.feature_network = nn.Sequential(*(list(mobilenet.children())[0]))
+
+        # Preprocess data before inference --> not sure why?
+        self.preprocess = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ])
+
         self.img_color = np.zeros(1)
         self.img_depth = np.zeros(1)
-        self.pose = np.zeros(1)
+        self.features = np.zeros(1)
 
         self.use_gym_10_api = distutils.version.LooseVersion(gym.__version__) >= distutils.version.LooseVersion('0.10.0') # not sure what this is
 
@@ -39,18 +59,18 @@ class Landing(UnrealCv):
             self.img_gray = np.expand_dims(self.img_gray, -1)
             state = np.concatenate((self.img_color, self.img_gray), axis=2)
         elif observation_type == 'PoseColor':
-            
             self.img_color = self.read_image(cam_id, 'lit', mode).flatten()
-
-
             self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
             state = np.concatenate((self.pose, self.img_color), axis=0)
+        elif observation_type == 'PoseFeatures':
+            self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
+            self.features = self.get_features(cam_id, 'lit')
+            state = np.concatenate((self.pose, self.features), axis=0)
 
         return state
 
 
     def define_observation(self, cam_id, observation_type, mode='direct'):
-
         state = self.get_observation(cam_id, observation_type, mode)
 
         if observation_type == 'Color' or observation_type == 'CG':
@@ -85,6 +105,14 @@ class Landing(UnrealCv):
             else:
                 observation_space = spaces.Box(low=low_bound, high=high_bound, shape=state.shape)
 
+        elif observation_type == 'PoseFeatures':
+            low_bound = np.full(state.shape, -np.inf)
+            high_bound = np.full(state.shape, np.inf)
+            if self.use_gym_10_api:
+                observation_space = spaces.Box(low=low_bound, high=high_bound, shape=state.shape, dtype=np.float64)  # for gym>=0.10
+            else:
+                observation_space = spaces.Box(low=low_bound, high=high_bound, shape=state.shape)
+
         return observation_space
 
     def set_texture(self, target, color=(1, 1, 1), param=(0, 0, 0), picpath=None, tiling=1, e_num=0): #[r, g, b, meta, spec, rough, tiling, picpath]
@@ -106,6 +134,18 @@ class Landing(UnrealCv):
         cmd = 'vbp {target} set_light {r} {g} {b} {intensity} '
         res = self.client.request(cmd.format(target=target, intensity=intensity,
                                              r=color[0], g=color[1], b=color[2]))
+
+    def get_features(self, cam_id, viewmode):
+        cmd = 'vget /camera/{cam_id}/{viewmode} png'
+        res = None
+        while res is None:
+            res = self.client.request(cmd.format(cam_id=cam_id, viewmode=viewmode))
+        img_pil =  PIL.Image.open(BytesIO(res)).convert('RGB')
+        img_tensor = self.preprocess(img_pil)
+        img_tensor = img_tensor.unsqueeze(0)
+        features = self.feature_network(img_tensor).detach().numpy().flatten()
+        return features
+
 
     def get_pose(self,cam_id, type='hard'):  # pose = [x, y, z, roll, yaw, pitch]
         if type == 'soft':

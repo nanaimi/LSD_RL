@@ -70,8 +70,7 @@ class UnrealCvLanding_base(gym.Env):
             self.action_space = spaces.Box(low=np.array(self.continous_actions['low']),
                                            high=np.array(self.continous_actions['high']))
 
-        # define observation space,
-        # color, depth, rgbd,...
+        # define observation space
         self.observation_type = observation_type
         assert self.observation_type == 'Color' or self.observation_type == 'Depth' or self.observation_type == 'Rgbd' or self.observation_type == 'PoseColor'
         self.observation_space = self.unrealcv.define_observation(self.cam_id, self.observation_type, 'direct')
@@ -84,18 +83,11 @@ class UnrealCvLanding_base(gym.Env):
         self.trigger_count = 0
         current_pose = self.unrealcv.get_pose(self.cam_id)
         self.unrealcv.set_location(self.cam_id, current_pose[:3])
-
         self.count_steps = 0
-
         self.targets_pos = self.unrealcv.build_pose_dic(self.target_list)
-
         # for reset point generation and selection
         self.reset_module = reset_point.ResetPoint(setting, reset_type, current_pose)
 
-    # TODO: Adjust step function
-    # Step function takes in action applies it to the agent in the environment
-    # after taking the action, reward is calculated, episode is either terminated
-    # and reset
     def _step(self, action ):
         info = dict(
             Collision=False,
@@ -126,69 +118,46 @@ class UnrealCvLanding_base(gym.Env):
         info['Collision'] = self.unrealcv.move_3d(self, cam_id, delt_x, delt_y, delt_z)
         info['Pose'] = self.unrealcv.get_pose(self.cam_id, 'hard')
 
-        # If triggered the agent believes that the episode should be DONE
-        # If triggered and score of FOV is above threshold and height is lower
-        # than threshold give reward, otherwise -100
-        # only three times false trigger allowed in every episode
-        if info['Trigger'] > self.trigger_th:
-            self.trigger_count += 1
-
+        if 'mask' in self.reward_type:
             # get segmented image
             object_mask = self.unrealcv.read_image(self.cam_id, 'object_mask')
-
-            if 'mask' in self.reward_type:
-                # get_mask gets you a binary image, either 0 or 255 per pixel
-                height, width = object_mask.shape
-                tot_num_pixels = height*width
-                mask = self.unrealcv.get_mask(object_mask, self.target_object)
-                fov_score = (cv2.sumElems(mask) / 255) / tot_num_pixels
-
-                # Positive reward only if score above threshold and z below
-                if (fov_score > successful_landing_th) and info['Pose'][2] < 10:
-                    info['Reward'] = 10
-                else:
-                    info['Reward'] = -10
-            else:
-                info['Reward'] = 0
-
-            # condition for terminating episode
-            if info['Reward'] > 0 or self.trigger_count > 3:
-                info['Done'] = True
-                # TODO: leave for now, use random reset_type and this will be ignored
-                if info['Reward'] > 0 and self.reset_type == 'waypoint':
-                    self.reset_module.success_waypoint(self.count_steps)
+            # get_mask gets you a binary image, either 0 or 255 per pixel
+            mask = self.unrealcv.get_mask(object_mask, self.target_object)
+            reward, done = self.reward_function.reward_mask(object_mask, mask, info['Pose'])
+            info['Reward'] = reward
+            info['Done'] = done
+        # calculate reward according to the distance to target object
+        elif 'distance' in self.reward_type:
+            info['Reward'] = self.reward_function.reward_distance(distance)
         else:
-            # calculate reward according to the distance to target object
-            # TODO: change this, but first we test without distance as reward
-            if 'distance' in self.reward_type:
-                info['Reward'] = self.reward_function.reward_distance(distance)
-            # else:
-            #     info['Reward'] = 0
+            info['Reward'] = 0
 
-            # if collision detected, the episode is done and reward is -1
-            if info['Collision']:
-                info['Reward'] = -1
+        # If triggered the agent believes that the episode should be DONE
+        if info['Trigger'] > self.trigger_th:
+            self.trigger_count += 1
+            if self.trigger_count >= 3:
                 info['Done'] = True
-                if self.reset_type == 'waypoint':
-                    self.reset_module.update_dis2collision(info['Pose'])
+        else:
+            # if collision detected, the episode is done and reward is -1
+            if info['Collision'] or self.count_steps >= 150:
+                info['Reward'] = -100
+                info['Done'] = True
 
-        # update observation
-        # TODO: Rethink observation if it includes pose, a bit dumb to fetch
-        # the pose twice and can be tricky if there is somehow a mismatch
+        # Update observation
         state = self.unrealcv.get_observation(self.cam_id, self.observation_type)
 
-        if self.observation_type in ['Color', 'Rgbd', 'PoseColor']:
+        if self.observation_type in ['Color', 'Rgbd', 'PoseColor', 'PoseFeatures']:
             info['Color'] = self.unrealcv.img_color
 
         if self.observation_type in ['Depth', 'Rgbd']:
             info['Depth'] = self.unrealcv.img_depth
 
+        if self.observation_type in ['PoseFeatures']:
+            info['Features'] = self.unrealcv.features
+
         # save the trajectory
         self.trajectory.append(info['Pose'][:6])
         info['Trajectory'] = self.trajectory
-        # IGNORE this for the moment
-        if info['Done'] and len(self.trajectory) > 5 and self.reset_type == 'waypoint':
-            self.reset_module.update_waypoint(info['Trajectory'])
 
         return state, info['Reward'], info['Done'], info
 

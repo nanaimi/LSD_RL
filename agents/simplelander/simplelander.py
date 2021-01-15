@@ -6,6 +6,20 @@ from stable_baselines import PPO2
 import gym_unrealcv
 import real_lsd
 
+use_cuda = torch.cuda.is_available()
+device   = torch.device("cuda" if use_cuda else "cpu")
+
+num_inputs  = envs.observation_space.shape[0]
+num_outputs = envs.action_space.shape[0]
+
+#Hyper params:
+hidden_size      = 256
+lr               = 3e-4
+num_steps        = 20
+mini_batch_size  = 5
+ppo_epochs       = 4
+threshold_reward = -200
+
 # multiprocess environment
 # example env name
 # UnrealLand-cpptestFloorGood-DiscretePoseColor-v0
