@@ -11,7 +11,7 @@ import torch
 from PPOagent import PPOAgent
 
 use_cuda = torch.cuda.is_available()
-device   = torch.device("cuda" if use_cuda else "cpu")
+device = torch.device("cuda" if use_cuda else "cpu")
 
 # initialise environment
 env = gym.make('MyUnrealLand-cpptestFloorGood-DiscretePoseColor-v0')
@@ -38,7 +38,8 @@ agent = PPOAgent(num_inputs,
                 mini_batch_size,
                 ppo_epochs,
                 threshold_reward,
-                std=0.0)
+                std=0.0,
+                device=device)
 
 max_frames = 15000
 frame_idx  = 0

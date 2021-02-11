@@ -25,7 +25,8 @@ class PPOAgent():
                     mini_batch_size,
                     ppo_epochs,
                     threshold_reward=(-200),
-                    std=0.0):
+                    std=0.0,
+                    device="cpu"):
 
         # Class attributes
         self.num_inputs = num_inputs
