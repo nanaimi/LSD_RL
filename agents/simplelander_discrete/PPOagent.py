@@ -51,6 +51,7 @@ class PPOAgent():
 
     def minibatch_loss(states, actions, old_log_probs, returns, advantages):
         # Distributions of all actions for each given state in minibatch
+        print("calculating minibatch loss")
         dist, value = model(state)
         entropy = dist.entropy.mean()
         new_log_probs = dist.log_prob(actions)
@@ -71,15 +72,18 @@ class PPOAgent():
         Divide batch into mini_batches through generator
         mini_batch set is uniformly sampled from the batch
         """
+        print("creating minibatch")
         batch_size = states.size(0)
         for _ in range(batch_size // mini_batch_size):
             rand_ids = np.random.randint(0, batch_size, mini_batch_size)
             yield states[rand_ids, :], actions[rand_ids, :], log_probs[rand_ids, :], returns[rand_ids, :], advantage[rand_ids, :]
 
     def ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantages, clip_param=0.2):
-        for _ in range(ppo_epochs):
+        print("ppo update called")
+        for i in range(ppo_epochs):
+            print("ppo update epoch:", i)
             for state, action, old_log_probs, return_, advantage in ppo_iter(mini_batch_size, states, actions, log_probs, returns, advantages):
-
+                print("ppo update epoch:", i, "optimizing on minibatches" )
                 # dist, value = model(state)
                 # entropy = dist.entropy().mean()
                 #
@@ -102,6 +106,7 @@ class PPOAgent():
 
 
     def compute_gae(next_value, rewards, masks, values, gamma=0.99, tau=0.95):
+        print("computing GAE")
         values = values + [next_value]
         gae = 0
         returns = []

@@ -51,7 +51,7 @@ early_stop = False
 
 
 while frame_idx < max_frames and not early_stop:
-
+    print("frame: ", frame_idx)
     log_probs = []
     values    = []
     states    = []
@@ -61,11 +61,12 @@ while frame_idx < max_frames and not early_stop:
     # total entropy ? what is interesting about this
     entropy = 0
 
-    for _ in range(num_steps):
+    for st in range(num_steps):
         state = torch.FloatTensor(state).to(device)
         dist, value = agent.model(state)
 
         action = dist.sample()
+        print("step:", st, "sampled:", action)
         next_state, reward, done, _ = env.step(action.cpu().numpy())
         env.render()
 
@@ -103,6 +104,7 @@ while frame_idx < max_frames and not early_stop:
     actions   = torch.cat(actions)
     advantage = returns - values
 
+    print("about to update the params of the networks")
     agent.ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantage)
 
 
