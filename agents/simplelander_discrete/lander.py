@@ -108,6 +108,7 @@ while frame_idx < max_frames and not early_stop:
 
     next_state = torch.FloatTensor(next_state).to(device)
     _, next_value = agent.model(next_state)
+    print("after next value length rewards:", len(rewards))
 
     print("#################### Rewards HERE:", rewards)
     print("#################### MASK HERE:", masks)
