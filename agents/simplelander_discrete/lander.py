@@ -92,7 +92,7 @@ while frame_idx < max_frames and not early_stop:
         # rewards.append(torch.from_numpy(np.array(reward)).unsqueeze(1).to(device))
         # print(rewards)
         # print(done)
-        masks.append(torch.FloatTensor(1 - done).unsqueeze(1).to(device))
+        masks.append(torch.FloatTensor(0 if done else 1).unsqueeze(1).to(device))
         print("#################### MASK HERE:", masks)
 
         states.append(state)
