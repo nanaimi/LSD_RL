@@ -18,8 +18,8 @@ env = gym.make('MyUnrealLand-cpptestFloorGood-DiscretePoseColor-v0')
 
 
 num_inputs  = env.observation_space.shape[0]
-print("Action Space:", env.action_space)
-num_outputs = env.action_space.shape[0]
+print("Action Space:", env.action_space, "Number of actions:", env.action_space.n)
+num_outputs = env.action_space.n
 
 #Hyper params:
 hidden_size      = 256
