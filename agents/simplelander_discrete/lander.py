@@ -82,7 +82,7 @@ while frame_idx < max_frames and not early_stop:
         # Append data to arrays
         log_probs.append(log_prob)
         values.append(value)
-        rewards.append(torch.FloatTensor(reward).unsqueeze(1).to(device))
+        rewards.append(torch.from_numpy(reward).unsqueeze(1).to(device))
         masks.append(torch.FloatTensor(1 - done).unsqueeze(1).to(device))
 
         states.append(state)
