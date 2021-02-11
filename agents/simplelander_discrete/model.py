@@ -9,6 +9,14 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 from torch.distributions import Normal
+from torch.distributions import Categorical
+
+def init_weights(m):
+    if isinstance(m, nn.Linear):
+        # Fills the the weight Tensor with values drawn from the normal distribution
+        nn.init.normal_(m.weight, mean=0., std=0.1)
+        # Fills the bias Tensor with the constant value
+        nn.init.constant_(m.bias, 0.1)
 
 class ActorCritic(nn.Module):
     # nn.Module is a base class for all neural network modules.
@@ -37,8 +45,9 @@ class ActorCritic(nn.Module):
 
     def forward(self, x):
         value = self.critic(x)
-        action_probabilitiies = self.actor(x)
+        discrete_probabilitiies = self.actor(x)
+        dist = Categorical(discrete_probabilitiies)
         # continuous action space
         # std   = self.log_std.exp().expand_as(mu)
         # dist  = Normal(mu, std)
-        return action_probabilitiies, value
+        return dist, value
