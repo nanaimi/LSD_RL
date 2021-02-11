@@ -19,7 +19,7 @@ class Reward():
         height, width = mask.shape
         tot_num_pixels = height*width
         print(cv2.sumElems(mask))
-        fov_score = (cv2.sumElems(mask) / 255) / tot_num_pixels
+        fov_score = (cv2.sumElems(mask)[0] / 255) / tot_num_pixels
 
         reward = factor*np.tanh(fov_score*2*np.pi-np.pi)
 
