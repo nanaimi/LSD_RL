@@ -8,7 +8,7 @@ import real_lsd
 
 
 # initialise environment
-env = gym.make('MyUnrealLand-cpptestFloorGood-DiscretePoseColor-v0')
+# env = gym.make('MyUnrealLand-cpptestFloorGood-DiscretePoseColor-v0')
 
 # multiprocess environment
 # example env name
