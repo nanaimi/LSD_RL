@@ -33,7 +33,7 @@ class PPOAgent():
         self.num_actions = num_actions
 
         self.model = ActorCritic(num_inputs, num_actions, hidden_size).to(device)
-        self.optimizer = optim.Adam(model.parameters(), lr=lr)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
 
     def act(self, action_probabilities):
         """
