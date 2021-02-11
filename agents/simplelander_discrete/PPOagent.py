@@ -64,8 +64,7 @@ class PPOAgent():
         critic_loss = (returns - value).pow(2).mean()
 
         loss = actor_loss + 0.5 * critic_loss - 0.001 * entropy
-
-    	return loss
+        return loss
 
     def ppo_iter(mini_batch_size, states, actions, log_probs, returns, advantage):
         """
@@ -76,7 +75,6 @@ class PPOAgent():
         for _ in range(batch_size // mini_batch_size):
             rand_ids = np.random.randint(0, batch_size, mini_batch_size)
             yield states[rand_ids, :], actions[rand_ids, :], log_probs[rand_ids, :], returns[rand_ids, :], advantage[rand_ids, :]
-
 
     def ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantages, clip_param=0.2):
         for _ in range(ppo_epochs):
