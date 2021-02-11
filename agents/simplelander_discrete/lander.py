@@ -86,7 +86,7 @@ while frame_idx < max_frames and not early_stop:
         print("#################### Reward HERE:", reward)
         print("#################### Reward TYPE:", type(reward))
         rewards.append(torch.FloatTensor([np.float(reward)]).unsqueeze(1).to(device))
-        print(len(rewards))
+        print("length rewards:", len(rewards))
 
         # print(done)
         masks.append(torch.FloatTensor(0 if done else 1).unsqueeze(1).to(device)) # changed from 1-done
@@ -104,6 +104,7 @@ while frame_idx < max_frames and not early_stop:
             plot(frame_idx, test_rewards)
             if test_reward > threshold_reward: early_stop = True
 
+    print("after 20 steps length rewards:", len(rewards))
 
     next_state = torch.FloatTensor(next_state).to(device)
     _, next_value = agent.model(next_state)
