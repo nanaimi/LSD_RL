@@ -17,7 +17,7 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 env = gym.make('MyUnrealLand-cpptestFloorGood-DiscretePoseColor-v0')
 
 num_inputs  = env.observation_space.shape[0]
-Print("Number of actions:", env.action_space.shape)
+print("Number of actions:", env.action_space.shape)
 num_outputs = env.action_space.shape[0]
 
 #Hyper params:
