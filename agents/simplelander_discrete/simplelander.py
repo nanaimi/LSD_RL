@@ -18,6 +18,8 @@ env = gym.make('MyUnrealLand-cpptestFloorGood-DiscretePoseColor-v0')
 
 # PP02 with mlp network for both actor and critic, both with two layers and 64
 # neurons each
+
+print("action space:", env.action_space)
 model = PPO2(MlpPolicy, env, verbose=1)
 model.learn(total_timesteps=2000) # test with fewer timesteps
 model.save("testrun")
