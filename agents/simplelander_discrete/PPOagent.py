@@ -110,6 +110,7 @@ class PPOAgent():
         print("type after passing to GAE:", type(rewards))
         print(rewards)
         print("length masks:", len(masks))
+        print("type after passing to GAE masks:", type(masks))
         print(rewards.size())
         print(rewards[1])
         print(rewards[2])
