@@ -17,6 +17,8 @@ device = torch.device("cuda" if use_cuda else "cpu")
 env = gym.make('MyUnrealLand-cpptestFloorGood-DiscretePoseColor-v0')
 
 
+
+print("Observation Space:", env.observation_space, "dimension of observation:", env.observation_space.shape[0])
 num_inputs  = env.observation_space.shape[0]
 print("Action Space:", env.action_space, "Number of actions:", env.action_space.n)
 num_outputs = env.action_space.n
@@ -41,12 +43,15 @@ agent = PPOAgent(num_inputs,
                 std=0.0,
                 device=device)
 
+print(agent.model)
+
 max_frames = 15000
 frame_idx  = 0
 test_rewards = []
 
 
 state = env.reset()
+print("state after reset: ",state)
 early_stop = False
 
 
