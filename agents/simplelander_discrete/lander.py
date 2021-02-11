@@ -109,8 +109,11 @@ while frame_idx < max_frames and not early_stop:
 
     next_state = torch.FloatTensor(next_state).to(device)
     _, next_value = agent.model(next_state)
+
     print("after next value length rewards:", len(rewards))
     print("type after next value:", type(rewards))
+
+    # WHAT THE FUCK??? why is rewards turning into a fucking tensor
     returns = agent.compute_gae(next_value, rewards, masks, values)
     time.sleep(5)
 
