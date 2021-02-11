@@ -168,7 +168,7 @@ class UnrealCvLanding_base(gym.Env):
         while collision:
             current_pose = self.reset_module.select_resetpoint()
             self.unrealcv.set_pose(self.cam_id, current_pose)
-            collision = self.unrealcv.move_3d(self.cam_id, 100, 100, -20) # WTF
+            collision = self.unrealcv.move_3d(self.cam_id, 40, 40, -20) # WTF
         # nevermind, they just move and then reset it to the pose before moving
         # weird way to check for collisons tho
         self.unrealcv.set_pose(self.cam_id, current_pose)
