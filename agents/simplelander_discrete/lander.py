@@ -86,10 +86,9 @@ while frame_idx < max_frames and not early_stop:
         print("#################### Reward HERE:", reward)
         print("#################### Reward TYPE:", type(reward))
         rewards.append(torch.FloatTensor([np.float(reward)]).unsqueeze(1).to(device))
-        print(rewards)
         # print(done)
         masks.append(torch.FloatTensor(0 if done else 1).unsqueeze(1).to(device)) # changed from 1-done
-        print("#################### MASK HERE:", masks)
+
 
         states.append(state)
         actions.append(action)
@@ -107,6 +106,10 @@ while frame_idx < max_frames and not early_stop:
 
     next_state = torch.FloatTensor(next_state).to(device)
     _, next_value = agent.model(next_state)
+
+    print("#################### Rewards HERE:", rewards)
+    print("#################### MASK HERE:", masks)
+
     returns = agent.compute_gae(next_value, rewards, masks, values)
 
     returns   = torch.cat(returns).detach()
