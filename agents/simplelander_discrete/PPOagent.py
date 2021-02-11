@@ -34,7 +34,6 @@ class PPOAgent():
         self.model = ActorCritic(num_inputs, num_actions, hidden_size).to(device)
         self.optimizer = optim.Adam(model.parameters(), lr=lr)
 
-
     def act(self, action_probabilities):
         """
         Use the network to predict the next action to take, using the model

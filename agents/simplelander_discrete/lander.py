@@ -37,7 +37,7 @@ agent = PPOAgent(num_inputs,
                 mini_batch_size,
                 ppo_epochs,
                 threshold_reward,
-                std=0.0))
+                std=0.0)
 
 max_frames = 15000
 frame_idx  = 0
