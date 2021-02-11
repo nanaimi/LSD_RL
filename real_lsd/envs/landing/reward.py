@@ -19,12 +19,12 @@ class Reward():
         fov_score = (cv2.sumElems(mask) / 255) / tot_num_pixels
 
         reward = factor*np.tanh(fov_score*2*np.pi-np.pi)
-        
+
         if pose[2] < 10:
             reward += 100
             done = True
         else:
-            reward -= -(1/10)pose[2]
+            reward -= -(1/10)*pose[2]
 
         return reward, done
 
