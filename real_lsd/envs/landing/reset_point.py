@@ -26,7 +26,7 @@ class ResetPoint():
             self.reset_area = setting['reset_area']
 
     def select_resetpoint(self):
-        if  'random' in self.reset_type:
+        if   'random' in self.reset_type:
             current_pose = self.reset_random()
         elif 'testpoint' in self.reset_type:
             current_pose = self.reset_testpoint()

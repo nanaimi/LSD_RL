@@ -25,11 +25,11 @@ class UnrealCvLanding_base(gym.Env):
     def __init__(self,
                  setting_file,
                  category,
-                 reset_type='waypoint',   # testpoint, waypoint, random
+                 reset_type='random',   # testpoint, waypoint, random
                  augment_env=None,        # texture, target, light
                  action_type='Discrete',  # 'Discrete', 'Continuous'
-                 observation_type='Rgbd', # 'color', 'depth', 'rgbd', 'PoseColor'
-                 reward_type='bbox',      # distance, bbox, bbox_distance, 'mask'
+                 observation_type='PoseColor', # 'color', 'depth', 'rgbd', 'PoseColor'
+                 reward_type='mask',      # distance, bbox, bbox_distance, 'mask'
                  docker=False,            # True/False
                  resolution=(160, 120)    # Res of window
                  ):
@@ -164,7 +164,7 @@ class UnrealCvLanding_base(gym.Env):
     # TODO: this is fucked looool
     def _reset(self, ):
         # double check the resetpoint, it is necessary for random reset type
-        collision = False
+        collision = True
         while collision:
             current_pose = self.reset_module.select_resetpoint()
             self.unrealcv.set_pose(self.cam_id, current_pose)

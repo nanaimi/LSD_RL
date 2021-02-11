@@ -158,3 +158,28 @@ class Landing(UnrealCv):
             self.cam[cam_id]['rotation'] = self.get_rotation(cam_id)
             pose = self.cam[cam_id]['location'] + self.cam[cam_id]['rotation']
             return pose
+
+    # Take step size for x y z and use moveto function to get there
+    # IN: cam_id, delta_x, delta_y, delta_z
+    # OUT:move agent to correct location, returns boolean for collision
+    def move_3d(self, cam_id, delt_x, delt_y, delt_z):
+        print("executing move 3d")
+        pose = self.get_pose(cam_id)
+        location_now = self.cam[cam_id]['location']
+        print("current location: ", location_now)
+
+        location_exp = [location_now[0] + delt_x, location_now[1]+delt_y, location_now[2]+delt_z]
+        print("expecting to move to this location: ", location_exp)
+
+        self.moveto(cam_id, location_exp)
+
+        pose = self.get_pose(cam_id)
+        location_now = self.cam[cam_id]['location']
+        print("actually moved to: ", location_now)
+        error = self.get_distance(location_now, location_exp, n=3)
+        print("Error: ", error)
+
+        if error < 10:
+            return False
+        else:
+            return True
