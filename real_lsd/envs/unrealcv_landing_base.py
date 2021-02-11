@@ -161,7 +161,7 @@ class UnrealCvLanding_base(gym.Env):
 
         return state, info['Reward'], info['Done'], info
 
-    # TODO: adjust reset
+    # TODO: this is fucked looool
     def _reset(self, ):
         # double check the resetpoint, it is necessary for random reset type
         collision = False

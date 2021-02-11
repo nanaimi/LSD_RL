@@ -10,9 +10,12 @@ class ResetPoint():
         self.collisionpoints = []
         self.start_id = 0
         self.yaw_id = 0
+
         self.waypoint_th = setting['waypoint_th']
+
         self.collision_th = setting['collision_th']
         self.pitch = setting['pitch']
+
         if self.reset_type == 'testpoint':
             for x,y in setting['test_xyz']:
                 pose = [x,y,z,0]
@@ -96,7 +99,7 @@ class ResetPoint():
                 self.waypoints[waypoint_id]['pose'] = P
                 self.waypoints[waypoint_id]['dis2collision'] = dis2collision
 
-            # if the point is far from other existing waypoints and collision 
+            # if the point is far from other existing waypoints and collision
             # points, insert it to the waypoints list
             # add a new waypoint
             if dis2waypoint > self.waypoint_th and dis2collision > self.collision_th:
