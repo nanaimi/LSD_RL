@@ -86,7 +86,6 @@ while frame_idx < max_frames and not early_stop:
         print("#################### Reward HERE:", reward)
         print("#################### Reward TYPE:", type(reward))
         rewards.append(torch.FloatTensor([np.float(reward)]).unsqueeze(1).to(device))
-        print(rewards.size())
         print(len(rewards))
 
         # print(done)
