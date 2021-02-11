@@ -109,11 +109,10 @@ class PPOAgent():
         print("computing GAE")
         print("length rewards:", len(rewards))
         print("length masks:", len(masks))
-
         print(rewards.size())
-        print(shape(rewards))
         print(rewards[1])
         print(rewards[2])
+
         values = values + [next_value]
         gae = 0
         returns = []
