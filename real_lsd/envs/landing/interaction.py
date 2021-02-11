@@ -181,7 +181,7 @@ class Landing(UnrealCv):
         error = self.get_distance(location_now, location_exp, n=3)
         print("Error: ", error)
 
-        if error < 10:
+        if error < 36:
             return False
         else:
             return True
