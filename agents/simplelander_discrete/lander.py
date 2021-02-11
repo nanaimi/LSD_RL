@@ -74,6 +74,7 @@ while frame_idx < max_frames and not early_stop:
 
         action = dist.sample()
         print("step:", st, "sampled:", action)
+        print("Device:", device)
         next_state, reward, done, _ = env.step(action.cpu().numpy())
         env.render()
 
