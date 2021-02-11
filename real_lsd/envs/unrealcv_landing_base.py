@@ -104,8 +104,10 @@ class UnrealCvLanding_base(gym.Env):
             Color=None,
             Depth=None,
         )
-
+        print("Step function")
+        print("action pre-squeeze", action)
         action = np.squeeze(action)
+        print("action post-squeeze", action)
 
         if self.action_type == 'Discrete':
             (delt_x, delt_y, delt_z, info['Trigger']) = self.discrete_actions[action]

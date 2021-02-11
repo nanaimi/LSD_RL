@@ -112,7 +112,9 @@ class PPOAgent():
         returns = []
 
         for step in reversed(range(len(rewards))):
-            print("Step: ", step, "Reward: ", rewards[step])
+            print("Step: ", step, "Reward1: ", rewards[step])
+            print("Step: ", step, "Reward2: ", rewards[step+1])
+            print("Step: ", step, "Reward3: ", rewards[step+2])
             print("Step: ", step, "Value: ", values[step])
             print("Step: ", step, "Next Value: ", values[step+1])
             print("Step: ", step, "Mask: ",masks[step])
