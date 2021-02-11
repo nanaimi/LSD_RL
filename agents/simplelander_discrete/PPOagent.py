@@ -104,7 +104,6 @@ class PPOAgent():
                 loss.backward()
                 optimizer.step()
 
-
     def compute_gae(next_value, rewards, masks, values, gamma=0.99, tau=0.95):
         print("computing GAE")
         print("length rewards:", len(rewards))

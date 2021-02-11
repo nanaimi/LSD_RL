@@ -109,11 +109,8 @@ while frame_idx < max_frames and not early_stop:
     next_state = torch.FloatTensor(next_state).to(device)
     _, next_value = agent.model(next_state)
     print("after next value length rewards:", len(rewards))
-
-    print("#################### Rewards HERE:", rewards)
-    print("#################### MASK HERE:", masks)
-
     returns = agent.compute_gae(next_value, rewards, masks, values)
+    time.sleep(5)
 
     returns   = torch.cat(returns).detach()
     log_probs = torch.cat(log_probs).detach()
