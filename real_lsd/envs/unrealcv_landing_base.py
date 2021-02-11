@@ -123,7 +123,7 @@ class UnrealCvLanding_base(gym.Env):
             object_mask = self.unrealcv.read_image(self.cam_id, 'object_mask')
             # get_mask gets you a binary image, either 0 or 255 per pixel
             mask = self.unrealcv.get_mask(object_mask, self.target_object)
-            reward, done = self.reward_function.reward_mask(object_mask, mask, info['Pose'])
+            reward, done = self.reward_function.reward_mask(mask, info['Pose'])
             info['Reward'] = reward
             info['Done'] = done
         # calculate reward according to the distance to target object

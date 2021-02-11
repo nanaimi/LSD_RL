@@ -10,12 +10,12 @@ class Reward():
 
     # IN: object mask delivered by unrealcv client, mask, and pose
     # OUT: reward
-    def reward_mask(self, object_mask, mask, pose):
+    def reward_mask(self, mask, pose):
         reward = 0
         done = False
         factor = 10
         print(mask.shape)
-        height, width = object_mask.shape
+        height, width = mask.shape
         tot_num_pixels = height*width
         fov_score = (cv2.sumElems(mask) / 255) / tot_num_pixels
 
