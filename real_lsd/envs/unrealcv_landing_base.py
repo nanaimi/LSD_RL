@@ -164,7 +164,7 @@ class UnrealCvLanding_base(gym.Env):
     # TODO: adjust reset
     def _reset(self, ):
         # double check the resetpoint, it is necessary for random reset type
-        collision = True
+        collision = False
         while collision:
             current_pose = self.reset_module.select_resetpoint()
             self.unrealcv.set_pose(self.cam_id, current_pose)
