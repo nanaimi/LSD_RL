@@ -84,7 +84,7 @@ while frame_idx < max_frames and not early_stop:
         log_probs.append(log_prob)
         values.append(value)
         print("#################### Reward HERE:", reward)
-        print("#################### Reward TYPE:", reward.type)
+        print("#################### Reward TYPE:", type(reward))
 
         rewards.append(torch.FloatTensor([float(reward)]).unsqueeze(1).to(device))
         print(rewards)
