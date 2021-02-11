@@ -14,6 +14,7 @@ class Reward():
         reward = 0
         done = False
         factor = 10
+        print(object_mask.shape)
         height, width = object_mask.shape
         tot_num_pixels = height*width
         fov_score = (cv2.sumElems(mask) / 255) / tot_num_pixels
