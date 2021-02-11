@@ -78,12 +78,12 @@ while frame_idx < max_frames and not early_stop:
         env.render()
 
         log_prob = dist.log_prob(action)
-        entropy += dist.entropy().mean()
+        entropy += dist.entropy().mean()    
 
         # Append data to arrays
         log_probs.append(log_prob)
         values.append(value)
-        rewards.append(torch.FloatTensor(float(reward)).unsqueeze(1).to(device))
+        rewards.append(torch.FloatTensor([float(reward)]).unsqueeze(1).to(device))
         masks.append(torch.FloatTensor(1 - done).unsqueeze(1).to(device))
 
         states.append(state)
