@@ -108,6 +108,8 @@ class PPOAgent():
     def compute_gae(next_value, rewards, masks, values, gamma=0.99, tau=0.95):
         print("computing GAE")
         print(len(rewards))
+        print(rewards.size())
+        print(shape(rewards))
         print(rewards[1])
         print(rewards[2])
         values = values + [next_value]
