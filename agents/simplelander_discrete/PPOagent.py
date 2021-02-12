@@ -108,6 +108,7 @@ class PPOAgent():
         print("#################### Computing GAE")
         print("#################### Computing GAE Rewards LENGTH:", len(rewards))
         print("#################### Computing GAE Rewards TYPE:", type(rewards))
+        print("#################### Computing GAE Rewards DEVICE:", rewards.device)
         print("#################### Computing GAE Rewards:", rewards)
         print("#################### Computing GAE Masks LENGTH:", len(masks))
         print("#################### Computing GAE Masks TYPE:", type(masks))
