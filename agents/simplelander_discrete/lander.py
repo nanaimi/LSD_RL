@@ -115,6 +115,7 @@ while frame_idx < max_frames and not early_stop:
     print("#################### after next value Rewards LENGTH:", len(rewards))
     print("#################### after next value Rewards TYPE:", type(rewards))
     print("#################### after next value Rewards ELEMENT TYPE:", type(rewards[0]))
+    print("#################### after next value Rewards SUM:", sum(rewards))
 
     # WHAT THE FUCK??? why is rewards turning into a fucking tensor
     returns = agent.compute_gae(next_value, rewards, masks, values)
