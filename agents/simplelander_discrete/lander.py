@@ -84,13 +84,14 @@ while frame_idx < max_frames and not early_stop:
         # Append data to arrays
         log_probs.append(log_prob)
         values.append(value)
+
         print("#################### Reward HERE:", reward)
         print("#################### Reward TYPE:", type(reward))
-        rewards.append(torch.FloatTensor([np.float(reward)]).unsqueeze(1).to(device))
-        # rewards.append(torch.FloatTensor(reward).unsqueeze(1).to(device))
-        print("length rewards:", len(rewards))
 
-        # print(done)
+        rewards.append(torch.FloatTensor([np.float(reward)]).unsqueeze(1).to(device))
+
+        print("#################### Rewards LENGTH:", len(rewards))
+
         masks.append(torch.FloatTensor(0 if done else 1).unsqueeze(1).to(device)) # changed from 1-done
 
         states.append(state)
@@ -106,13 +107,14 @@ while frame_idx < max_frames and not early_stop:
             plot(frame_idx, test_rewards)
             if test_reward > threshold_reward: early_stop = True
 
-    print("after 20 steps length rewards:", len(rewards))
+    print("#################### after 20 steps Rewards LENGTH:", len(rewards))
 
     next_state = torch.FloatTensor(next_state).to(device)
     _, next_value = agent.model(next_state)
 
-    print("after next value length rewards:", len(rewards))
-    print("type after next value:", type(rewards))
+    print("#################### after next value Rewards LENGTH:", len(rewards))
+    print("#################### after next value Rewards TYPE:", type(rewards))
+    print("#################### after next value Rewards ELEMENT TYPE:", type(rewards[0]))
 
     # WHAT THE FUCK??? why is rewards turning into a fucking tensor
     returns = agent.compute_gae(next_value, rewards, masks, values)
@@ -127,8 +129,6 @@ while frame_idx < max_frames and not early_stop:
 
     print("about to update the params of the networks")
     agent.ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantage)
-
-
 
 
 #

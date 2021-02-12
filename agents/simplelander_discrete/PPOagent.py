@@ -105,27 +105,23 @@ class PPOAgent():
                 optimizer.step()
 
     def compute_gae(next_value, rewards, masks, values, gamma=0.99, tau=0.95):
-        print("computing GAE")
-        print("length rewards:", len(rewards))
-        print("type after passing to GAE:", type(rewards))
-        print(rewards)
-        print("length masks:", len(masks))
-        print("type after passing to GAE masks:", type(masks))
-        print(masks)
+        print("#################### Computing GAE")
+        print("#################### Computing GAE Rewards LENGTH:", len(rewards))
+        print("#################### Computing GAE Rewards TYPE:", type(rewards))
+        print("#################### Computing GAE Rewards:", rewards)
+        print("#################### Computing GAE Masks LENGTH:", len(masks))
+        print("#################### Computing GAE Masks TYPE:", type(masks))
+        print("#################### Computing GAE Masks:", masks)
 
         values = values + [next_value]
         gae = 0
         returns = []
 
         for step in reversed(range(len(rewards))):
-            print("Step: ", step, "Reward1: ", rewards[step])
+            print("Step: ", step, "Reward: ", rewards[step])
             print("Step: ", step, "Mask: ",masks[step])
-            print("Step: ", step, "Mask: ",masks[step+1])
-            print("Step: ", step, "Reward2: ", rewards[step+1])
-            print("Step: ", step, "Reward3: ", rewards[step+2])
             print("Step: ", step, "Value: ", values[step])
             print("Step: ", step, "Next Value: ", values[step+1])
-            print("Step: ", step, "Mask: ",masks[step])
             delta = rewards[step] + gamma * values[step + 1] * masks[step] - values[step]
             gae = delta + gamma * tau * masks[step] * gae
             returns.insert(0, gae + values[step])
