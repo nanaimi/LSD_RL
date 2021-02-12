@@ -119,10 +119,10 @@ while frame_idx < max_frames and not early_stop:
 
 
     # WHAT THE FUCK??? why is rewards turning into a fucking tensor
-    returns = agent.compute_gae(next_value=next_value,
-                                rewards=rewards,
-                                masks=masks,
-                                values=values)
+    returns = agent.compute_gae(next_value,
+                                rewards,
+                                masks,
+                                values)
     time.sleep(5)
 
     returns   = torch.cat(returns).detach()
