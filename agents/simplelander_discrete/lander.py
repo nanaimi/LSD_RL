@@ -17,8 +17,6 @@ device = torch.device("cuda" if use_cuda else "cpu")
 # initialise environment
 env = gym.make('MyUnrealLand-cpptestFloorGood-DiscretePoseColor-v0')
 
-
-
 print("Observation Space:", env.observation_space, "dimension of observation:", env.observation_space.shape[0])
 num_inputs  = env.observation_space.shape[0]
 print("Action Space:", env.action_space, "Number of actions:", env.action_space.n)
@@ -49,8 +47,6 @@ print(agent.model)
 max_frames = 15000
 frame_idx  = 0
 test_rewards = []
-
-
 
 state = env.reset()
 print("state after reset: ",state)
@@ -88,7 +84,10 @@ while frame_idx < max_frames and not early_stop:
         print("#################### Reward HERE:", reward)
         print("#################### Reward TYPE:", type(reward))
 
-        rewards.append(torch.FloatTensor([np.float(reward)]).unsqueeze(1).to(device))
+        interim = torch.FloatTensor([np.float(reward)])
+        interim = interim.unsqueeze(1)
+        interim = interim.to(device)
+        rewards.append(interim)
 
         print("#################### Rewards LENGTH:", len(rewards))
 
