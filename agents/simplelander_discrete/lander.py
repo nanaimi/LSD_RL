@@ -81,6 +81,9 @@ while frame_idx < max_frames and not early_stop:
         next_state, reward, done, _ = env.step(action.cpu().numpy())
         env.render()
 
+        print("#################### next_state            HERE:", next_state)
+        print("#################### next_state            TYPE:", type(next_state))
+
         # weird
         # print("#################### Distribution", dist)
         # print("#################### Sampled Action", action)
