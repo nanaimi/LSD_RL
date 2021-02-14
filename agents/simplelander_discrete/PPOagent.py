@@ -49,13 +49,13 @@ class PPOAgent():
         action_onehot[action] = 1
         return action, action_onehot
 
-    def minibatch_loss(self, states, actions, old_log_probs, returns, advantages):
+    def minibatch_loss(self, states, actions, old_log_probs, returns, advantages, clip_param=0.2):
         # Distributions of all actions for each given state in minibatch
         print("calculating minibatch loss")
         dist, value = self.model(states)
         entropy = dist.entropy().mean()
         new_log_probs = dist.log_prob(actions)
-        
+
         ratio = (new_log_probs - old_log_probs).exp()
 
         term1 = ratio * advantages

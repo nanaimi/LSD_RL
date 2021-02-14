@@ -50,6 +50,11 @@ frame_idx  = 0
 test_rewards = []
 
 state = env.reset()
+
+# state = state.unsqueeze(1)
+# print("#################### reset state after unsqueeze SIZE:", state.size())
+# state = torch.transpose(state, 0, 1)
+
 print("state after reset: ",state)
 early_stop = False
 
