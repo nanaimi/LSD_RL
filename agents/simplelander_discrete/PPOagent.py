@@ -84,20 +84,7 @@ class PPOAgent():
             print("ppo update epoch:", i)
             for state, action, old_log_probs, return_, advantage in self.ppo_iter(mini_batch_size, states, actions, log_probs, returns, advantages):
                 print("ppo update epoch:", i, "optimizing on minibatches" )
-                # dist, value = model(state)
-                # entropy = dist.entropy().mean()
-                #
-                # new_log_probs = dist.log_prob(action)
-                #
-                # ratio = (new_log_probs - old_log_probs).exp()
-                # surr1 = ratio * advantage
-                # surr2 = torch.clamp(ratio, 1.0 - clip_param, 1.0 + clip_param) * advantage
-                #
-                # actor_loss  = - torch.min(surr1, surr2).mean()
-                # critic_loss = (return_ - value).pow(2).mean()
-                #
-                # loss = 0.5 * critic_loss + actor_loss - 0.001 * entropy
-                # calculate loss for minibatch
+
                 loss = self.minibatch_loss(state, action, old_log_probs, return_, advantage)
 
                 self.optimizer.zero_grad()
@@ -134,7 +121,7 @@ class PPOAgent():
             # print("Step: ", step, "Next Value: ", values[step+1])
             delta = rewards[step] + gamma * values[step + 1] * masks[step] - values[step]
             gae = delta + gamma * tau * masks[step] * gae
-            print("#################### Step: ", step, "Delta: ", delta, "GAE: ", gae)
+            # print("#################### Step: ", step, "Delta: ", delta, "GAE: ", gae)
             returns.insert(0, gae + values[step])
 
 
