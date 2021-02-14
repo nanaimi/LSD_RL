@@ -84,7 +84,10 @@ while frame_idx < max_frames and not early_stop:
         entropy += dist.entropy().mean()
 
         # Append data to arrays
-        log_probs.append([log_prob])
+        log_probs.append(log_prob)
+        print("#################### Log Probabilities", log_probs)
+        print("#################### Log Probabilities", type(log_probs))
+
         values.append(value)
 
         print("#################### Reward HERE:", reward)
@@ -127,7 +130,7 @@ while frame_idx < max_frames and not early_stop:
                                 rewards,
                                 masks,
                                 values)
-    time.sleep(2)
+    # time.sleep(2)
 
     print("#################### Rewards before CAT:", returns)
     returns   = torch.cat(returns).detach()
