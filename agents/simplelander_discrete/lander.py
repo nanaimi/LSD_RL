@@ -142,35 +142,45 @@ while frame_idx < max_frames and not early_stop:
                                 rewards,
                                 masks,
                                 values)
-    # time.sleep(2)
 
     print("#################### Rewards          before CAT:", returns)
+
     returns   = torch.cat(returns).detach()
+
     print("#################### Rewards     SIZE        CAT:", returns.size())
+
     returns   = torch.transpose(returns, 0, 1)
+
+    print("#################### Rewards     SIZE        CAT:", returns.size())
+
     print("#################### Rewards          after  CAT:", returns)
     print("#################### log probs        before CAT:", log_probs)
+
     log_probs = torch.cat(log_probs).detach()
+
     print("#################### log probs        after  CAT:", log_probs)
     print("#################### log probs   SIZE after  CAT:", log_probs.size())
 
     values    = torch.cat(values).detach()
+
     print("#################### Values      SIZE after  CAT:", values.size())
+
     values    = torch.transpose(values, 0, 1)
 
     states    = torch.cat(states)
+
     print("#################### States      SIZE after  CAT:", states.size())
 
     actions   = torch.cat(actions)
-    print("#################### Actions     SIZE after  CAT:", actions.size())
 
+    print("#################### Actions     SIZE after  CAT:", actions.size())
     print("#################### returns     SIZE after  CAT:", returns.size())
     print("#################### values      SIZE after  CAT:", values.size())
 
     advantage = returns - values
+
     print("#################### Advantage   SIZE after  CAT:", advantage.size())
     print("#################### Advantage        after  CAT:", advantage)
-
 
     print("about to update the params of the networks")
     agent.ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantage)
