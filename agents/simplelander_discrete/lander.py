@@ -85,7 +85,7 @@ while frame_idx < max_frames and not early_stop:
         entropy += dist.entropy().mean()
 
         # Append data to arrays
-        np_log_prob = log_prob.numpy()
+        np_log_prob = log_prob.detach().numpy()
         # log_prob = torch.FloatTensor([np.float(np_log_prob)])
         log_prob = log_prob.unsqueeze(1)
         print("#################### After Unsqueeze Log Probability", log_prob)
