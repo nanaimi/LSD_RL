@@ -69,6 +69,9 @@ while frame_idx < max_frames and not early_stop:
         state = torch.FloatTensor(state).to(device)
         dist, value = agent.model(state)
 
+        print("#################### Value HERE:", value)
+        print("#################### Value TYPE:", type(value))
+
         action = dist.sample()
         print("step:", st, "sampled:", action)
         print("Device:", device)
