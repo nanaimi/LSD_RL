@@ -88,20 +88,15 @@ while frame_idx < max_frames and not early_stop:
         print("#################### state:     ", state)
         print("#################### state TYPE:", type(state))
         print("#################### state SIZE:", state.size())
-        # state = torch.FloatTensor(state)
-        # state = state.unsqueeze(1)
-        # state = torch.transpose(state, 0, 1).to(device)
 
         dist, value = agent.model(state)
 
         state = state.unsqueeze(1)
         state = torch.transpose(state, 0, 1)
+
         print("#################### state after unsqueeze and transpose:     ", state)
         print("#################### state after unsqueeze and transpose TYPE:", type(state))
         print("#################### state after unsqueeze and transpose SIZE:", state.size())
-
-        time.sleep(10)
-
         print("#################### Value                 HERE:", value)
         print("#################### Value                 TYPE:", type(value))
         value = value.unsqueeze(1)
@@ -192,12 +187,12 @@ while frame_idx < max_frames and not early_stop:
             if test_reward > threshold_reward: early_stop = True
 
 
-    next_state = torch.from_numpy(next_state)
-    next_state = next_state.unsqueeze(1)
-    next_state = torch.transpose(next_state, 0, 1).to(device)
-    # next_state = torch.FloatTensor(next_state).to(device)
+    next_state = torch.FloatTensor(next_state).to(device)
 
     _, next_value = agent.model(next_state)
+
+    next_state = next_state.unsqueeze(1)
+    next_state = torch.transpose(next_state, 0, 1).to(device)
 
     # print("#################### after next value Rewards LENGTH:", len(rewards))
     # print("#################### after next value Rewards TYPE:", type(rewards))
