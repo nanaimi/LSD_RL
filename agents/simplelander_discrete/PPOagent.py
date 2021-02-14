@@ -136,6 +136,8 @@ class PPOAgent():
             gae = delta + gamma * tau * masks[step] * gae
             returns.insert(0, gae + values[step])
 
+
+        print("#################### Computing GAE return DIM:", returns[0])
         print("finished computing GAE")
         return returns
 
