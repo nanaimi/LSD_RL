@@ -57,7 +57,7 @@ class PPOAgent():
         new_log_probs = dist.log_prob(actions)
 
         ratio = (new_log_probs - old_log_probs).exp()
-        
+
         term1 = ratio * advantages
         term2 = torch.clamp(ratio, 1.0 - clip_param, 1.0 + clip_param) * advantage
 
@@ -105,23 +105,23 @@ class PPOAgent():
                 self.optimizer.step()
 
     def compute_gae(self, next_value, rewards, masks, values, gamma=0.99, tau=0.95):
-        print("#################### Computing GAE")
+        print("#################### Computing GAE ####################")
         # print("#################### Computing GAE next_value LENGTH:", len(next_value))
-        print("#################### Computing GAE next_value TYPE:", type(next_value))
-        print("#################### Computing GAE next_value DEVICE:", next_value.device)
-        print("#################### Computing GAE next_value:", next_value)
-        print("#################### Computing GAE Rewards LENGTH:", len(rewards))
-        print("#################### Computing GAE Rewards TYPE:", type(rewards))
-        print("#################### Computing GAE Rewards DEVICE:", rewards[0].device)
-        print("#################### Computing GAE Rewards:", rewards)
-        print("#################### Computing GAE masks LENGTH:", len(masks))
-        print("#################### Computing GAE masks TYPE:", type(masks))
-        print("#################### Computing GAE masks DEVICE:", masks[0].device)
-        print("#################### Computing GAE masks:", masks)
-        print("#################### Computing GAE Values LENGTH:", len(values))
-        print("#################### Computing GAE Values TYPE:", type(values))
-        print("#################### Computing GAE Values DEVICE:", values[0].device)
-        print("#################### Computing GAE Values:", values)
+        # print("#################### Computing GAE next_value TYPE:", type(next_value))
+        # print("#################### Computing GAE next_value DEVICE:", next_value.device)
+        # print("#################### Computing GAE next_value:", next_value)
+        # print("#################### Computing GAE Rewards LENGTH:", len(rewards))
+        # print("#################### Computing GAE Rewards TYPE:", type(rewards))
+        # print("#################### Computing GAE Rewards DEVICE:", rewards[0].device)
+        # print("#################### Computing GAE Rewards:", rewards)
+        # print("#################### Computing GAE masks LENGTH:", len(masks))
+        # print("#################### Computing GAE masks TYPE:", type(masks))
+        # print("#################### Computing GAE masks DEVICE:", masks[0].device)
+        # print("#################### Computing GAE masks:", masks)
+        # print("#################### Computing GAE Values LENGTH:", len(values))
+        # print("#################### Computing GAE Values TYPE:", type(values))
+        # print("#################### Computing GAE Values DEVICE:", values[0].device)
+        # print("#################### Computing GAE Values:", values)
 
         values = values + [next_value]
         gae = 0
@@ -134,11 +134,12 @@ class PPOAgent():
             # print("Step: ", step, "Next Value: ", values[step+1])
             delta = rewards[step] + gamma * values[step + 1] * masks[step] - values[step]
             gae = delta + gamma * tau * masks[step] * gae
+            print("#################### Step: ", step, "Delta: ", delta, "GAE: ", gae)
             returns.insert(0, gae + values[step])
 
 
         print("#################### Computing GAE return DIM:", returns[0].size())
-        print("finished computing GAE")
+        print("#################### finished computing GAE ####################")
         return returns
 
 
