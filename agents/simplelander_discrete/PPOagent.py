@@ -106,13 +106,22 @@ class PPOAgent():
 
     def compute_gae(next_value, rewards, masks, values, gamma=0.99, tau=0.95):
         print("#################### Computing GAE")
+        print("#################### Computing GAE next_value LENGTH:", len(rewards))
+        print("#################### Computing GAE next_value TYPE:", type(rewards))
+        print("#################### Computing GAE next_value DEVICE:", rewards.device)
+        print("#################### Computing GAE next_value:", rewards)
         print("#################### Computing GAE Rewards LENGTH:", len(rewards))
         print("#################### Computing GAE Rewards TYPE:", type(rewards))
         print("#################### Computing GAE Rewards DEVICE:", rewards.device)
         print("#################### Computing GAE Rewards:", rewards)
-        print("#################### Computing GAE Masks LENGTH:", len(masks))
-        print("#################### Computing GAE Masks TYPE:", type(masks))
-        print("#################### Computing GAE Masks:", masks)
+        print("#################### Computing GAE masks LENGTH:", len(rewards))
+        print("#################### Computing GAE masks TYPE:", type(rewards))
+        print("#################### Computing GAE masks DEVICE:", rewards.device)
+        print("#################### Computing GAE masks:", rewards)
+        print("#################### Computing GAE Values LENGTH:", len(rewards))
+        print("#################### Computing GAE Values TYPE:", type(rewards))
+        print("#################### Computing GAE Values DEVICE:", rewards.device)
+        print("#################### Computing GAE Values:", rewards)
 
         values = values + [next_value]
         gae = 0
