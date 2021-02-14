@@ -110,6 +110,7 @@ while frame_idx < max_frames and not early_stop:
 
         mask = 1-done
         print("#################### Mask:", mask)
+        print("#################### Mask TYPE:", mask)
         mask = torch.FloatTensor(mask)
         print("#################### Mask to FloatTensor:", mask)
         mask = mask.unsqueeze(1)
