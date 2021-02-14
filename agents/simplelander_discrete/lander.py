@@ -98,7 +98,11 @@ while frame_idx < max_frames and not early_stop:
         next_state, reward, done, _ = env.step(action.cpu().numpy())
         env.render()
 
+        next_state = torch.from_numpy(next_state)
+        next_state = next_state.unsqueeze(1)
+        next_state = torch.transpose(next_state, 0, 1)
         print("#################### next_state            HERE:", next_state)
+        print("#################### next_state            SIZE:", next_state.size())
         print("#################### next_state            TYPE:", type(next_state))
 
         # weird
@@ -146,13 +150,11 @@ while frame_idx < max_frames and not early_stop:
         print("#################### state:", state)
         print("#################### state SIZE:", state.size())
         print("#################### state SIZE:", type(state))
-        state = state.unsqueeze(1)
         print("#################### state after unsqueeze SIZE:", state.size())
-        state = torch.transpose(state, 0, 1)
         print("#################### state after transpose SIZE:", state.size())
 
         states.append(state)
-        print("#################### states:", states)
+        print("#################### states:    ", states)
         print("#################### states LEN:", len(states))
         print("#################### states TYPE:", type(states))
 
