@@ -86,8 +86,9 @@ while frame_idx < max_frames and not early_stop:
 
         # Append data to arrays
         np_log_prob = log_prob.detach().numpy()
-        # log_prob = torch.FloatTensor([np.float(np_log_prob)])
-        # log_prob = log_prob.unsqueeze(1)
+        log_prob = torch.FloatTensor([np.float(np_log_prob)])
+        log_prob = log_prob.unsqueeze(1)
+        log_prob = log_prob.to(device)
         print("#################### After Unsqueeze Log Probability", log_prob)
         print("#################### After Unsqueeze Log Probability TYPE", type(log_prob))
         print("#################### After Unsqueeze Log Probability DIM", log_prob.size())
