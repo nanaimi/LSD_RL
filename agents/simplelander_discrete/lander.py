@@ -84,7 +84,7 @@ while frame_idx < max_frames and not early_stop:
         entropy += dist.entropy().mean()
 
         # Append data to arrays
-        log_probs.append(log_prob)
+        log_probs.append([log_prob])
         values.append(value)
 
         print("#################### Reward HERE:", reward)
