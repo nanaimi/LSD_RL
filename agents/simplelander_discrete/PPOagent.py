@@ -82,7 +82,7 @@ class PPOAgent():
         print("ppo update called")
         for i in range(ppo_epochs):
             print("ppo update epoch:", i)
-            for state, action, old_log_probs, return_, advantage in ppo_iter(mini_batch_size, states, actions, log_probs, returns, advantages):
+            for state, action, old_log_probs, return_, advantage in self.ppo_iter(mini_batch_size, states, actions, log_probs, returns, advantages):
                 print("ppo update epoch:", i, "optimizing on minibatches" )
                 # dist, value = model(state)
                 # entropy = dist.entropy().mean()
@@ -98,11 +98,11 @@ class PPOAgent():
                 #
                 # loss = 0.5 * critic_loss + actor_loss - 0.001 * entropy
                 # calculate loss for minibatch
-                loss = minibatch_loss(state, action, old_log_probs, return_, advantage)
+                loss = self.minibatch_loss(state, action, old_log_probs, return_, advantage)
 
-                optimizer.zero_grad()
+                self.optimizer.zero_grad()
                 loss.backward()
-                optimizer.step()
+                self.optimizer.step()
 
     def compute_gae(self, next_value, rewards, masks, values, gamma=0.99, tau=0.95):
         print("#################### Computing GAE")
