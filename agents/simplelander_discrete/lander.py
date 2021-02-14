@@ -57,6 +57,12 @@ print("#################### reset state             TYPE:", type(state))
 state = torch.from_numpy(state)
 print("#################### reset state after torch:     ", state)
 print("#################### reset state after torch TYPE:", type(state))
+print("#################### reset state after torch SIZE:", state.size())
+state = state.unsqueeze(1)
+print("#################### reset state after unsqueeze:     ", state)
+print("#################### reset state after unsqueeze TYPE:", type(state))
+print("#################### reset state after unsqueeze SIZE:", state.size())
+
 
 # state = torch.transpose(state, 0, 1)
 
