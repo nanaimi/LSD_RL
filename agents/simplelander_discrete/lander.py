@@ -123,14 +123,15 @@ while frame_idx < max_frames and not early_stop:
     print("#################### Computing GAE Rewards:", rewards)
     print("#################### after next value Rewards DEVICE:", rewards[0].device)
 
-    # WHAT THE FUCK??? why is rewards turning into a fucking tensor
     returns = agent.compute_gae(next_value,
                                 rewards,
                                 masks,
                                 values)
     time.sleep(5)
 
+    print("#################### Rewards before CAT:", rewards)
     returns   = torch.cat(returns).detach()
+    print("#################### Rewards after CAT:", rewards)
     log_probs = torch.cat(log_probs).detach()
     values    = torch.cat(values).detach()
     states    = torch.cat(states)

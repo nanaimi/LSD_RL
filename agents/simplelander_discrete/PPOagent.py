@@ -128,13 +128,15 @@ class PPOAgent():
         returns = []
 
         for step in reversed(range(len(rewards))):
-            print("Step: ", step, "Reward: ", rewards[step])
-            print("Step: ", step, "Mask: ",masks[step])
-            print("Step: ", step, "Value: ", values[step])
-            print("Step: ", step, "Next Value: ", values[step+1])
+            # print("Step: ", step, "Reward: ", rewards[step])
+            # print("Step: ", step, "Mask: ",masks[step])
+            # print("Step: ", step, "Value: ", values[step])
+            # print("Step: ", step, "Next Value: ", values[step+1])
             delta = rewards[step] + gamma * values[step + 1] * masks[step] - values[step]
             gae = delta + gamma * tau * masks[step] * gae
             returns.insert(0, gae + values[step])
+
+        print("finished computing GAE")
         return returns
 
 
