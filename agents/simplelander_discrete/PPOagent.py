@@ -137,7 +137,7 @@ class PPOAgent():
             returns.insert(0, gae + values[step])
 
 
-        print("#################### Computing GAE return DIM:", returns[0])
+        print("#################### Computing GAE return DIM:", returns[0].size())
         print("finished computing GAE")
         return returns
 
