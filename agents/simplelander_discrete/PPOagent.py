@@ -120,7 +120,7 @@ class PPOAgent():
         print("#################### Computing GAE masks:", masks)
         print("#################### Computing GAE Values LENGTH:", len(values))
         print("#################### Computing GAE Values TYPE:", type(values))
-        print("#################### Computing GAE Values DEVICE:", values.device)
+        print("#################### Computing GAE Values DEVICE:", values[0].device)
         print("#################### Computing GAE Values:", values)
 
         values = values + [next_value]
