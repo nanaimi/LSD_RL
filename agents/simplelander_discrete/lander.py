@@ -148,7 +148,7 @@ while frame_idx < max_frames and not early_stop:
 
     print("#################### Rewards before CAT:", returns)
     returns   = torch.cat(returns).detach()
-    values    = torch.swapaxes(values, 0, 1)
+    returns   = torch.transpose(returns, 0, 1)
     print("#################### Rewards after CAT:", returns)
     print("#################### log probs before CAT:", log_probs)
     log_probs = torch.cat(log_probs).detach()
@@ -156,7 +156,7 @@ while frame_idx < max_frames and not early_stop:
     print("#################### log probs   SIZE after CAT:", log_probs.size())
 
     values    = torch.cat(values).detach()
-    values    = torch.swapaxes(values, 0, 1)
+    values    = torch.transpose(values, 0, 1)
     print("#################### Values      SIZE after CAT:", values.size())
 
     states    = torch.cat(states)
