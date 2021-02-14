@@ -119,6 +119,7 @@ while frame_idx < max_frames and not early_stop:
 
         print("#################### state:", state)
         states.append(state)
+        print("#################### states:", states)
 
         action = action.detach().numpy()
         action = torch.FloatTensor([np.float(action)])
