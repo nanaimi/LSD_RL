@@ -132,6 +132,7 @@ while frame_idx < max_frames and not early_stop:
     print("#################### Rewards before CAT:", returns)
     returns   = torch.cat(returns).detach()
     print("#################### Rewards after CAT:", returns)
+    print("#################### log probs before CAT:", log_probs)
     log_probs = torch.cat(log_probs).detach()
     values    = torch.cat(values).detach()
     states    = torch.cat(states)
