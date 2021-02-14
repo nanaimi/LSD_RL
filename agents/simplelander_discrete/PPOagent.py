@@ -57,7 +57,7 @@ class PPOAgent():
         new_log_probs = dist.log_prob(actions)
 
         ratio = (new_log_probs - old_log_probs).exp()
-
+        
         term1 = ratio * advantages
         term2 = torch.clamp(ratio, 1.0 - clip_param, 1.0 + clip_param) * advantage
 
