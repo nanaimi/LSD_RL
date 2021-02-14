@@ -91,9 +91,16 @@ while frame_idx < max_frames and not early_stop:
         # state = torch.FloatTensor(state)
         # state = state.unsqueeze(1)
         # state = torch.transpose(state, 0, 1).to(device)
-        time.sleep(10)
 
         dist, value = agent.model(state)
+
+        state = state.unsqueeze(1)
+        state = torch.transpose(state, 0, 1)
+        print("#################### state after unsqueeze and transpose:     ", state)
+        print("#################### state after unsqueeze and transpose TYPE:", type(state))
+        print("#################### state after unsqueeze and transpose SIZE:", state.size())
+
+        time.sleep(10)
 
         print("#################### Value                 HERE:", value)
         print("#################### Value                 TYPE:", type(value))
