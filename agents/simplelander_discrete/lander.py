@@ -108,7 +108,7 @@ while frame_idx < max_frames and not early_stop:
         interim = interim.to(device)
         rewards.append(interim)
 
-        mask = 1-done
+        mask = float(1-done)
         print("#################### Mask:", mask)
         print("#################### Mask TYPE:", type(mask))
         mask = torch.FloatTensor(mask)
