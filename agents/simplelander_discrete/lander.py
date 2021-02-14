@@ -182,13 +182,14 @@ while frame_idx < max_frames and not early_stop:
 
     print("#################### Values      SIZE after  CAT:", values.size())
 
-    values    = torch.transpose(values, 0, 1)
+    # values    = torch.transpose(values, 0, 1)
 
     print("#################### States      SIZE before CAT:", states.size())
 
     states    = torch.cat(states)
 
     print("#################### States      SIZE after  CAT:", states.size())
+    print("#################### States           after  CAT:", states.size())
 
     actions   = torch.cat(actions)
 
