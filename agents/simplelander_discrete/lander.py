@@ -108,8 +108,13 @@ while frame_idx < max_frames and not early_stop:
         interim = interim.to(device)
         rewards.append(interim)
 
-
-        masks.append(torch.FloatTensor(1-done).unsqueeze(1).to(device)) # changed from 1-done
+        mask = 1-done
+        print("#################### Mask:", mask)
+        mask = torch.FloatTensor(mask)
+        print("#################### Mask to FloatTensor:", mask)
+        mask = mask.unsqueeze(1)
+        print("#################### Mask to Unsqueeze:", mask)
+        masks.append(mask.to(device)) # changed from 1-done
 
         states.append(state)
 
@@ -168,7 +173,7 @@ while frame_idx < max_frames and not early_stop:
     values    = torch.transpose(values, 0, 1)
 
     print("#################### States      SIZE before CAT:", states.size())
-    
+
     states    = torch.cat(states)
 
     print("#################### States      SIZE after  CAT:", states.size())
