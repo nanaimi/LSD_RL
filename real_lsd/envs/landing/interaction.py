@@ -173,7 +173,7 @@ class Landing(UnrealCv):
         print("expecting to move to this location: ", location_exp)
 
         self.moveto(cam_id, location_exp)
-        time.sleep(1)
+        # time.sleep(1)
 
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']

@@ -127,7 +127,7 @@ while frame_idx < max_frames and not early_stop:
                                 rewards,
                                 masks,
                                 values)
-    time.sleep(5)
+    time.sleep(2)
 
     print("#################### Rewards before CAT:", rewards)
     returns   = torch.cat(returns).detach()
