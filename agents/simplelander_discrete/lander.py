@@ -117,6 +117,7 @@ while frame_idx < max_frames and not early_stop:
         print("#################### Mask to Unsqueeze:", mask)
         masks.append(mask.to(device)) # changed from 1-done
 
+        print("#################### state:", state)
         states.append(state)
 
         action = action.detach().numpy()
