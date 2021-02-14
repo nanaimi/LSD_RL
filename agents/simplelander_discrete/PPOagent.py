@@ -49,7 +49,7 @@ class PPOAgent():
         action_onehot[action] = 1
         return action, action_onehot
 
-    def minibatch_loss(states, actions, old_log_probs, returns, advantages):
+    def minibatch_loss(self, states, actions, old_log_probs, returns, advantages):
         # Distributions of all actions for each given state in minibatch
         print("calculating minibatch loss")
         dist, value = model(states)
@@ -67,7 +67,7 @@ class PPOAgent():
         loss = actor_loss + 0.5 * critic_loss - 0.001 * entropy
         return loss
 
-    def ppo_iter(mini_batch_size, states, actions, log_probs, returns, advantage):
+    def ppo_iter(self, mini_batch_size, states, actions, log_probs, returns, advantage):
         """
         Divide batch into mini_batches through generator
         mini_batch set is uniformly sampled from the batch
@@ -78,7 +78,7 @@ class PPOAgent():
             rand_ids = np.random.randint(0, batch_size, mini_batch_size)
             yield states[rand_ids, :], actions[rand_ids, :], log_probs[rand_ids, :], returns[rand_ids, :], advantage[rand_ids, :]
 
-    def ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantages, clip_param=0.2):
+    def ppo_update(self, ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantages, clip_param=0.2):
         print("ppo update called")
         for i in range(ppo_epochs):
             print("ppo update epoch:", i)
@@ -104,9 +104,9 @@ class PPOAgent():
                 loss.backward()
                 optimizer.step()
 
-    def compute_gae(next_value, rewards, masks, values, gamma=0.99, tau=0.95):
+    def compute_gae(self, next_value, rewards, masks, values, gamma=0.99, tau=0.95):
         print("#################### Computing GAE")
-        # print("#################### Computing GAE next_value LENGTH:", len(next_value))   
+        # print("#################### Computing GAE next_value LENGTH:", len(next_value))
         print("#################### Computing GAE next_value TYPE:", type(next_value))
         print("#################### Computing GAE next_value DEVICE:", next_value.device)
         print("#################### Computing GAE next_value:", next_value)
