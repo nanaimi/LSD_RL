@@ -62,7 +62,9 @@ state = state.unsqueeze(1)
 print("#################### reset state after unsqueeze:     ", state)
 print("#################### reset state after unsqueeze TYPE:", type(state))
 print("#################### reset state after unsqueeze SIZE:", state.size())
-
+state = torch.transpose(state, 0, 1)
+print("#################### reset state after transpose TYPE:", type(state))
+print("#################### reset state after transpose SIZE:", state.size())
 
 # state = torch.transpose(state, 0, 1)
 
