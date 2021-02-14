@@ -92,7 +92,7 @@ while frame_idx < max_frames and not early_stop:
 
         print("#################### Rewards LENGTH:", len(rewards))
 
-        masks.append(torch.FloatTensor(0 if done else 1).unsqueeze(1).to(device)) # changed from 1-done
+        masks.append(torch.FloatTensor(1-done).unsqueeze(1).to(device)) # changed from 1-done
 
         states.append(state)
         actions.append(action)
