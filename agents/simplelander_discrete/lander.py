@@ -114,7 +114,7 @@ while frame_idx < max_frames and not early_stop:
     print("#################### after next value Rewards LENGTH:", len(rewards))
     print("#################### after next value Rewards TYPE:", type(rewards))
     print("#################### after next value Rewards ELEMENT TYPE:", type(rewards[0]))
-    print("#################### after next value Rewards SUM:", sum(rewards))
+    print("#################### Computing GAE Rewards:", rewards)
     print("#################### after next value Rewards DEVICE:", rewards[0].device)
 
     # WHAT THE FUCK??? why is rewards turning into a fucking tensor
