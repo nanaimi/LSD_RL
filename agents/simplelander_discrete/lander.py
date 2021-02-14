@@ -121,6 +121,7 @@ while frame_idx < max_frames and not early_stop:
         print("#################### state SIZE:", state.size())
         print("#################### state SIZE:", type(state))
         state = state.unsqueeze(1)
+        print("#################### state after unsqueeze SIZE:", state.size())
         states.append(state)
         print("#################### states:", states)
         print("#################### states LEN:", len(states))
