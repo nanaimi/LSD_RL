@@ -5,6 +5,7 @@ from stable_baselines.common import make_vec_env
 from stable_baselines import PPO2
 import gym_unrealcv
 import real_lsd
+import time
 
 import torch
 import numpy as np
