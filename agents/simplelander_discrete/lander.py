@@ -52,7 +52,7 @@ test_rewards = []
 state = env.reset()
 
 # state = state.unsqueeze(1)
-# print("#################### reset state after unsqueeze SIZE:", state.size())
+print("#################### reset state:", state
 # state = torch.transpose(state, 0, 1)
 
 print("state after reset: ",state)

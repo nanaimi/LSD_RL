@@ -59,7 +59,7 @@ class PPOAgent():
         ratio = (new_log_probs - old_log_probs).exp()
 
         term1 = ratio * advantages
-        term2 = torch.clamp(ratio, 1.0 - clip_param, 1.0 + clip_param) * advantage
+        term2 = torch.clamp(ratio, 1.0 - clip_param, 1.0 + clip_param) * advantages
 
         actor_loss  = - torch.min(term1, term2).mean()
         critic_loss = (returns - value).pow(2).mean()
