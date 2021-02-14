@@ -80,7 +80,8 @@ while frame_idx < max_frames and not early_stop:
         print("#################### Sampled Action", action)
         log_prob = dist.log_prob(action)
         print("#################### Log Probability", log_prob)
-        print("#################### Log Probability", type(log_prob))
+        print("#################### Log Probability TYPE", type(log_prob))
+        print("#################### Log Probability DIM", log_prob.size())
         entropy += dist.entropy().mean()
 
         # Append data to arrays
