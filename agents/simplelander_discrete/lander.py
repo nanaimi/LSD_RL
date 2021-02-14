@@ -112,6 +112,11 @@ while frame_idx < max_frames and not early_stop:
         masks.append(torch.FloatTensor(1-done).unsqueeze(1).to(device)) # changed from 1-done
 
         states.append(state)
+
+        action = action.detach().numpy()
+        action = torch.FloatTensor([np.float(action)])
+        action = action.unsqueeze(1)
+        action = action.to(device)
         actions.append(action)
 
         # next state logic
@@ -146,8 +151,10 @@ while frame_idx < max_frames and not early_stop:
     print("#################### Rewards after CAT:", returns)
     print("#################### log probs before CAT:", log_probs)
     log_probs = torch.cat(log_probs).detach()
+    print("#################### log probs after CAT:", log_probs)
     values    = torch.cat(values).detach()
     states    = torch.cat(states)
+
     actions   = torch.cat(actions)
     advantage = returns - values
 
