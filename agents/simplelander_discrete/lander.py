@@ -76,12 +76,12 @@ while frame_idx < max_frames and not early_stop:
         env.render()
 
         # weird
-        print("#################### Distribution", dist)
-        print("#################### Sampled Action", action)
+        # print("#################### Distribution", dist)
+        # print("#################### Sampled Action", action)
         log_prob = dist.log_prob(action)
-        print("#################### Log Probability", log_prob)
-        print("#################### Log Probability TYPE", type(log_prob))
-        print("#################### Log Probability DIM", log_prob.size())
+        # print("#################### Log Probability", log_prob)
+        # print("#################### Log Probability TYPE", type(log_prob))
+        # print("#################### Log Probability DIM", log_prob.size())
         entropy += dist.entropy().mean()
 
         # Append data to arrays
@@ -89,25 +89,25 @@ while frame_idx < max_frames and not early_stop:
         log_prob = torch.FloatTensor([np.float(np_log_prob)])
         log_prob = log_prob.unsqueeze(1)
         log_prob = log_prob.to(device)
-        print("#################### After Unsqueeze Log Probability", log_prob)
-        print("#################### After Unsqueeze Log Probability TYPE", type(log_prob))
-        print("#################### After Unsqueeze Log Probability DIM", log_prob.size())
+        # print("#################### After Unsqueeze Log Probability", log_prob)
+        # print("#################### After Unsqueeze Log Probability TYPE", type(log_prob))
+        # print("#################### After Unsqueeze Log Probability DIM", log_prob.size())
 
         log_probs.append(log_prob)
-        print("#################### Log Probabilities", log_probs)
-        print("#################### Log Probabilities", type(log_probs))
+        # print("#################### Log Probabilities", log_probs)
+        # print("#################### Log Probabilities", type(log_probs))
 
         values.append(value)
 
-        print("#################### Reward HERE:", reward)
-        print("#################### Reward TYPE:", type(reward))
+        # print("#################### Reward HERE:", reward)
+        # print("#################### Reward TYPE:", type(reward))
 
         interim = torch.FloatTensor([np.float(reward)])
-        print("#################### Interim size:", interim.size())
+        # print("#################### Interim size:", interim.size())
         interim = interim.unsqueeze(1)
         interim = interim.to(device)
         rewards.append(interim)
-        print("#################### Rewards LENGTH:", len(rewards))
+
 
         masks.append(torch.FloatTensor(1-done).unsqueeze(1).to(device)) # changed from 1-done
 
@@ -129,16 +129,14 @@ while frame_idx < max_frames and not early_stop:
             plot(frame_idx, test_rewards)
             if test_reward > threshold_reward: early_stop = True
 
-    print("#################### after 20 steps Rewards LENGTH:", len(rewards))
-
     next_state = torch.FloatTensor(next_state).to(device)
     _, next_value = agent.model(next_state)
 
-    print("#################### after next value Rewards LENGTH:", len(rewards))
-    print("#################### after next value Rewards TYPE:", type(rewards))
-    print("#################### after next value Rewards ELEMENT TYPE:", type(rewards[0]))
-    print("#################### Computing GAE Rewards:", rewards)
-    print("#################### after next value Rewards DEVICE:", rewards[0].device)
+    # print("#################### after next value Rewards LENGTH:", len(rewards))
+    # print("#################### after next value Rewards TYPE:", type(rewards))
+    # print("#################### after next value Rewards ELEMENT TYPE:", type(rewards[0]))
+    # print("#################### Computing GAE Rewards:", rewards)
+    # print("#################### after next value Rewards DEVICE:", rewards[0].device)
 
     returns = agent.compute_gae(next_value,
                                 rewards,
@@ -146,31 +144,32 @@ while frame_idx < max_frames and not early_stop:
                                 values)
     # time.sleep(2)
 
-    print("#################### Rewards before CAT:", returns)
+    print("#################### Rewards          before CAT:", returns)
     returns   = torch.cat(returns).detach()
+    print("#################### Rewards     SIZE        CAT:", returns.size())
     returns   = torch.transpose(returns, 0, 1)
-    print("#################### Rewards after CAT:", returns)
-    print("#################### log probs before CAT:", log_probs)
+    print("#################### Rewards          after  CAT:", returns)
+    print("#################### log probs        before CAT:", log_probs)
     log_probs = torch.cat(log_probs).detach()
-    print("#################### log probs after CAT:", log_probs)
-    print("#################### log probs   SIZE after CAT:", log_probs.size())
+    print("#################### log probs        after  CAT:", log_probs)
+    print("#################### log probs   SIZE after  CAT:", log_probs.size())
 
     values    = torch.cat(values).detach()
+    print("#################### Values      SIZE after  CAT:", values.size())
     values    = torch.transpose(values, 0, 1)
-    print("#################### Values      SIZE after CAT:", values.size())
 
     states    = torch.cat(states)
-    print("#################### States      SIZE after CAT:", states.size())
+    print("#################### States      SIZE after  CAT:", states.size())
 
     actions   = torch.cat(actions)
-    print("#################### Actions     SIZE after CAT:", actions.size())
+    print("#################### Actions     SIZE after  CAT:", actions.size())
 
-    print("#################### returns     SIZE after CAT:", returns.size())
-    print("#################### values      SIZE after CAT:", values.size())
+    print("#################### returns     SIZE after  CAT:", returns.size())
+    print("#################### values      SIZE after  CAT:", values.size())
 
     advantage = returns - values
-    print("#################### Advantage   SIZE after CAT:", advantage.size())
-    print("#################### Advantage        after CAT:", advantage)
+    print("#################### Advantage   SIZE after  CAT:", advantage.size())
+    print("#################### Advantage        after  CAT:", advantage)
 
 
     print("about to update the params of the networks")
