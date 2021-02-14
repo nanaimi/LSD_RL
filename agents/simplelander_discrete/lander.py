@@ -52,10 +52,10 @@ test_rewards = []
 state = env.reset()
 
 # state = state.unsqueeze(1)
-print("#################### reset state:", state
+print("#################### reset state:", state)
+print("#################### reset state TYPE:", type(state))
 # state = torch.transpose(state, 0, 1)
 
-print("state after reset: ",state)
 early_stop = False
 
 
