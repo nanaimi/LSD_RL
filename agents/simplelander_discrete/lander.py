@@ -75,7 +75,11 @@ while frame_idx < max_frames and not early_stop:
         next_state, reward, done, _ = env.step(action.cpu().numpy())
         env.render()
 
+        print("#################### Distribution", dist)
+        print("#################### Sampled Action", action)
         log_prob = dist.log_prob(action)
+        print("#################### Log Probability", log_prob)
+        print("#################### Log Probability", type(log_prob))
         entropy += dist.entropy().mean()
 
         # Append data to arrays
