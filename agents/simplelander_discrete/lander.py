@@ -163,8 +163,8 @@ while frame_idx < max_frames and not early_stop:
     actions   = torch.cat(actions)
     print("#################### Actions SIZE after CAT:", actions.size())
 
-    print("#################### Actions SIZE after CAT:", returns.size())
-    print("#################### Actions SIZE after CAT:", values.size())
+    print("#################### returns SIZE after CAT:", returns.size())
+    print("#################### values SIZE after CAT:", values.size())
 
     advantage = returns - values
     print("#################### Advantage SIZE after CAT:", advantage.size())
