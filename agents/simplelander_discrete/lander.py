@@ -83,10 +83,15 @@ while frame_idx < max_frames and not early_stop:
     entropy = 0
 
     for st in range(num_steps):
-        # state = torch.FloatTensor(state).to(device)
-        state = torch.from_numpy(state)
-        state = state.unsqueeze(1)
-        state = torch.transpose(state, 0, 1).to(device)
+        state = torch.FloatTensor(state).to(device)
+
+        print("#################### state:     ", state)
+        print("#################### state TYPE:", type(state))
+        print("#################### state SIZE:", state.size())
+        # state = torch.FloatTensor(state)
+        # state = state.unsqueeze(1)
+        # state = torch.transpose(state, 0, 1).to(device)
+        time.sleep(10)
 
         dist, value = agent.model(state)
 
