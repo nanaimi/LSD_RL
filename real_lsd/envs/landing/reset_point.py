@@ -28,6 +28,7 @@ class ResetPoint():
 
     def select_resetpoint(self):
         if   'random' in self.reset_type:
+            print("Resetting RANDOMLY")
             current_pose = self.reset_random()
         elif 'testpoint' in self.reset_type:
             current_pose = self.reset_testpoint()
