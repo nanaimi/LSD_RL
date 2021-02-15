@@ -104,30 +104,31 @@ class UnrealCvLanding_base(gym.Env):
             Color=None,
             Depth=None,
         )
-        # print("Step function")
-        # print("action pre-squeeze", action)
+
         action = np.squeeze(action)
-        # print("action post-squeeze", action)
 
         if self.action_type == 'Discrete':
             (delt_x, delt_y, delt_z, info['Trigger']) = self.discrete_actions[action]
         else:
             (delt_x, delt_y, delt_z, info['Trigger']) = action
+
         self.count_steps += 1
-        info['Done'] = False
+
+        info['Done']       = False
 
         # take action
-        info['Collision'] = self.unrealcv.move_3d(self.cam_id, delt_x, delt_y, delt_z)
-        info['Pose'] = self.unrealcv.get_pose(self.cam_id, 'hard')
+        info['Collision']  = self.unrealcv.move_3d(self.cam_id, delt_x, delt_y, delt_z)
+        info['Done']       = info['Collision']
+        info['Pose']       = self.unrealcv.get_pose(self.cam_id, 'hard')
 
         if 'mask' in self.reward_type:
             # get segmented image
-            object_mask = self.unrealcv.read_image(self.cam_id, 'object_mask')
+            object_mask    = self.unrealcv.read_image(self.cam_id, 'object_mask')
             # get_mask gets you a binary image, either 0 or 255 per pixel
-            mask = self.unrealcv.get_mask(object_mask, self.target_object)
-            reward, done = self.reward_function.reward_mask(mask, info['Pose'])
+            mask           = self.unrealcv.get_mask(object_mask, self.target_object)
+            reward, done   = self.reward_function.reward_mask(mask, info['Pose'])
             info['Reward'] = reward
-            info['Done'] = done
+            info['Done']   = done
         # calculate reward according to the distance to target object
         elif 'distance' in self.reward_type:
             info['Reward'] = self.reward_function.reward_distance(distance)
@@ -138,12 +139,12 @@ class UnrealCvLanding_base(gym.Env):
         if info['Trigger'] > self.trigger_th:
             self.trigger_count += 1
             if self.trigger_count >= 3:
-                info['Done'] = True
+                info['Done']   = True
         else:
             # if collision detected, the episode is done and reward is -1
             if info['Collision'] or self.count_steps >= 150:
                 info['Reward'] = -100
-                info['Done'] = True
+                info['Done']   = True
 
         # Update observation
         state = self.unrealcv.get_observation(self.cam_id, self.observation_type)
