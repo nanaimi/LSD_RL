@@ -164,7 +164,7 @@ class Landing(UnrealCv):
     # IN: cam_id, delta_x, delta_y, delta_z
     # OUT:move agent to correct location, returns boolean for collision
     def move_3d(self, cam_id, delt_x, delt_y, delt_z):
-        print("executing move 3d")
+        print("============== executing move 3d ==============")
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']
         print("current location: ", location_now)
@@ -173,13 +173,12 @@ class Landing(UnrealCv):
         print("expecting to move to this location: ", location_exp)
 
         self.moveto(cam_id, location_exp)
-        # time.sleep(1)
 
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']
-        print("actually moved to: ", location_now)
+        print("============== actually moved to: ", location_now)
         error = self.get_distance(location_now, location_exp, n=3)
-        print("Error: ", error)
+        print("============== Error: ", error)
 
         if error < 36: # weird offset
             return False
