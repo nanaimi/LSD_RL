@@ -32,7 +32,7 @@ class UnrealCvLanding_base(gym.Env):
                  observation_type='PoseColor', # 'color', 'depth', 'rgbd', 'PoseColor'
                  reward_type='mask',      # distance, bbox, bbox_distance, 'mask'
                  docker=False,            # True/False
-                 resolution=(160, 120)    # Res of window
+                 resolution=(320, 240)    # Res of window
                  ):
 
         # load in settings from json
@@ -138,7 +138,6 @@ class UnrealCvLanding_base(gym.Env):
         # calculate reward according to the distance to target object
         elif 'distance' in self.reward_type:
             info['Reward'] = self.reward_function.reward_distance(distance)
-
         else:
             info['Reward'] = 0
 
@@ -165,17 +164,7 @@ class UnrealCvLanding_base(gym.Env):
         self.trajectory.append(info['Pose'][:6])
         info['Trajectory'] = self.trajectory
 
-
-
-
-
-
-
-
         return state, info['Reward'], info['Done'], info
-
-
-
 
 
 
