@@ -122,13 +122,15 @@ while frame_idx < max_frames and not early_stop:
         entropy += dist.entropy().mean()
 
         # Append data to arrays
+        print("#################### log_prob before HERE:", log_prob)
+        print("#################### log_prob before TYPE:", type(log_prob))
         np_log_prob = log_prob.detach().numpy()
         log_prob = torch.FloatTensor([np.float(np_log_prob)])
         log_prob = log_prob.unsqueeze(1)
         log_prob = log_prob.to(device)
 
-        print("#################### log_prob HERE:", log_prob)
-        print("#################### log_prob TYPE:", type(log_prob))
+        print("#################### log_prob after HERE:", log_prob)
+        print("#################### log_prob after TYPE:", type(log_prob))
 
         log_probs.append(log_prob)
 
