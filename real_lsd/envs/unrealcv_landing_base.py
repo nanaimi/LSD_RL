@@ -35,22 +35,23 @@ class UnrealCvLanding_base(gym.Env):
                  ):
 
         # load in settings from json
-        setting = self.load_env_setting(setting_file)
-        self.cam_id = setting['cam_id']
-        self.target_list = setting['targets'][category]
-        self.trigger_th = setting['trigger_th']                                 # Not Sure about trigger
+        setting                    = self.load_env_setting(setting_file)
+        self.cam_id                = setting['cam_id']
+        self.target_list           = setting['targets'][category]
+        self.trigger_th            = setting['trigger_th']   # Not Sure about trigger
+        self.done_th               = setting['done_th']
         self.successful_landing_th = setting['successful_landing_th']
-        self.target_object = setting['target_object']
-        self.discrete_actions = setting['discrete_actions']
-        self.continous_actions = setting['continous_actions']
+        self.target_object         = setting['target_object']
+        self.discrete_actions      = setting['discrete_actions']
+        self.continous_actions     = setting['continous_actions']
 
-        self.docker = docker
-        self.reset_type = reset_type                                            # Not Sure about reset_type
-        self.augment_env = augment_env                                          # Not Sure about augment_env
+        self.docker                = docker
+        self.reset_type            = reset_type                                 # Not Sure about reset_type
+        self.augment_env           = augment_env                                # Not Sure about augment_env
 
         # start unreal env
-        self.unreal = env_unreal.RunUnreal(ENV_BIN=setting['env_bin'])
-        env_ip, env_port = self.unreal.start(docker, resolution)
+        self.unreal                = env_unreal.RunUnreal(ENV_BIN=setting['env_bin'])
+        env_ip, env_port           = self.unreal.start(docker, resolution)
 
         # connect UnrealCV
         self.unrealcv = Landing(cam_id=self.cam_id,
@@ -62,31 +63,32 @@ class UnrealCvLanding_base(gym.Env):
         # self.unrealcv.pitch = self.pitch
 
         #  define action
-        self.action_type = action_type
+        self.action_type           = action_type
+
         assert self.action_type == 'Discrete' or self.action_type == 'Continuous'
         if self.action_type == 'Discrete':
-            self.action_space = spaces.Discrete(len(self.discrete_actions))
+            self.action_space      = spaces.Discrete(len(self.discrete_actions))
         elif self.action_type == 'Continuous':
-            self.action_space = spaces.Box(low=np.array(self.continous_actions['low']),
-                                           high=np.array(self.continous_actions['high']))
+            self.action_space      = spaces.Box(low=np.array(self.continous_actions['low']),
+                                                high=np.array(self.continous_actions['high']))
 
         # define observation space
-        self.observation_type = observation_type
+        self.observation_type       = observation_type
         assert self.observation_type == 'Color' or self.observation_type == 'Depth' or self.observation_type == 'Rgbd' or self.observation_type == 'PoseColor'
-        self.observation_space = self.unrealcv.define_observation(self.cam_id, self.observation_type, 'direct')
+        self.observation_space      = self.unrealcv.define_observation(self.cam_id, self.observation_type, 'direct')
 
         # define reward type
-        self.reward_type = reward_type
-        self.reward_function = reward.Reward(setting)
+        self.reward_type            = reward_type
+        self.reward_function        = reward.Reward(setting)
 
         # set start position
-        self.trigger_count = 0
-        current_pose = self.unrealcv.get_pose(self.cam_id)
+        self.trigger_count          = 0
+        current_pose                = self.unrealcv.get_pose(self.cam_id)
         self.unrealcv.set_location(self.cam_id, current_pose[:3])
-        self.count_steps = 0
-        self.targets_pos = self.unrealcv.build_pose_dic(self.target_list)
+        self.count_steps            = 0
+        self.targets_pos            = self.unrealcv.build_pose_dic(self.target_list)
         # for reset point generation and selection
-        self.reset_module = reset_point.ResetPoint(setting, reset_type, current_pose)
+        self.reset_module           = reset_point.ResetPoint(setting, reset_type, current_pose)
 
     def _step(self, action ):
         info = dict(
@@ -105,33 +107,36 @@ class UnrealCvLanding_base(gym.Env):
             Depth=None,
         )
 
-        action = np.squeeze(action)
+        action             = np.squeeze(action)
+        info['Done']       = False
 
         if self.action_type == 'Discrete':
             (delt_x, delt_y, delt_z, info['Trigger']) = self.discrete_actions[action]
         else:
             (delt_x, delt_y, delt_z, info['Trigger']) = action
 
-        self.count_steps += 1
-
-        info['Done']       = False
+        self.count_steps  += 1
 
         # take action
         info['Collision']  = self.unrealcv.move_3d(self.cam_id, delt_x, delt_y, delt_z)
-        info['Done']       = info['Collision']
         info['Pose']       = self.unrealcv.get_pose(self.cam_id, 'hard')
 
-        if 'mask' in self.reward_type:
+        if info['Collision'] or self.count_steps >= 150:
+            info['Reward'] = -100
+            info['Done']   = True
+
+        if 'mask' in self.reward_type and not info['Collision']:
             # get segmented image
             object_mask    = self.unrealcv.read_image(self.cam_id, 'object_mask')
             # get_mask gets you a binary image, either 0 or 255 per pixel
             mask           = self.unrealcv.get_mask(object_mask, self.target_object)
-            reward, done   = self.reward_function.reward_mask(mask, info['Pose'])
+            reward, done   = self.reward_function.reward_mask(mask, info['Pose'], self.done_th)
             info['Reward'] = reward
             info['Done']   = done
         # calculate reward according to the distance to target object
         elif 'distance' in self.reward_type:
             info['Reward'] = self.reward_function.reward_distance(distance)
+
         else:
             info['Reward'] = 0
 
@@ -140,20 +145,16 @@ class UnrealCvLanding_base(gym.Env):
             self.trigger_count += 1
             if self.trigger_count >= 3:
                 info['Done']   = True
-        else:
-            # if collision detected, the episode is done and reward is -1
-            if info['Collision'] or self.count_steps >= 150:
-                info['Reward'] = -100
-                info['Done']   = True
+
 
         # Update observation
-        state = self.unrealcv.get_observation(self.cam_id, self.observation_type)
+        state              = self.unrealcv.get_observation(self.cam_id, self.observation_type)
 
         if self.observation_type in ['Color', 'Rgbd', 'PoseColor', 'PoseFeatures']:
-            info['Color'] = self.unrealcv.img_color
+            info['Color']  = self.unrealcv.img_color
 
         if self.observation_type in ['Depth', 'Rgbd']:
-            info['Depth'] = self.unrealcv.img_depth
+            info['Depth']  = self.unrealcv.img_depth
 
         if self.observation_type in ['PoseFeatures']:
             info['Features'] = self.unrealcv.features
@@ -162,9 +163,20 @@ class UnrealCvLanding_base(gym.Env):
         self.trajectory.append(info['Pose'][:6])
         info['Trajectory'] = self.trajectory
 
+
+
+
+
+
+
+
         return state, info['Reward'], info['Done'], info
 
-    # TODO: this is fucked looool
+
+
+
+
+
     def _reset(self, ):
         # double check the resetpoint, it is necessary for random reset type
         collision = True

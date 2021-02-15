@@ -11,7 +11,7 @@ class Reward():
 
     # IN: object mask delivered by unrealcv client, mask, and pose
     # OUT: reward
-    def reward_mask(self, mask, pose):
+    def reward_mask(self, mask, pose, done_thr):
         reward = 0
         done = False
         factor = 10
@@ -23,7 +23,7 @@ class Reward():
 
         reward = factor*np.tanh(fov_score*2*np.pi-np.pi)
 
-        if pose[2] < 10:
+        if pose[2] < done_thr:
             reward += 100
             done = True
         else:
