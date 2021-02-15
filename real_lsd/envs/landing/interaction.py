@@ -148,6 +148,9 @@ class Landing(UnrealCv):
         features = self.feature_network(img_tensor).detach().numpy().flatten()
         return features
 
+    def set_pose(self, cam_id, pose, mode='hard'):
+        self.set_location(cam_id, pose[:3])
+        self.set_rotation(cam_id, pose[-3:])
 
     def get_pose(self,cam_id, type='hard'):  # pose = [x, y, z, roll, yaw, pitch]
         if type == 'soft':
