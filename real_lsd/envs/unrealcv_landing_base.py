@@ -40,7 +40,6 @@ class UnrealCvLanding_base(gym.Env):
         self.target_list           = setting['targets'][category]
         self.trigger_th            = setting['trigger_th']   # Not Sure about trigger
         self.done_th               = setting['done_th']
-        self.successful_landing_th = setting['successful_landing_th']
         self.target_object         = setting['target_object']
         self.discrete_actions      = setting['discrete_actions']
         self.continous_actions     = setting['continous_actions']
