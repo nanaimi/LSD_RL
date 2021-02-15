@@ -62,10 +62,10 @@ class Landing(UnrealCv):
             state = np.concatenate((self.img_color, self.img_gray), axis=2)
         elif observation_type == 'PoseColor':
             self.img_color = self.read_image(cam_id, 'lit', mode).flatten()
-            self.pose =  np.asarray(self.get_pose(cam_id, mode='hard'), dtype=np.float64)
+            self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
             state = np.concatenate((self.pose, self.img_color), axis=0)
         elif observation_type == 'PoseFeatures':
-            self.pose =  np.asarray(self.get_pose(cam_id, mode='hard'), dtype=np.float64)
+            self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
             self.features = self.get_features(cam_id, 'lit')
             state = np.concatenate((self.pose, self.features), axis=0)
 
@@ -148,23 +148,8 @@ class Landing(UnrealCv):
         features = self.feature_network(img_tensor).detach().numpy().flatten()
         return features
 
-    # def get_pose(self, cam_id, mode='hard'):  # pose = [x, y, z, roll, yaw, pitch]
-    #     if mode == 'soft':
-    #         pose = self.cam[cam_id]['location']
-    #         pose.extend(self.cam[cam_id]['rotation'])
-    #         return pose
-    #
-    #     if mode == 'hard':
-    #         cmd = 'vget /camera/{cam_id}/pose'
-    #         pose = None
-    #         while pose is None:
-    #             pose = self.client.request(cmd.format(cam_id=cam_id))
-    #         pose = [float(i) for i in pose.split()]
-    #         self.cam[cam_id]['location'] = pose[:3]
-    #         self.cam[cam_id]['rotation'] = pose[-3:]
-    #         return pose
 
-    def get_pose(self,cam_id, mode='hard'):  # pose = [x, y, z, roll, yaw, pitch]
+    def get_pose(self,cam_id, type='hard'):  # pose = [x, y, z, roll, yaw, pitch]
         if type == 'soft':
             pose = self.cam[cam_id]['location']
             pose.extend(self.cam[cam_id]['rotation'])
