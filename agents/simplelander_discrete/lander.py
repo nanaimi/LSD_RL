@@ -51,25 +51,7 @@ test_rewards = []
 
 state = env.reset()
 
-# # state = state.unsqueeze(1)
-# print("#################### reset state:                 ", state)
-# print("#################### reset state             TYPE:", type(state))
-# state = torch.from_numpy(state)
-# print("#################### reset state after torch:     ", state)
-# print("#################### reset state after torch TYPE:", type(state))
-# print("#################### reset state after torch SIZE:", state.size())
-# state = state.unsqueeze(1)
-# print("#################### reset state after unsqueeze:     ", state)
-# print("#################### reset state after unsqueeze TYPE:", type(state))
-# print("#################### reset state after unsqueeze SIZE:", state.size())
-# state = torch.transpose(state, 0, 1)
-# print("#################### reset state after transpose TYPE:", type(state))
-# print("#################### reset state after transpose SIZE:", state.size())
-
-# state = torch.transpose(state, 0, 1)
-
 early_stop = False
-
 
 while frame_idx < max_frames and not early_stop:
     print("frame: ", frame_idx)
@@ -122,48 +104,34 @@ while frame_idx < max_frames and not early_stop:
         entropy += dist.entropy().mean()
 
         # Append data to arrays
-        print("#################### log_prob before HERE:", log_prob)
-        print("#################### log_prob before TYPE:", type(log_prob))
         np_log_prob = log_prob.detach().numpy()
         log_prob = torch.FloatTensor([np.float(np_log_prob)])
         log_prob = log_prob.unsqueeze(1)
         log_prob = log_prob.to(device)
-
-        print("#################### log_prob after HERE:", log_prob)
-        print("#################### log_prob after TYPE:", type(log_prob))
-
         log_probs.append(log_prob)
 
         values.append(value)
 
-        # print("#################### Reward HERE:", reward)
-        # print("#################### Reward TYPE:", type(reward))
-
         interim = torch.FloatTensor([np.float(reward)])
-        # print("#################### Interim size:", interim.size())
         interim = interim.unsqueeze(1)
-        interim = interim.to(device)
-        rewards.append(interim)
+        reward = interim.to(device)
+        rewards.append(reward)
 
         mask = float(1-done)
-        print("#################### Mask:", mask)
-        print("#################### Mask TYPE:", type(mask))
         mask = torch.FloatTensor([mask])
-        print("#################### Mask to FloatTensor:", mask)
         mask = mask.unsqueeze(1)
-        print("#################### Mask to Unsqueeze:", mask)
         masks.append(mask.to(device)) # changed from 1-done
 
-        print("#################### state:", state)
-        print("#################### state SIZE:", state.size())
-        print("#################### state SIZE:", type(state))
-        print("#################### state after unsqueeze SIZE:", state.size())
-        print("#################### state after transpose SIZE:", state.size())
+        # print("#################### state:", state)
+        # print("#################### state SIZE:", state.size())
+        # print("#################### state SIZE:", type(state))
+        # print("#################### state after unsqueeze SIZE:", state.size())
+        # print("#################### state after transpose SIZE:", state.size())
 
         states.append(state)
-        print("#################### states:    ", states)
-        print("#################### states LEN:", len(states))
-        print("#################### states TYPE:", type(states))
+        # print("#################### states:    ", states)
+        # print("#################### states LEN:", len(states))
+        # print("#################### states TYPE:", type(states))
 
         action = action.detach().numpy()
         action = torch.FloatTensor([np.float(action)])
@@ -172,14 +140,18 @@ while frame_idx < max_frames and not early_stop:
         actions.append(action)
 
         # next state logic
-        state = next_state
+        if done:
+            state = env.reset()
+        else:
+            state = next_state
+
         frame_idx += 1
 
-        if frame_idx % 1000 == 0:
-            test_reward = np.mean([test_env() for _ in range(10)])
-            test_rewards.append(test_reward)
-            plot(frame_idx, test_rewards)
-            if test_reward > threshold_reward: early_stop = True
+        # if frame_idx % 1000 == 0:
+        #     test_reward = np.mean([test_env() for _ in range(10)])
+        #     test_rewards.append(test_reward)
+        #     plot(frame_idx, test_rewards)
+        #     if test_reward > threshold_reward: early_stop = True
 
 
     next_state = torch.FloatTensor(next_state).to(device)
@@ -187,7 +159,7 @@ while frame_idx < max_frames and not early_stop:
     _, next_value = agent.model(next_state)
 
     next_state = next_state.unsqueeze(1)
-    next_state = torch.transpose(next_state, 0, 1).to(device)
+    next_state = torch.transpose(next_state, 0, 1)
 
     # print("#################### after next value Rewards LENGTH:", len(rewards))
     # print("#################### after next value Rewards TYPE:", type(rewards))
