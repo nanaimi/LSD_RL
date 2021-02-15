@@ -148,23 +148,23 @@ class Landing(UnrealCv):
         features = self.feature_network(img_tensor).detach().numpy().flatten()
         return features
 
-    def get_pose(self, cam_id, mode='hard'):  # pose = [x, y, z, roll, yaw, pitch]
-        if mode == 'soft':
-            pose = self.cam[cam_id]['location']
-            pose.extend(self.cam[cam_id]['rotation'])
-            return pose
+    # def get_pose(self, cam_id, mode='hard'):  # pose = [x, y, z, roll, yaw, pitch]
+    #     if mode == 'soft':
+    #         pose = self.cam[cam_id]['location']
+    #         pose.extend(self.cam[cam_id]['rotation'])
+    #         return pose
+    #
+    #     if mode == 'hard':
+    #         cmd = 'vget /camera/{cam_id}/pose'
+    #         pose = None
+    #         while pose is None:
+    #             pose = self.client.request(cmd.format(cam_id=cam_id))
+    #         pose = [float(i) for i in pose.split()]
+    #         self.cam[cam_id]['location'] = pose[:3]
+    #         self.cam[cam_id]['rotation'] = pose[-3:]
+    #         return pose
 
-        if mode == 'hard':
-            cmd = 'vget /camera/{cam_id}/pose'
-            pose = None
-            while pose is None:
-                pose = self.client.request(cmd.format(cam_id=cam_id))
-            pose = [float(i) for i in pose.split()]
-            self.cam[cam_id]['location'] = pose[:3]
-            self.cam[cam_id]['rotation'] = pose[-3:]
-            return pose
-
-    def _get_pose(self,cam_id, type='hard'):  # pose = [x, y, z, roll, yaw, pitch]
+    def get_pose(self,cam_id, type='hard'):  # pose = [x, y, z, roll, yaw, pitch]
         if type == 'soft':
             pose = self.cam[cam_id]['location']
             pose.extend(self.cam[cam_id]['rotation'])
