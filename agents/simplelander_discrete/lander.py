@@ -86,18 +86,13 @@ while frame_idx < max_frames and not early_stop:
         print("#################### Value after unsqueeze TYPE:", type(value))
 
         action = dist.sample()
-        print("step:", st, "sampled:", action)
-        print("Device:", device)
-        next_state, reward, done, _ = env.step(action.cpu().numpy())
-        env.render()
 
-        # next_state = torch.from_numpy(next_state)
-        # next_state = next_state.unsqueeze(1)
-        # next_state = torch.transpose(next_state, 0, 1)
-        # next_state = next_state.to(device)
-        # print("#################### next_state            HERE:", next_state)
-        # print("#################### next_state            SIZE:", next_state.size())
-        # print("#################### next_state            TYPE:", type(next_state))
+        print("############## Step:", st, "############## Sampled:", action)
+        print("Device:", device)
+
+        next_state, reward, done, _ = env.step(action.cpu().numpy())
+
+        env.render()
 
         log_prob = dist.log_prob(action)
 
@@ -141,6 +136,7 @@ while frame_idx < max_frames and not early_stop:
 
         # next state logic
         if done:
+            print("#################### RESET SHOULD HAPPEN")
             state = env.reset()
         else:
             state = next_state
@@ -153,7 +149,6 @@ while frame_idx < max_frames and not early_stop:
         #     plot(frame_idx, test_rewards)
         #     if test_reward > threshold_reward: early_stop = True
 
-
     next_state = torch.FloatTensor(next_state).to(device)
 
     _, next_value = agent.model(next_state)
@@ -161,45 +156,32 @@ while frame_idx < max_frames and not early_stop:
     next_state = next_state.unsqueeze(1)
     next_state = torch.transpose(next_state, 0, 1)
 
-    # print("#################### after next value Rewards LENGTH:", len(rewards))
-    # print("#################### after next value Rewards TYPE:", type(rewards))
-    # print("#################### after next value Rewards ELEMENT TYPE:", type(rewards[0]))
-    # print("#################### Computing GAE Rewards:", rewards)
-    # print("#################### after next value Rewards DEVICE:", rewards[0].device)
-
     returns = agent.compute_gae(next_value,
                                 rewards,
                                 masks,
                                 values)
 
-    print("#################### Returns          before CAT:", len(returns))
-
     returns   = torch.cat(returns).detach()
-
-    print("#################### Returns     SIZE after  CAT:", returns.size())
 
     log_probs = torch.cat(log_probs).detach()
 
-    print("#################### log probs   SIZE after  CAT:", log_probs.size())
-
     values    = torch.cat(values).detach()
-
-    print("#################### Values      SIZE after  CAT:", values.size())
 
     states    = torch.cat(states)
 
-    print("#################### States      SIZE after  CAT:", states.size())
-
     actions   = torch.cat(actions)
-
-    print("#################### Actions     SIZE after  CAT:", actions.size())
 
     advantage = returns - values
 
+    print("#################### Returns          before CAT:", len(returns))
+    print("#################### Returns     SIZE after  CAT:", returns.size())
+    print("#################### log probs   SIZE after  CAT:", log_probs.size())
+    print("#################### Values      SIZE after  CAT:", values.size())
+    print("#################### States      SIZE after  CAT:", states.size())
+    print("#################### Actions     SIZE after  CAT:", actions.size())
     print("#################### Advantage   SIZE after  CAT:", advantage.size())
-    # print("#################### Advantage        after  CAT:", advantage)
 
-    print("about to update the params of the networks")
+    print("###### about to update the params of the networks ######")
     agent.ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantage)
 
 

@@ -86,7 +86,9 @@ class UnrealCvLanding_base(gym.Env):
         self.unrealcv.set_location(self.cam_id, current_pose[:3])
         self.count_steps            = 0
         self.targets_pos            = self.unrealcv.build_pose_dic(self.target_list)
+
         # for reset point generation and selection
+        print("############### RESET TYPE", reset_type, "###############")
         self.reset_module           = reset_point.ResetPoint(setting, reset_type, current_pose)
 
     def _step(self, action ):
@@ -178,17 +180,20 @@ class UnrealCvLanding_base(gym.Env):
 
     def _reset(self, ):
         # double check the resetpoint, it is necessary for random reset type
+        print("$$$$$$$$$$$$$$$$$ MAMMA MIA, RESET IS BEING CALLED!")
         collision = True
         while collision:
             current_pose = self.reset_module.select_resetpoint()
             self.unrealcv.set_pose(self.cam_id, current_pose)
-            collision = self.unrealcv.move_3d(self.cam_id, 40, 40, -20) # WTF
+            collision = self.unrealcv.move_3d(self.cam_id, 40, 40, -20)
 
+        print("$$$$$$$$$$$$$$$$$ MAMMA MIA, RESET POSE IS:", current_pose)
         # nevermind, they just move and then reset it to the pose before moving
         # weird way to check for collisons tho
         self.unrealcv.set_pose(self.cam_id, current_pose)
 
         state = self.unrealcv.get_observation(self.cam_id, self.observation_type)
+        print("$$$$$$$$$$$$$$$$$ MAMMA MIA, RESET STATE IS:", state)
 
         self.trajectory = []
         self.trajectory.append(current_pose)
