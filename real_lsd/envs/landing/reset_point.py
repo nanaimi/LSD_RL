@@ -1,7 +1,9 @@
-import random
-from operator import itemgetter
 import math
+import random
 import numpy as np
+import glog as log
+from operator import itemgetter
+
 class ResetPoint():
     def __init__(self, setting, type, init_pose):
         self.reset_type = type

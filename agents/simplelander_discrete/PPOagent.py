@@ -2,6 +2,7 @@ import math
 import random
 
 import gym
+import glog as log
 import numpy as np
 
 import torch
@@ -51,7 +52,7 @@ class PPOAgent():
 
     def minibatch_loss(self, states, actions, old_log_probs, returns, advantages, clip_param=0.2):
         # Distributions of all actions for each given state in minibatch
-        print("calculating minibatch loss")
+        log.info("Calculating minibatch loss.")
         dist, value = self.model(states)
         entropy = dist.entropy().mean()
         new_log_probs = dist.log_prob(actions)
@@ -65,6 +66,7 @@ class PPOAgent():
         critic_loss = (returns - value).pow(2).mean()
 
         loss = actor_loss + 0.5 * critic_loss - 0.001 * entropy
+        log.info("Minibatch loss: {} SIZE: {}".format(loss, loss.size()))
         return loss
 
     def ppo_iter(self, mini_batch_size, states, actions, log_probs, returns, advantage):
@@ -72,61 +74,37 @@ class PPOAgent():
         Divide batch into mini_batches through generator
         mini_batch set is uniformly sampled from the batch
         """
-        print("creating minibatch")
+        log.info("Creating minibatch.")
         batch_size = states.size(0)
         for _ in range(batch_size // mini_batch_size):
             rand_ids = np.random.randint(0, batch_size, mini_batch_size)
             yield states[rand_ids, :], actions[rand_ids, :], log_probs[rand_ids, :], returns[rand_ids, :], advantage[rand_ids, :]
 
     def ppo_update(self, ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantages, clip_param=0.2):
-        print("ppo update called")
+        log.info("PPO update called.")
         for i in range(ppo_epochs):
-            print("ppo update epoch:", i)
+            log.info("PPO update epoch: {}".format(i))
             for state, action, old_log_probs, return_, advantage in self.ppo_iter(mini_batch_size, states, actions, log_probs, returns, advantages):
-                print("ppo update epoch:", i, "optimizing on minibatches" )
+                log.info("PPO update epoch: {} Optimizing on minibatches".format(i))
 
                 loss = self.minibatch_loss(state, action, old_log_probs, return_, advantage)
-
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
 
     def compute_gae(self, next_value, rewards, masks, values, gamma=0.99, tau=0.95):
-        print("#################### Computing GAE ####################")
-        # print("#################### Computing GAE next_value LENGTH:", len(next_value))
-        # print("#################### Computing GAE next_value TYPE:", type(next_value))
-        # print("#################### Computing GAE next_value DEVICE:", next_value.device)
-        # print("#################### Computing GAE next_value:", next_value)
-        # print("#################### Computing GAE Rewards LENGTH:", len(rewards))
-        # print("#################### Computing GAE Rewards TYPE:", type(rewards))
-        # print("#################### Computing GAE Rewards DEVICE:", rewards[0].device)
-        # print("#################### Computing GAE Rewards:", rewards)
-        # print("#################### Computing GAE masks LENGTH:", len(masks))
-        # print("#################### Computing GAE masks TYPE:", type(masks))
-        # print("#################### Computing GAE masks DEVICE:", masks[0].device)
-        # print("#################### Computing GAE masks:", masks)
-        # print("#################### Computing GAE Values LENGTH:", len(values))
-        # print("#################### Computing GAE Values TYPE:", type(values))
-        # print("#################### Computing GAE Values DEVICE:", values[0].device)
-        # print("#################### Computing GAE Values:", values)
+        log.info("Computing GAE")
 
         values = values + [next_value]
         gae = 0
         returns = []
 
         for step in reversed(range(len(rewards))):
-            # print("Step: ", step, "Reward: ", rewards[step])
-            # print("Step: ", step, "Mask: ",masks[step])
-            # print("Step: ", step, "Value: ", values[step])
-            # print("Step: ", step, "Next Value: ", values[step+1])
             delta = rewards[step] + gamma * values[step + 1] * masks[step] - values[step]
             gae = delta + gamma * tau * masks[step] * gae
-            # print("#################### Step: ", step, "Delta: ", delta, "GAE: ", gae)
             returns.insert(0, gae + values[step])
 
-
-        print("#################### Computing GAE return DIM:", returns[0].size())
-        print("#################### finished computing GAE ####################")
+        log.info("Dimension of return: {}".format(returns[0].size()))
         return returns
 
 

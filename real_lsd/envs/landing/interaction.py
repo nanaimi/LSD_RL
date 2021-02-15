@@ -1,8 +1,9 @@
-from gym_unrealcv.envs.utils.unrealcv_basic import UnrealCv
-import numpy as np
-import time
-from gym import spaces
 import gym
+from gym import spaces
+
+import time
+import glog as log
+import numpy as np
 import distutils.version
 
 import torch
@@ -10,8 +11,8 @@ import torch.nn as nn
 from torchvision import transforms
 import torchvision.models as models
 import torchsummary as summary
-import time
 
+from gym_unrealcv.envs.utils.unrealcv_basic import UnrealCv
 
 class Landing(UnrealCv):
     def __init__(self, env, cam_id=0, port=9000,
@@ -164,21 +165,31 @@ class Landing(UnrealCv):
     # IN: cam_id, delta_x, delta_y, delta_z
     # OUT:move agent to correct location, returns boolean for collision
     def move_3d(self, cam_id, delt_x, delt_y, delt_z):
-        print("============== executing move 3d ==============")
+        log.warn("Executing move_3d")
+        
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']
-        print("current location: ", location_now)
+
+        log.warn("current location: {}".format(location_now))
 
         location_exp = [location_now[0] + delt_x, location_now[1]+delt_y, location_now[2]+delt_z]
-        print("expecting to move to this location: ", location_exp)
+
+        log.warn("expecting to move to this location: {}".format(location_exp))
+        log.warn("Move To being called")
 
         self.moveto(cam_id, location_exp)
 
+        log.warn("Get Pose being called")
+
         pose = self.get_pose(cam_id)
+
         location_now = self.cam[cam_id]['location']
-        print("============== actually moved to: ", location_now)
+
+        log.warn("moved to location now: {}".format(location_now))
+
         error = self.get_distance(location_now, location_exp, n=3)
-        print("============== Error: ", error)
+
+        log.warn("Error: ".format(error))
 
         if error < 36: # weird offset
             return False

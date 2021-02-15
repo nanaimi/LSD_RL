@@ -1,11 +1,14 @@
 import os
 import time
-import gym
 import numpy as np
+import glog as log
+
+import gym
 from gym import spaces
+
+from gym_unrealcv.envs.utils import env_unreal
 from real_lsd.envs.landing import reward, reset_point
 from real_lsd.envs.landing.visualization import show_info
-from gym_unrealcv.envs.utils import env_unreal
 from real_lsd.envs.landing.interaction import Landing
 
 '''
@@ -170,24 +173,29 @@ class UnrealCvLanding_base(gym.Env):
 
     def _reset(self, ):
         # double check the resetpoint, it is necessary for random reset type
-        print("$$$$$$$$$$$$$$$$$ MAMMA MIA, RESET IS BEING CALLED!")
+        log.warn("MAMMA MIA, RESET IS BEING CALLED!")
         collision = True
         while collision:
             current_pose = self.reset_module.select_resetpoint()
-            print("$$$$$$$$$$$$$$$$$ MAMMA MIA, RESET POSE SAMPLED:", current_pose)
+
+            log.warn("MAMMA MIA, RESET POSE SAMPLED: {}".format(current_pose))
+
             self.unrealcv.set_pose(self.cam_id, current_pose)
             time.sleep(1)
-            print("$$$$$$$$$$$$$$$$$ MAMMA MIA, POSE SHOULD HAVE BEEN SET TO", self.unrealcv.get_pose(self.cam_id))
-            collision = self.unrealcv.move_3d(self.cam_id, 40, 40, -20)
-            print("$$$$$$$$$$$$$$$$$ MAMMA MIA, WAS THERE A COLLISION?", collision)
 
-        print("$$$$$$$$$$$$$$$$$ MAMMA MIA, RESET POSE IS:", current_pose)
-        # nevermind, they just move and then reset it to the pose before moving
-        # weird way to check for collisons tho
+            log.warn("MAMMA MIA, POSE SHOULD HAVE BEEN SET TO: {}".format(self.unrealcv.get_pose(self.cam_id)))
+
+            collision = self.unrealcv.move_3d(self.cam_id, 40, 40, -20)
+
+            log.warn("MAMMA MIA, WAS THERE A COLLISION?: {}".format(collision))
+
+        log.warn("MAMMA MIA, RESET POSE IS: {}".format(current_pose))
+
         self.unrealcv.set_pose(self.cam_id, current_pose)
 
         state = self.unrealcv.get_observation(self.cam_id, self.observation_type)
-        print("$$$$$$$$$$$$$$$$$ MAMMA MIA, RESET STATE IS:", state)
+
+        log.warn("MAMMA MIA, RESET STATE IS: {}".format(state))
 
         self.trajectory = []
         self.trajectory.append(current_pose)
@@ -210,7 +218,7 @@ class UnrealCvLanding_base(gym.Env):
     def _get_action_size(self):
         return len(self.action)
 
-    # TODO: Probably remove
+    # TODO: REASSES
     def select_target_by_distance(self, current_pos, targets_pos):
         # find the nearest target, return distance and targetid
         target_id = list(self.targets_pos.keys())[0]

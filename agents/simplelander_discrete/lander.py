@@ -1,16 +1,20 @@
 import gym
-
-from stable_baselines.common.policies import MlpPolicy
-from stable_baselines.common import make_vec_env
-from stable_baselines import PPO2
-import gym_unrealcv
-import real_lsd
 import time
-
 import torch
 import numpy as np
+import glog as log
+
+from stable_baselines import PPO2
+from stable_baselines.common import make_vec_env
+from stable_baselines.common.policies import MlpPolicy
+
+import gym_unrealcv
+import real_lsd
 
 from PPOagent import PPOAgent
+
+# Set to INFO for debugging
+log.setLevel("INFO")
 
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda" if use_cuda else "cpu")
@@ -66,33 +70,33 @@ while frame_idx < max_frames and not early_stop:
 
     for st in range(num_steps):
         state = torch.FloatTensor(state).to(device)
-
-        print("#################### state:     ", state)
-        print("#################### state TYPE:", type(state))
-        print("#################### state SIZE:", state.size())
+        log.info("state:      {}".format(state))
+        log.info("state TYPE: {}".format(type(state)))
+        log.info("state SIZE: {}".format(state.size()))
 
         dist, value = agent.model(state)
+        log.info("Forward Pass Dist: {}".format(dist))
+        log.info("Forward Pass value: {}".format(value))
 
         state = state.unsqueeze(1)
         state = torch.transpose(state, 0, 1)
+        log.info("state after unsqueeze and transpose:      {}".format(state))
+        log.info("state after unsqueeze and transpose TYPE: {}".format(type(state)))
+        log.info("state after unsqueeze and transpose SIZE: {}".format(state.size()))
 
-        print("#################### state after unsqueeze and transpose:     ", state)
-        print("#################### state after unsqueeze and transpose TYPE:", type(state))
-        print("#################### state after unsqueeze and transpose SIZE:", state.size())
-        print("#################### Value                 HERE:", value)
-        print("#################### Value                 TYPE:", type(value))
+
         value = value.unsqueeze(1)
-        print("#################### Value after unsqueeze HERE:", value)
-        print("#################### Value after unsqueeze TYPE:", type(value))
+        log.info("Value: {}".format(value))
+        log.info("Value TYPE: {}".format(type(value)))
 
         action = dist.sample()
-
-        print("############## Step:", st, "############## Sampled:", action)
-        print("Device:", device)
+        log.info("Sampled Action: {}".format(action))
 
         next_state, reward, done, _ = env.step(action.cpu().numpy())
+        log.info("Step REWARD: {} DONE: {}".format(reward, done))
 
         log_prob = dist.log_prob(action)
+        log.info("Step LOG_PROB: {}".format(log_prob))
 
         entropy += dist.entropy().mean()
 
@@ -107,7 +111,7 @@ while frame_idx < max_frames and not early_stop:
 
         interim = torch.FloatTensor([np.float(reward)])
         interim = interim.unsqueeze(1)
-        reward = interim.to(device)
+        reward  = interim.to(device)
         rewards.append(reward)
 
         mask = float(1-done)
@@ -115,16 +119,7 @@ while frame_idx < max_frames and not early_stop:
         mask = mask.unsqueeze(1)
         masks.append(mask.to(device)) # changed from 1-done
 
-        # print("#################### state:", state)
-        # print("#################### state SIZE:", state.size())
-        # print("#################### state SIZE:", type(state))
-        # print("#################### state after unsqueeze SIZE:", state.size())
-        # print("#################### state after transpose SIZE:", state.size())
-
         states.append(state)
-        # print("#################### states:    ", states)
-        # print("#################### states LEN:", len(states))
-        # print("#################### states TYPE:", type(states))
 
         action = action.detach().numpy()
         action = torch.FloatTensor([np.float(action)])
@@ -134,7 +129,7 @@ while frame_idx < max_frames and not early_stop:
 
         # next state logic
         if done:
-            print("#################### RESET SHOULD HAPPEN")
+            log.warn("RESET SHOULD HAPPEN")
             state = env.reset()
         else:
             state = next_state
@@ -171,15 +166,15 @@ while frame_idx < max_frames and not early_stop:
 
     advantage = returns - values
 
-    print("#################### Returns          before CAT:", len(returns))
-    print("#################### Returns     SIZE after  CAT:", returns.size())
-    print("#################### log probs   SIZE after  CAT:", log_probs.size())
-    print("#################### Values      SIZE after  CAT:", values.size())
-    print("#################### States      SIZE after  CAT:", states.size())
-    print("#################### Actions     SIZE after  CAT:", actions.size())
-    print("#################### Advantage   SIZE after  CAT:", advantage.size())
+    # log.info("Returns before CAT: {}".format(len(returns)))
+    log.info("Returns   SIZE after CAT: {}".format(returns.size()))
+    log.info("log probs SIZE after CAT: {}".format(log_probs.size()))
+    log.info("Values    SIZE after CAT: {}".format(values.size()))
+    log.info("States    SIZE after CAT: {}".format(states.size()))
+    log.info("Actions   SIZE after CAT: {}".format(actions.size()))
+    log.info("Advantage SIZE after CAT: {}".format(advantage.size()))
 
-    print("###### about to update the params of the networks ######")
+    log.warn("Calling PPO update")
     agent.ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantage)
 
 
