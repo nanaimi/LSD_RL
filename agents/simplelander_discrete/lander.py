@@ -117,27 +117,22 @@ while frame_idx < max_frames and not early_stop:
         # print("#################### next_state            SIZE:", next_state.size())
         # print("#################### next_state            TYPE:", type(next_state))
 
-        # weird
-        # print("#################### Distribution", dist)
-        # print("#################### Sampled Action", action)
         log_prob = dist.log_prob(action)
-        # print("#################### Log Probability", log_prob)
-        # print("#################### Log Probability TYPE", type(log_prob))
-        # print("#################### Log Probability DIM", log_prob.size())
+
         entropy += dist.entropy().mean()
 
         # Append data to arrays
-        np_log_prob = log_prob.detach().numpy()
-        log_prob = torch.FloatTensor([np.float(np_log_prob)])
+        # np_log_prob = log_prob.detach().numpy()
+        # log_prob = torch.FloatTensor([np.float(np_log_prob)])
+
+        print("#################### log_prob                 HERE:", log_prob)
+        print("#################### log_prob                 TYPE:", type(log_prob))
         log_prob = log_prob.unsqueeze(1)
+        print("#################### log_prob after unsqueeze HERE:", log_prob)
+        print("#################### log_prob after unsqueeze TYPE:", type(log_prob))
         log_prob = log_prob.to(device)
-        # print("#################### After Unsqueeze Log Probability", log_prob)
-        # print("#################### After Unsqueeze Log Probability TYPE", type(log_prob))
-        # print("#################### After Unsqueeze Log Probability DIM", log_prob.size())
 
         log_probs.append(log_prob)
-        # print("#################### Log Probabilities", log_probs)
-        # print("#################### Log Probabilities", type(log_probs))
 
         values.append(value)
 
