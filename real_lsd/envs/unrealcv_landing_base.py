@@ -239,8 +239,8 @@ class UnrealCvLanding_base(gym.Env):
     # IN: filename of setting json in envs/setting directory
     # Out: Dictionary object named setting
     def load_env_setting(self, filename):
-        import gym_unrealcv
-        gympath = os.path.dirname(gym_unrealcv.__file__)
+        import real_lsd
+        gympath = os.path.dirname(real_lsd.__file__)
         gympath = os.path.join(gympath, 'envs/setting', filename)
         f = open(gympath)
         filetype = os.path.splitext(filename)[1]
