@@ -184,8 +184,11 @@ class UnrealCvLanding_base(gym.Env):
         collision = True
         while collision:
             current_pose = self.reset_module.select_resetpoint()
+            print("$$$$$$$$$$$$$$$$$ MAMMA MIA, RESET POSE SAMPLED")
             self.unrealcv.set_pose(self.cam_id, current_pose)
+            print("$$$$$$$$$$$$$$$$$ MAMMA MIA, POSE SHOULD HAVE BEEN SET")
             collision = self.unrealcv.move_3d(self.cam_id, 40, 40, -20)
+            print("$$$$$$$$$$$$$$$$$ MAMMA MIA, WAS THERE A COLLISION?", collision)
 
         print("$$$$$$$$$$$$$$$$$ MAMMA MIA, RESET POSE IS:", current_pose)
         # nevermind, they just move and then reset it to the pose before moving
