@@ -156,6 +156,7 @@ class Landing(UnrealCv):
             return pose
 
         if type == 'hard':
+            log.war("this one was called.)
             self.cam[cam_id]['location'] = self.get_location(cam_id)
             self.cam[cam_id]['rotation'] = self.get_rotation(cam_id)
             pose = self.cam[cam_id]['location'] + self.cam[cam_id]['rotation']
@@ -166,7 +167,7 @@ class Landing(UnrealCv):
     # OUT:move agent to correct location, returns boolean for collision
     def move_3d(self, cam_id, delt_x, delt_y, delt_z):
         log.warn("Executing move_3d")
-        
+
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']
 
@@ -189,7 +190,7 @@ class Landing(UnrealCv):
 
         error = self.get_distance(location_now, location_exp, n=3)
 
-        log.warn("Error: ".format(error))
+        log.warn("Error: {}".format(error))
 
         if error < 36: # weird offset
             return False
