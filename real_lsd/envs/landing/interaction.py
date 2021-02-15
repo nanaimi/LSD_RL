@@ -164,7 +164,7 @@ class Landing(UnrealCv):
     #         self.cam[cam_id]['rotation'] = pose[-3:]
     #         return pose
 
-    def get_pose(self,cam_id, type='hard'):  # pose = [x, y, z, roll, yaw, pitch]
+    def get_pose(self,cam_id, mode='hard'):  # pose = [x, y, z, roll, yaw, pitch]
         if type == 'soft':
             pose = self.cam[cam_id]['location']
             pose.extend(self.cam[cam_id]['rotation'])
