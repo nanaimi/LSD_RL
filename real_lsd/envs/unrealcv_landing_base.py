@@ -241,7 +241,7 @@ class UnrealCvLanding_base(gym.Env):
     def load_env_setting(self, filename):
         import real_lsd
         gympath = os.path.dirname(real_lsd.__file__)
-        gympath = os.path.join(gympath, 'envs/setting', filename)
+        gympath = os.path.join(gympath, 'envs/settings', filename)
         f = open(gympath)
         filetype = os.path.splitext(filename)[1]
         if filetype == '.json':
