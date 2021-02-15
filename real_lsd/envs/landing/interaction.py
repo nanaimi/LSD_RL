@@ -156,7 +156,7 @@ class Landing(UnrealCv):
             return pose
 
         if type == 'hard':
-            log.war("this one was called.)
+            log.warn("this one was called.")
             self.cam[cam_id]['location'] = self.get_location(cam_id)
             self.cam[cam_id]['rotation'] = self.get_rotation(cam_id)
             pose = self.cam[cam_id]['location'] + self.cam[cam_id]['rotation']
