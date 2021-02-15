@@ -184,8 +184,10 @@ class UnrealCvLanding_base(gym.Env):
             time.sleep(1)
 
             # DEBUG STUFF BEGIN
+            log.warn("MAMMA MIA, Getting Pose that was set.")
             pose_that_was_set = self.unrealcv.get_pose(self.cam_id)
-            log.warn("MAMMA MIA, POSE SHOULD HAVE BEEN SET TO: {}".format(pose_that_was_set))
+
+            log.warn("MAMMA MIA, POSE was set to: {}".format(pose_that_was_set))
             # DEBUG END
 
             collision = self.unrealcv.move_3d(self.cam_id, 40, 40, -20)
