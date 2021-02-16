@@ -93,7 +93,7 @@ class UnrealCvLanding_base(gym.Env):
         self.targets_pos            = self.unrealcv.build_pose_dic(self.target_list)
 
         # for reset point generation and selection
-        print("############### RESET TYPE", reset_type, "###############")
+        log.info("Itialized with RESET TYPE: {}".format(reset_type))
         self.reset_module           = reset_point.ResetPoint(setting, reset_type, current_pose)
 
     def _step(self, action ):

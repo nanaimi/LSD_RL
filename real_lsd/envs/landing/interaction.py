@@ -5,6 +5,7 @@ import time
 import glog as log
 import numpy as np
 import distutils.version
+import PIL.Image
 
 import torch
 import torch.nn as nn
