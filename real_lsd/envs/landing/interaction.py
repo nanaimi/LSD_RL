@@ -69,10 +69,10 @@ class Landing(UnrealCv):
             state = np.concatenate((self.pose, self.img_color), axis=0)
         elif observation_type == 'HeightFeatures':
             self.height =  np.asarray(self.get_pose(cam_id, type='hard')[2], dtype=np.float64)
-            log.warn("height is dimension: {}".format(self.height.shape))
+            log.warn("height is: {} with dimension: {}".format(self.height, self.height.shape))
             self.features = self.get_features(cam_id, 'lit')
             log.warn("Features are dimension: {}".format(self.features.shape))
-            state = np.concatenate((self.pose[2], self.features), axis=0)
+            state = np.concatenate((self.height, self.features), axis=0)
 
         return state
 
