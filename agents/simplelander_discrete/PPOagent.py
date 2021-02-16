@@ -118,7 +118,7 @@ class PPOAgent():
             torch.save(self.model.state_dict(), PATH)
         else:
             os.mkdir(dir)
-            PATH = PATH + '/' + dir '/' + filename + '.pth'
+            PATH = PATH + '/' + dir + '/' + filename + '.pth'
             torch.save(self.model.state_dict(), PATH)
 
     def load_model(self, filename):
