@@ -1,5 +1,6 @@
 from gym.envs.registration import register
 import logging
+import glog as log
 # from gym_unrealcv.envs.utils.misc import load_env_setting
 from real_lsd.utils.misc import load_env_setting
 logger = logging.getLogger(__name__)
@@ -13,7 +14,7 @@ for env in ['cpptest']:
     settings = load_env_setting(setting_file)
     for i, reset in enumerate(['random', 'waypoint', 'testpoint']):
         for action in ['Discrete', 'Continuous']:  # action type
-            for obs in ['Color', 'Depth', 'Rgbd', 'PoseColor']: # observation type
+            for obs in ['Color', 'Depth', 'Rgbd', 'PoseColor', 'HeightFeatures']: # observation type
                 for category in settings['targets']:
                     register(
                         id='MyUnrealLand-{env}{category}-{action}{obs}-v{reset}'.format(env=env, category=category, action=action, obs=obs, reset=i),
@@ -28,4 +29,4 @@ for env in ['cpptest']:
                                 },
                         max_episode_steps=200
                     )
-                    print("successfully registered")
+                    log.warn('Registered env: '+ 'MyUnrealLand-{env}{category}-{action}{obs}-v{reset}'.format(env=env, category=category, action=action, obs=obs, reset=i))
