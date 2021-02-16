@@ -33,7 +33,7 @@ def load_obj(filename):
     path = os.getcwd()
     assert dir in os.listdir(path)
     path = path + '/' + dir + '/'
-    with open(path + name + '.pkl', 'rb') as f:
+    with open(path + filename + '.pkl', 'rb') as f:
         return pickle.load(f)
 
 # Set to INFO for debugging
