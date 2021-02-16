@@ -244,3 +244,7 @@ with torch.no_grad():
 
         key = 'episode_{}'.format(episode_count)
         episodes[key] = episode
+
+log.info("Done Testing.")
+
+env.close()
