@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import glog as log
 class Reward():
     '''
     define different type reward function
@@ -16,13 +17,13 @@ class Reward():
         done = False
         success = False
         factor = 10
-        print(mask.shape)
         height, width = mask.shape
         tot_num_pixels = height*width
-        print(cv2.sumElems(mask))
         fov_score = (cv2.sumElems(mask)[0] / 255) / tot_num_pixels
+        log.warn("FOV Score: {}".format(fov_score))
 
         reward = factor*np.tanh(fov_score*2*np.pi-np.pi)
+        log.warn("Reward for FOV: {}".format(reward))
 
         if pose[2] < done_thr:
             reward += 100
