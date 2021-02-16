@@ -165,10 +165,10 @@ class UnrealCvLanding_base(gym.Env):
 
             # TODO: CHANGE reward function here
             rew, done, suc = self.reward_function.reward_mask_height(mask, info['Pose'], self.done_th)
-
             info['Reward'] = rew
             info['Done']   = done
             info['Success']= suc
+
         elif 'distance' in self.reward_type:
             info['Reward'] = self.reward_function.reward_distance(distance)
         else:

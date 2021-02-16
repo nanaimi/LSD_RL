@@ -15,7 +15,7 @@ import real_lsd
 from PPOagent import PPOAgent
 
 # Set to INFO for debugging
-log.setLevel("INFO")
+log.setLevel("WARN")
 
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda" if use_cuda else "cpu")

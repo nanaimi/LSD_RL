@@ -13,7 +13,7 @@ class Reward():
     # IN: object mask delivered by unrealcv client, mask, and pose
     # OUT: reward
     def reward_mask(self, mask,
-                    factor=100):
+                    factor=200):
         reward = 0
         height, width = mask.shape
         tot_num_pixels = height*width
@@ -58,7 +58,7 @@ class Reward():
                 success = True
             else:
                 reward -= 500
-                
+
         log.warn("Reward Total: {}".format(reward))
         return reward, done, success
 
