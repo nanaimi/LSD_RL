@@ -12,11 +12,9 @@ class Reward():
 
     # IN: object mask delivered by unrealcv client, mask, and pose
     # OUT: reward
-    def reward_mask(self, mask, pose, done_thr, success_thr=0.9):
+    def reward_mask(self, mask,
+                    factor=100):
         reward = 0
-        done = False
-        success = False
-        factor = 10
         height, width = mask.shape
         tot_num_pixels = height*width
         fov_score = (cv2.sumElems(mask)[0] / 255) / tot_num_pixels
@@ -25,15 +23,49 @@ class Reward():
         reward = factor*np.tanh(fov_score*2*np.pi-np.pi)
         log.warn("Reward for FOV: {}".format(reward))
 
+        return reward
+
+    def reward_height(self, pose,
+                      scale=150,
+                      stretch=1000):
+        reward = 0
+        height = pose[2]
+
+        reward  = - np.max(0,scale*np.tanh((1/stretch)*height))
+
+        return reward
+
+    def reward_mask_height(self, mask, pose, done_thr,
+                           factor=100,
+                           scale=150,
+                           stretch=1000,
+                           success_thr=0.9):
+        done = False
+        success = False
+        reward = 0
+        reward_fov = self.reward_mask(mask, factor)
+        reward_height = self.reward_height(pose, scale, stretch)
+
+        reward = reward_fov + reward_height
+
+
         if pose[2] < done_thr:
-            reward += 100
             done = True
             if fov_score > success_thr:
+                reward += 500
                 success = True
-        else:
-            reward -= -(1/10)*pose[2]
+            else:
+                reward -= 500
 
         return reward, done, success
+
+    def reward_depth(self, depth):
+        pass
+
+    def reward_distance(self, dis2target_now):
+        reward = (self.dis2target_last - dis2target_now) / max(self.dis2target_last, 100)
+        self.dis2target_last = dis2target_now
+        return reward
 
     def reward_bbox(self, boxes):
         reward = 0
@@ -61,10 +93,4 @@ class Reward():
         x_bias = x_c - 0.5
         discount = max(0, 1 - x_bias ** 2)
         reward = discount * boxsize
-        return reward
-
-    def reward_distance(self, dis2target_now):
-        reward = (self.dis2target_last - dis2target_now) / max(self.dis2target_last, 100)
-        self.dis2target_last = dis2target_now
-
         return reward

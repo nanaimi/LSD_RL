@@ -5,7 +5,7 @@
 	"pitch": 0,
 	"maxsteps": 100,
 	"trigger_th": 0.6,
-	"done_th": 50,
+	"done_th": 40,
 	"reward_th": 0.1,
 	"reward_factor": 10,
 	"collision_th": 50,

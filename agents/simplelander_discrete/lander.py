@@ -160,15 +160,10 @@ while frame_idx < max_frames and not early_stop:
                                 values)
 
     returns   = torch.cat(returns).detach()
-
     log_probs = torch.cat(log_probs).detach()
-
     values    = torch.cat(values).detach()
-
     states    = torch.cat(states)
-
     actions   = torch.cat(actions)
-
     advantage = returns - values
 
     # log.info("Returns before CAT: {}".format(len(returns)))

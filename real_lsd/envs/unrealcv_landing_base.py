@@ -129,33 +129,6 @@ class UnrealCvLanding_base(gym.Env):
         info['Collision']  = self.unrealcv.move_3d(self.cam_id, delt_x, delt_y, delt_z)
         info['Pose']       = self.unrealcv.get_pose(self.cam_id, 'hard')
 
-        if info['Collision'] or self.count_steps >= 150:
-            info['Reward'] = -100
-            info['Done']   = True
-
-        if 'mask' in self.reward_type and not info['Collision']:
-            # get segmented image
-            object_mask    = self.unrealcv.read_image(self.cam_id, 'object_mask')
-            # get_mask gets you a binary image, either 0 or 255 per pixel
-            mask           = self.unrealcv.get_mask(object_mask, self.target_object)
-            rew, done, suc = self.reward_function.reward_mask(mask, info['Pose'], self.done_th)
-            info['Reward'] = rew
-            info['Done']   = done
-            info['Success']= suc
-
-        # calculate reward according to the distance to target object
-        elif 'distance' in self.reward_type:
-            info['Reward'] = self.reward_function.reward_distance(distance)
-        else:
-            info['Reward'] = 0
-
-        # If triggered the agent believes that the episode should be DONE
-        if info['Trigger'] > self.trigger_th:
-            self.trigger_count += 1
-            if self.trigger_count >= 3:
-                info['Done']   = True
-
-
         # Update observation
         state              = self.unrealcv.get_observation(self.cam_id, self.observation_type)
 
@@ -171,6 +144,35 @@ class UnrealCvLanding_base(gym.Env):
         # save the trajectory
         self.trajectory.append(info['Pose'][:6])
         info['Trajectory'] = self.trajectory
+
+        # If triggered the agent believes that the episode should be DONE
+        if info['Trigger'] > self.trigger_th:
+            self.trigger_count += 1
+            if self.trigger_count >= 3:
+                info['Done']   = True
+
+        if info['Collision'] or self.count_steps >= 150:
+            info['Reward'] = -1000
+            info['Done']   = True
+            return state, info['Reward'], info['Done'], info
+
+
+        if 'mask' in self.reward_type and not info['Collision']:
+            # get segmented image
+            object_mask    = self.unrealcv.read_image(self.cam_id, 'object_mask')
+            # get_mask gets you a binary image, either 0 or 255 per pixel
+            mask           = self.unrealcv.get_mask(object_mask, self.target_object)
+
+            # TODO: CHANGE reward function here
+            rew, done, suc = self.reward_function.reward_mask_height(mask, info['Pose'], self.done_th)
+
+            info['Reward'] = rew
+            info['Done']   = done
+            info['Success']= suc
+        elif 'distance' in self.reward_type:
+            info['Reward'] = self.reward_function.reward_distance(distance)
+        else:
+            info['Reward'] = 0
 
         return state, info['Reward'], info['Done'], info
 
