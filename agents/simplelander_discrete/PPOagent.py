@@ -123,6 +123,4 @@ class PPOAgent():
         self.model = torch.load(PATH)
 
 
-### INITIALISE ALL
-
 # if __name__ == '__main__':

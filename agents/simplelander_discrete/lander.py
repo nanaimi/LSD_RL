@@ -54,7 +54,7 @@ print(agent.model)
 # turn model train mode
 agent.model.train()
 
-max_frames = 1000
+max_frames = 300
 frame_idx  = 0
 test_rewards = []
 
@@ -217,11 +217,12 @@ with torch.no_grad():
             dist, value = agent.model(state)
 
             action = dist.sample()
+            log.info("action type: {}".format(action))
             log_prob = dist.log_prob(action)
 
             next_state, reward, done, info = env.step(action.cpu().numpy())
 
-            dists.append(dist.detach())
+            dists.append(dist)
             values.append(value.detach().numpy())
             actions.append(action.detach().numpy())
             log_probs.append(log_prob.detach().numpy())
