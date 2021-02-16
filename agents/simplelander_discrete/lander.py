@@ -14,6 +14,25 @@ import real_lsd
 
 from PPOagent import PPOAgent
 
+# Helper functions
+def save_obj(obj):
+    dir = 'data'
+    path = os.getcwd()
+    filename = time.strftime("%Y%m%d_%H%M%S")
+    if dir not in os.listdir(path)
+        os.mkdir(dir)
+    path = path + '/' + dir + '/'
+    with open(path + filename + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_obj(filename):
+    dir = 'data'
+    path = os.getcwd()
+    assert dir in os.listdir(path)
+    path = path '/' + dir + '/'
+    with open(path + name + '.pkl', 'rb') as f:
+        return pickle.load(f)
+
 # Set to INFO for debugging
 log.setLevel("WARN")
 
@@ -242,6 +261,7 @@ with torch.no_grad():
         key = 'episode_{}'.format(episode_count)
         episodes[key] = episode
 
+    save_obj(episodes)
     log.warn("Successes out of 20: {}".format(successful_episodes))
 
 log.warn("Done Testing.")
