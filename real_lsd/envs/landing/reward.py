@@ -11,9 +11,10 @@ class Reward():
 
     # IN: object mask delivered by unrealcv client, mask, and pose
     # OUT: reward
-    def reward_mask(self, mask, pose, done_thr):
+    def reward_mask(self, mask, pose, done_thr, success_thr=0.9):
         reward = 0
         done = False
+        success = False
         factor = 10
         print(mask.shape)
         height, width = mask.shape
@@ -26,10 +27,12 @@ class Reward():
         if pose[2] < done_thr:
             reward += 100
             done = True
+            if fov_score > success_thr:
+                success = True
         else:
             reward -= -(1/10)*pose[2]
 
-        return reward, done
+        return reward, done, success
 
     def reward_bbox(self, boxes):
         reward = 0

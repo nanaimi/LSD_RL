@@ -111,9 +111,11 @@ class UnrealCvLanding_base(gym.Env):
             Color=None,
             Depth=None,
         )
+        # Defaults
+        info['Done']       = False
+        info['Success']    = False
 
         action             = np.squeeze(action)
-        info['Done']       = False
 
         if self.action_type == 'Discrete':
             (delt_x, delt_y, delt_z, info['Trigger']) = self.discrete_actions[action]
@@ -122,7 +124,7 @@ class UnrealCvLanding_base(gym.Env):
 
         self.count_steps  += 1
 
-        # take action
+        # take action and read new pose
         info['Collision']  = self.unrealcv.move_3d(self.cam_id, delt_x, delt_y, delt_z)
         info['Pose']       = self.unrealcv.get_pose(self.cam_id, 'hard')
 
@@ -135,9 +137,11 @@ class UnrealCvLanding_base(gym.Env):
             object_mask    = self.unrealcv.read_image(self.cam_id, 'object_mask')
             # get_mask gets you a binary image, either 0 or 255 per pixel
             mask           = self.unrealcv.get_mask(object_mask, self.target_object)
-            reward, done   = self.reward_function.reward_mask(mask, info['Pose'], self.done_th)
-            info['Reward'] = reward
+            rew, done, suc = self.reward_function.reward_mask(mask, info['Pose'], self.done_th)
+            info['Reward'] = rew
             info['Done']   = done
+            info['Success']= suc
+
         # calculate reward according to the distance to target object
         elif 'distance' in self.reward_type:
             info['Reward'] = self.reward_function.reward_distance(distance)

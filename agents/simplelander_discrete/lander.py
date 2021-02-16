@@ -59,6 +59,7 @@ state = env.reset()
 early_stop = False
 
 while frame_idx < max_frames and not early_stop:
+    log.warn("Frame: {}".format(frame_idx))
     print("frame: ", frame_idx)
     log_probs = []
     values    = []
@@ -71,8 +72,8 @@ while frame_idx < max_frames and not early_stop:
 
     for st in range(num_steps):
         state = torch.FloatTensor(state).to(device)
-        log.info("state:      {}".format(state))
-        log.info("state TYPE: {}".format(type(state)))
+        # log.info("state:      {}".format(state))
+        # log.info("state TYPE: {}".format(type(state)))
         log.info("state SIZE: {}".format(state.size()))
 
         dist, value = agent.model(state)
@@ -81,14 +82,13 @@ while frame_idx < max_frames and not early_stop:
 
         state = state.unsqueeze(1)
         state = torch.transpose(state, 0, 1)
-        log.info("state after unsqueeze and transpose:      {}".format(state))
-        log.info("state after unsqueeze and transpose TYPE: {}".format(type(state)))
+        # log.info("state after unsqueeze and transpose:      {}".format(state))
+        # log.info("state after unsqueeze and transpose TYPE: {}".format(type(state)))
         log.info("state after unsqueeze and transpose SIZE: {}".format(state.size()))
-
 
         value = value.unsqueeze(1)
         log.info("Value: {}".format(value))
-        log.info("Value TYPE: {}".format(type(value)))
+        # log.info("Value TYPE: {}".format(type(value)))
 
         action = dist.sample()
         log.info("Sampled Action: {}".format(action))
@@ -130,7 +130,7 @@ while frame_idx < max_frames and not early_stop:
 
         # next state logic
         if done:
-            log.warn("RESET SHOULD HAPPEN")
+            log.warn("Resetting.")
             state = env.reset()
         else:
             state = next_state
@@ -175,27 +175,64 @@ while frame_idx < max_frames and not early_stop:
     log.info("Actions   SIZE after CAT: {}".format(actions.size()))
     log.info("Advantage SIZE after CAT: {}".format(advantage.size()))
 
-    log.warn("Calling PPO update")
+    log.warn("Calling PPO update.")
     agent.ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantage)
 
 log.info("FINITA LA MUSICA")
-#
-# # multiprocess environment
-# # example env name
-# # UnrealLand-cpptestFloorGood-DiscretePoseColor-v0
-# env = gym.make('MyUnrealLand-cpptestFloorGood-DiscretePoseColor-v0')
-# # env = make_vec_env('UnrealSearch-RealisticRoomDoor-DiscreteColor-v0', n_envs=1)
-#
-# # PP02 with mlp network for both actor and critic, both with two layers and 64
-# # neurons each
-# model = PPO2(MlpPolicy, env, verbose=1)
-# model.learn(total_timesteps=2000) # test with fewer timesteps
-# model.save("testrun")
-#
-#
-# # Enjoy trained agent
-# obs = env.reset()
-# while True:
-#     action, _states = model.predict(obs)
-#     obs, rewards, dones, info = env.step(action)
-#     env.render()
+
+
+episode_count = 0
+successful_episodes = 0
+num_test_episodes = 20
+
+episodes = {}
+
+state = env.reset()
+
+while episode_count < num_test_episodes:
+
+    done = False
+    episode = {}
+
+    states    = []
+    dists     = []
+    values    = []
+    actions   = []
+    rewards   = []
+    log_probs = []
+
+    while not done:
+        states.append(state)
+
+        state = torch.FloatTensor(state).to(device)
+        dist, value = agent.model(state)
+
+        action = dist.sample()
+        log_prob = dist.log_prob(action)
+
+        next_state, reward, done, info = env.step(action.cpu().numpy())
+
+        dists.append(dist.detach())
+        values.append(value.detach().numpy())
+        actions.append(action.detach().numpy())
+        log_probs.append(log_prob.detach().numpy())
+        rewards.append(reward)
+
+        # next state logic
+        if done:
+            if info['Success']:
+                successful_episodes += 1
+            state = env.reset()
+            episode_count += 1
+        else:
+            state = next_state
+
+    episode['states'] = states
+    episode['dists'] = dists
+    episode['values'] = values
+    episode['actions'] = actions
+    episode['rewards'] = rewards
+    episode['log_probs'] = log_probs
+
+    key = 'episode_{}'.format(episode_count)
+    episodes[key]
