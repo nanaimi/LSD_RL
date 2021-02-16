@@ -32,7 +32,7 @@ num_outputs = env.action_space.n
 hidden_size      = 256
 lr               = 3e-4
 num_steps        = 100
-mini_batch_size  = 20
+mini_batch_size  = 5
 ppo_epochs       = 4
 
 threshold_reward = -200 # TODO update/review
@@ -54,7 +54,7 @@ print(agent.model)
 # turn model train mode
 agent.model.train()
 
-max_frames = 300
+max_frames = 200
 frame_idx  = 0
 test_rewards = []
 
