@@ -207,7 +207,7 @@ log.info("FINITA LA MUSICA")
 log.warn("Time to test.")
 agent.model.eval()
 with torch.no_grad():
-    for test in range(5)
+    for test in range(5):
         episode_count = 0
         successful_episodes = 0
         num_test_episodes = 20
