@@ -23,7 +23,7 @@ class Reward():
         reward = factor*np.tanh(fov_score*2*np.pi-np.pi)
         log.warn("Reward for FOV: {}".format(reward))
 
-        return reward
+        return reward, fov_score
 
     def reward_height(self, pose,
                       scale=150,
@@ -44,7 +44,7 @@ class Reward():
         done = False
         success = False
         reward = 0
-        reward_fov = self.reward_mask(mask, factor)
+        reward_fov, fov_score = self.reward_mask(mask, factor)
         reward_height = self.reward_height(pose, scale, stretch)
 
         reward = reward_fov + reward_height
