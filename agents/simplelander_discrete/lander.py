@@ -246,6 +246,8 @@ with torch.no_grad():
         key = 'episode_{}'.format(episode_count)
         episodes[key] = episode
 
+    log.info("Successes out of 20: {}".format(successful_episodes))
+
 log.info("Done Testing.")
 
 env.close()

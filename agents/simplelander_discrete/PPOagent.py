@@ -111,7 +111,7 @@ class PPOAgent():
     def save_model(self):
         PATH = os.getcwd()
         dir  = 'models'
-        if dir in os.listdir(path):
+        if dir in os.listdir(PATH):
             PATH = PATH + '/' + dir
             # save the params here with date and time
             torch.save(self.model.state_dict(), PATH)
