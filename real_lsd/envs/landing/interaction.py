@@ -45,6 +45,7 @@ class Landing(UnrealCv):
         self.img_color = np.zeros(1)
         self.img_depth = np.zeros(1)
         self.features  = np.zeros(1)
+        self.height    = np.zeros(1)
 
         self.use_gym_10_api = distutils.version.LooseVersion(gym.__version__) >= distutils.version.LooseVersion('0.10.0') # not sure what this is
 
@@ -67,8 +68,10 @@ class Landing(UnrealCv):
             self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
             state = np.concatenate((self.pose, self.img_color), axis=0)
         elif observation_type == 'HeightFeatures':
-            self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
+            self.height =  np.asarray(self.get_pose(cam_id, type='hard')[2], dtype=np.float64)
+            log.warn("height is dimension: {}".format(self.height.shape))
             self.features = self.get_features(cam_id, 'lit')
+            log.warn("Features are dimension: {}".format(self.features.shape))
             state = np.concatenate((self.pose[2], self.features), axis=0)
 
         return state
