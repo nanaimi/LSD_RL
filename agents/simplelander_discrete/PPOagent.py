@@ -109,17 +109,23 @@ class PPOAgent():
         return returns
 
     def save_model(self):
-        PATH = os.getcwd()
-        dir  = 'models'
+        import time
+        PATH     = os.getcwd()
+        dir      = 'models'
+        filename = time.strftime("%Y%m%d_%H%M%S")
         if dir in os.listdir(PATH):
-            PATH = PATH + '/' + dir
-            # save the params here with date and time
+            PATH = PATH + '/' + dir '/' + filename + '.pth'
             torch.save(self.model.state_dict(), PATH)
         else:
             os.mkdir(dir)
-            PATH = PATH + '/' + dir
+            PATH = PATH + '/' + dir '/' + filename + '.pth'
+            torch.save(self.model.state_dict(), PATH)
 
-    def load_model(self, PATH):
+    def load_model(self, filename):
+        PATH = os.getcwd()
+        dir  = 'models'
+        assert dir in os.listdir(PATH)
+        PATH = PATH + '/' + dir + '/' + filename + '.pth'
         self.model = torch.load(PATH)
 
 
