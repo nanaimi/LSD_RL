@@ -6,6 +6,7 @@ import glog as log
 import numpy as np
 import distutils.version
 import PIL.Image
+from io import BytesIO
 
 import torch
 import torch.nn as nn
