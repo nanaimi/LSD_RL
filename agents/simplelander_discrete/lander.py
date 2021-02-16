@@ -30,10 +30,11 @@ num_outputs = env.action_space.n
 #Hyper params:
 hidden_size      = 256
 lr               = 3e-4
-num_steps        = 20
-mini_batch_size  = 5
+num_steps        = 100
+mini_batch_size  = 20
 ppo_epochs       = 4
-threshold_reward = -200 # update/review
+
+threshold_reward = -200 # TODO update/review
 
 
 agent = PPOAgent(num_inputs,
@@ -177,7 +178,7 @@ while frame_idx < max_frames and not early_stop:
     log.warn("Calling PPO update")
     agent.ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantage)
 
-
+log.info("FINITA LA MUSICA")
 #
 # # multiprocess environment
 # # example env name
