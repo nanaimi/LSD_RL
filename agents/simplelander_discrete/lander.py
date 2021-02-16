@@ -16,10 +16,10 @@ import real_lsd
 from PPOagent import PPOAgent
 
 # Helper functions
-def save_obj(obj):
+def save_obj(obj, name=''):
     dir = 'data'
     path = os.getcwd()
-    filename = time.strftime("%Y%m%d_%H%M%S")
+    filename = time.strftime("%Y%m%d_%H%M%S") + name
     if dir not in os.listdir(path):
         os.mkdir(dir)
     path = path + '/' + dir + '/'
@@ -76,7 +76,7 @@ print(agent.model)
 # turn model train mode
 agent.model.train()
 
-max_frames = 200
+max_frames = 15000
 frame_idx  = 0
 test_rewards = []
 
@@ -207,66 +207,67 @@ log.info("FINITA LA MUSICA")
 log.warn("Time to test.")
 agent.model.eval()
 with torch.no_grad():
-    episode_count = 0
-    successful_episodes = 0
-    num_test_episodes = 20
+    for test in range(5)
+        episode_count = 0
+        successful_episodes = 0
+        num_test_episodes = 20
 
-    episodes = {}
+        episodes = {}
 
-    state = env.reset()
+        state = env.reset()
 
-    while episode_count < num_test_episodes:
+        while episode_count < num_test_episodes:
 
-        done = False
-        episode = {}
+            done = False
+            episode = {}
 
-        states    = []
-        dists     = []
-        values    = []
-        actions   = []
-        rewards   = []
-        log_probs = []
+            states    = []
+            dists     = []
+            values    = []
+            actions   = []
+            rewards   = []
+            log_probs = []
 
-        while not done:
-            states.append(state)
+            while not done:
+                states.append(state)
 
-            state = torch.FloatTensor(state).to(device)
-            dist, value = agent.model(state)
+                state = torch.FloatTensor(state).to(device)
+                dist, value = agent.model(state)
 
-            action = dist.sample()
-            log.info("action type: {}".format(action))
-            log_prob = dist.log_prob(action)
+                action = dist.sample()
+                log.info("action type: {}".format(action))
+                log_prob = dist.log_prob(action)
 
-            next_state, reward, done, info = env.step(action.cpu().numpy())
+                next_state, reward, done, info = env.step(action.cpu().numpy())
 
-            dists.append(dist)
-            values.append(value.detach().numpy())
-            actions.append(action.detach().numpy())
-            log_probs.append(log_prob.detach().numpy())
-            rewards.append(reward)
+                dists.append(dist)
+                values.append(value.detach().numpy())
+                actions.append(action.detach().numpy())
+                log_probs.append(log_prob.detach().numpy())
+                rewards.append(reward)
 
-            # next state logic
-            if done:
-                if info['Success']:
-                    successful_episodes += 1
-                state = env.reset()
-                episode_count += 1
-            else:
-                state = next_state
+                # next state logic
+                if done:
+                    if info['Success']:
+                        successful_episodes += 1
+                    state = env.reset()
+                    episode_count += 1
+                else:
+                    state = next_state
 
-        episode['states'] = states
-        episode['dists'] = dists
-        episode['values'] = values
-        episode['actions'] = actions
-        episode['rewards'] = rewards
-        episode['log_probs'] = log_probs
+            episode['states'] = states
+            episode['dists'] = dists
+            episode['values'] = values
+            episode['actions'] = actions
+            episode['rewards'] = rewards
+            episode['log_probs'] = log_probs
 
-        key = 'episode_{}'.format(episode_count)
-        episodes[key] = episode
+            key = 'episode_{}'.format(episode_count)
+            episodes[key] = episode
 
-    file = save_obj(episodes)
-    log.warn("Successes out of 20: {}".format(successful_episodes))
-    # print(load_obj(file))
+        file = save_obj(episodes, '{}'.format(test))
+        log.warn("Successes out of 20: {}".format(successful_episodes))
+        # print(load_obj(file))
 
 log.warn("Done Testing.")
 
