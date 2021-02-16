@@ -235,4 +235,4 @@ while episode_count < num_test_episodes:
     episode['log_probs'] = log_probs
 
     key = 'episode_{}'.format(episode_count)
-    episodes[key]
+    episodes[key] = episode 
