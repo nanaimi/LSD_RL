@@ -76,8 +76,9 @@ class UnrealCvLanding_base(gym.Env):
                                                 high=np.array(self.continous_actions['high']))
 
         # define observation space
+        observation_types = ['Color', 'Depth', 'Rgbd', 'PoseColor', 'HeightFeatures']
         self.observation_type       = observation_type
-        assert self.observation_type == 'Color' or self.observation_type == 'Depth' or self.observation_type == 'Rgbd' or self.observation_type == 'PoseColor'
+        assert (self.observation_type in observation_types)
         self.observation_space      = self.unrealcv.define_observation(self.cam_id, self.observation_type, 'direct')
 
         # define reward type
