@@ -68,6 +68,8 @@ class Landing(UnrealCv):
             self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
             state = np.concatenate((self.pose, self.img_color), axis=0)
         elif observation_type == 'HeightFeatures':
+            self.img_color = self.read_image(cam_id, 'lit', mode)
+            self.img_depth = self.read_depth(cam_id)
             self.height =  np.asarray([self.get_pose(cam_id, type='hard')[2]], dtype=np.float64)
             log.warn("height is: {} with dimension: {}".format(self.height, self.height.shape))
             self.features = self.get_features(cam_id, 'lit')
