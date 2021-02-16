@@ -64,10 +64,10 @@ class Landing(UnrealCv):
             self.img_color = self.read_image(cam_id, 'lit', mode).flatten()
             self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
             state = np.concatenate((self.pose, self.img_color), axis=0)
-        elif observation_type == 'PoseFeatures':
+        elif observation_type == 'HeightFeatures':
             self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
             self.features = self.get_features(cam_id, 'lit')
-            state = np.concatenate((self.pose, self.features), axis=0)
+            state = np.concatenate((self.pose[2], self.features), axis=0)
 
         return state
 
@@ -107,7 +107,7 @@ class Landing(UnrealCv):
             else:
                 observation_space = spaces.Box(low=low_bound, high=high_bound, shape=state.shape)
 
-        elif observation_type == 'PoseFeatures':
+        elif observation_type == 'HeightFeatures':
             low_bound = np.full(state.shape, -np.inf)
             high_bound = np.full(state.shape, np.inf)
             if self.use_gym_10_api:

@@ -20,7 +20,7 @@ use_cuda = torch.cuda.is_available()
 device = torch.device("cuda" if use_cuda else "cpu")
 
 # initialise environment
-env = gym.make('MyUnrealLand-cpptestFloorGood-DiscretePoseColor-v0')
+env = gym.make('MyUnrealLand-cpptestFloorGood-DiscreteHeightFeatures-v0')
 
 print("Observation Space:", env.observation_space, "dimension of observation:", env.observation_space.shape[0])
 num_inputs  = env.observation_space.shape[0]
