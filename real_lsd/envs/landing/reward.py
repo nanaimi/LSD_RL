@@ -30,8 +30,9 @@ class Reward():
                       stretch=1000):
         reward = 0
         height = pose[2]
+        interim = scale*np.tanh((1/stretch)*height)
 
-        reward  = - np.max(0,scale*np.tanh((1/stretch)*height))
+        reward  = (-1)*np.max(np.asarray([0,interim]))
 
         return reward
 
@@ -47,7 +48,6 @@ class Reward():
         reward_height = self.reward_height(pose, scale, stretch)
 
         reward = reward_fov + reward_height
-
 
         if pose[2] < done_thr:
             done = True
