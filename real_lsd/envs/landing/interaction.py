@@ -204,11 +204,11 @@ class Landing(UnrealCv):
 
         location_now = self.cam[cam_id]['location']
 
-        log.warn("moved to location now: {}".format(location_now))
+        log.info("moved to location now: {}".format(location_now))
 
         error = self.get_distance(location_now, location_exp, n=3)
 
-        log.warn("Error: {}".format(error))
+        log.info("Error: {}".format(error))
 
         if error < 36: # weird offset
             return False
