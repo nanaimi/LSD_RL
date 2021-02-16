@@ -19,7 +19,7 @@ def save_obj(obj):
     dir = 'data'
     path = os.getcwd()
     filename = time.strftime("%Y%m%d_%H%M%S")
-    if dir not in os.listdir(path)
+    if dir not in os.listdir(path):
         os.mkdir(dir)
     path = path + '/' + dir + '/'
     with open(path + filename + '.pkl', 'wb') as f:
