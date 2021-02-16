@@ -266,7 +266,7 @@ with torch.no_grad():
 
     file = save_obj(episodes)
     log.warn("Successes out of 20: {}".format(successful_episodes))
-    print(load_obj(file))
+    # print(load_obj(file))
 
 log.warn("Done Testing.")
 
