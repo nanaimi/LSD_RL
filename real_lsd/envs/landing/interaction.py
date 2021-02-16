@@ -52,28 +52,32 @@ class Landing(UnrealCv):
     def get_observation(self, cam_id, observation_type, mode='direct'):
         if observation_type == 'Color':
             self.img_color = state = self.read_image(cam_id, 'lit', mode)
+
         elif observation_type == 'Depth':
             self.img_depth = state = self.read_depth(cam_id)
+
         elif observation_type == 'Rgbd':
             self.img_color = self.read_image(cam_id, 'lit', mode)
             self.img_depth = self.read_depth(cam_id)
             state = np.append(self.img_color, self.img_depth, axis=2)
+
         elif observation_type == 'CG':
             self.img_color = self.read_image(cam_id, 'lit', mode)
             self.img_gray = self.img_color.mean(2)
             self.img_gray = np.expand_dims(self.img_gray, -1)
             state = np.concatenate((self.img_color, self.img_gray), axis=2)
+
         elif observation_type == 'PoseColor':
             self.img_color = self.read_image(cam_id, 'lit', mode).flatten()
             self.pose =  np.asarray(self.get_pose(cam_id, type='hard'), dtype=np.float64)
             state = np.concatenate((self.pose, self.img_color), axis=0)
+
         elif observation_type == 'HeightFeatures':
-            self.img_color = self.read_image(cam_id, 'lit', mode)
             self.img_depth = self.read_depth(cam_id)
             self.height =  np.asarray([self.get_pose(cam_id, type='hard')[2]], dtype=np.float64)
-            log.warn("height is: {} with dimension: {}".format(self.height, self.height.shape))
+            log.info("height is: {} with dimension: {}".format(self.height, self.height.shape))
             self.features = self.get_features(cam_id, 'lit')
-            log.warn("Features are dimension: {}".format(self.features.shape))
+            log.info("Features are dimension: {}".format(self.features.shape))
             state = np.concatenate((self.height, self.features), axis=0)
 
         return state
@@ -149,6 +153,12 @@ class Landing(UnrealCv):
         res = None
         while res is None:
             res = self.client.request(cmd.format(cam_id=cam_id, viewmode=viewmode))
+
+        image_rgb = self.decode_png(res)
+        image_rgb = image_rgb[:, :, :-1]  # delete alpha channel
+        image = image_rgb[:, :, ::-1]  # transpose channel order
+        self.img_color = image
+
         img_pil =  PIL.Image.open(BytesIO(res)).convert('RGB')
         img_tensor = self.preprocess(img_pil)
         img_tensor = img_tensor.unsqueeze(0)
@@ -166,7 +176,6 @@ class Landing(UnrealCv):
             return pose
 
         if type == 'hard':
-            log.warn("this one was called.")
             self.cam[cam_id]['location'] = self.get_location(cam_id)
             self.cam[cam_id]['rotation'] = self.get_rotation(cam_id)
             pose = self.cam[cam_id]['location'] + self.cam[cam_id]['rotation']
@@ -176,21 +185,19 @@ class Landing(UnrealCv):
     # IN: cam_id, delta_x, delta_y, delta_z
     # OUT:move agent to correct location, returns boolean for collision
     def move_3d(self, cam_id, delt_x, delt_y, delt_z):
-        log.warn("Executing move_3d")
+        log.info("Executing move_3d.")
 
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']
-
-        log.warn("current location: {}".format(location_now))
+        log.info("current location: {}".format(location_now))
 
         location_exp = [location_now[0] + delt_x, location_now[1]+delt_y, location_now[2]+delt_z]
 
-        log.warn("expecting to move to this location: {}".format(location_exp))
-        log.warn("Move To being called")
+        log.info("expecting to move to this location: {}".format(location_exp))
 
         self.moveto(cam_id, location_exp)
 
-        log.warn("Get Pose being called")
+        log.info("Get Pose being called.")
 
         pose = self.get_pose(cam_id)
 

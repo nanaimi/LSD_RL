@@ -180,33 +180,32 @@ class UnrealCvLanding_base(gym.Env):
 
     def _reset(self, ):
         # double check the resetpoint, it is necessary for random reset type
-        log.warn("MAMMA MIA, RESET IS BEING CALLED!")
+        log.info("Reset called.")
         collision = True
         while collision:
             current_pose = self.reset_module.select_resetpoint()
 
-            log.warn("MAMMA MIA, RESET POSE SAMPLED: {}".format(current_pose))
+            log.info("Reset pose sampled: {}".format(current_pose))
 
             self.unrealcv.set_pose(self.cam_id, current_pose)
 
             # DEBUG STUFF BEGIN
-            log.warn("MAMMA MIA, Getting Pose that was set.")
+            log.info("MAMMA MIA, Getting Pose that was set.")
             pose_that_was_set = self.unrealcv.get_pose(self.cam_id)
-
-            log.warn("MAMMA MIA, POSE was set to: {}".format(pose_that_was_set))
+            log.info("MAMMA MIA, POSE was set to: {}".format(pose_that_was_set))
             # DEBUG END
 
             collision = self.unrealcv.move_3d(self.cam_id, 40, 40, -20)
 
-            log.warn("MAMMA MIA, WAS THERE A COLLISION?: {}".format(collision))
+            log.info("Reset Collision: {}".format(collision))
 
-        log.warn("MAMMA MIA, RESET POSE IS: {}".format(current_pose))
+        log.info("Chosen reset pose: {}".format(current_pose))
 
         self.unrealcv.set_pose(self.cam_id, current_pose)
 
         state = self.unrealcv.get_observation(self.cam_id, self.observation_type)
 
-        log.warn("MAMMA MIA, RESET STATE IS: {}".format(state))
+        log.info("Reset state: {}".format(state))
 
         self.trajectory = []
         self.trajectory.append(current_pose)

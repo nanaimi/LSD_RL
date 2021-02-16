@@ -31,8 +31,10 @@ class Reward():
         reward = 0
         height = pose[2]
         interim = scale*np.tanh((1/stretch)*height)
+        log.warn("Interim Height: {}".format(interim))
 
         reward  = (-1)*np.max(np.asarray([0,interim]))
+        log.warn("Reward Height: {}".format(reward))
 
         return reward
 
@@ -56,7 +58,8 @@ class Reward():
                 success = True
             else:
                 reward -= 500
-
+                
+        log.warn("Reward Total: {}".format(reward))
         return reward, done, success
 
     def reward_depth(self, depth):
