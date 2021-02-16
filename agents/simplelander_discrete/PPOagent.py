@@ -114,7 +114,7 @@ class PPOAgent():
         dir      = 'models'
         filename = time.strftime("%Y%m%d_%H%M%S")
         if dir in os.listdir(PATH):
-            PATH = PATH + '/' + dir '/' + filename + '.pth'
+            PATH = PATH + '/' + dir + '/' + filename + '.pth'
             torch.save(self.model.state_dict(), PATH)
         else:
             os.mkdir(dir)
