@@ -33,6 +33,7 @@ class Landing(UnrealCv):
         mobilenet = models.mobilenet_v2(pretrained=True)
         mobilenet.eval()
         self.feature_network = nn.Sequential(*(list(mobilenet.children())[0]))
+        self.feature_network.eval()
 
         # Preprocess data before inference --> not sure why?
         self.preprocess = transforms.Compose([
