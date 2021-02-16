@@ -107,6 +107,20 @@ class PPOAgent():
         log.info("Dimension of return: {}".format(returns[0].size()))
         return returns
 
+    def save_model(self):
+        PATH = os.getcwd()
+        dir  = 'models'
+        if dir in os.listdir(path):
+            PATH = PATH + '/' + dir
+            # save the params here with date and time
+            torch.save(self.model.state_dict(), PATH)
+        else:
+            os.mkdir(dir)
+            PATH = PATH + '/' + dir
+
+    def load_model(self, PATH):
+        self.model = torch.load(PATH)
+
 
 ### INITIALISE ALL
 

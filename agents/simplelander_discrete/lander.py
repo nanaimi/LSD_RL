@@ -50,7 +50,10 @@ agent = PPOAgent(num_inputs,
 
 print(agent.model)
 
-max_frames = 15000
+# turn model train mode
+agent.model.train()
+
+max_frames = 1000
 frame_idx  = 0
 test_rewards = []
 
@@ -178,61 +181,66 @@ while frame_idx < max_frames and not early_stop:
     log.warn("Calling PPO update.")
     agent.ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantage)
 
+agent.save_model()
+
 log.info("FINITA LA MUSICA")
 
+# Testing the policy after training
+log.info("Time to test.")
+agent.model.eval()
+with torch.no_grad():
+    episode_count = 0
+    successful_episodes = 0
+    num_test_episodes = 20
 
-episode_count = 0
-successful_episodes = 0
-num_test_episodes = 20
+    episodes = {}
 
-episodes = {}
+    state = env.reset()
 
-state = env.reset()
+    while episode_count < num_test_episodes:
 
-while episode_count < num_test_episodes:
+        done = False
+        episode = {}
 
-    done = False
-    episode = {}
+        states    = []
+        dists     = []
+        values    = []
+        actions   = []
+        rewards   = []
+        log_probs = []
 
-    states    = []
-    dists     = []
-    values    = []
-    actions   = []
-    rewards   = []
-    log_probs = []
+        while not done:
+            states.append(state)
 
-    while not done:
-        states.append(state)
+            state = torch.FloatTensor(state).to(device)
+            dist, value = agent.model(state)
 
-        state = torch.FloatTensor(state).to(device)
-        dist, value = agent.model(state)
+            action = dist.sample()
+            log_prob = dist.log_prob(action)
 
-        action = dist.sample()
-        log_prob = dist.log_prob(action)
+            next_state, reward, done, info = env.step(action.cpu().numpy())
 
-        next_state, reward, done, info = env.step(action.cpu().numpy())
+            dists.append(dist.detach())
+            values.append(value.detach().numpy())
+            actions.append(action.detach().numpy())
+            log_probs.append(log_prob.detach().numpy())
+            rewards.append(reward)
 
-        dists.append(dist.detach())
-        values.append(value.detach().numpy())
-        actions.append(action.detach().numpy())
-        log_probs.append(log_prob.detach().numpy())
-        rewards.append(reward)
+            # next state logic
+            if done:
+                if info['Success']:
+                    successful_episodes += 1
+                state = env.reset()
+                episode_count += 1
+            else:
+                state = next_state
 
-        # next state logic
-        if done:
-            if info['Success']:
-                successful_episodes += 1
-            state = env.reset()
-            episode_count += 1
-        else:
-            state = next_state
+        episode['states'] = states
+        episode['dists'] = dists
+        episode['values'] = values
+        episode['actions'] = actions
+        episode['rewards'] = rewards
+        episode['log_probs'] = log_probs
 
-    episode['states'] = states
-    episode['dists'] = dists
-    episode['values'] = values
-    episode['actions'] = actions
-    episode['rewards'] = rewards
-    episode['log_probs'] = log_probs
-
-    key = 'episode_{}'.format(episode_count)
-    episodes[key] = episode 
+        key = 'episode_{}'.format(episode_count)
+        episodes[key] = episode
