@@ -26,6 +26,8 @@ def save_obj(obj):
     with open(path + filename + '.pkl', 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
+    return filename
+
 def load_obj(filename):
     dir = 'data'
     path = os.getcwd()
@@ -262,8 +264,9 @@ with torch.no_grad():
         key = 'episode_{}'.format(episode_count)
         episodes[key] = episode
 
-    save_obj(episodes)
+    file = save_obj(episodes)
     log.warn("Successes out of 20: {}".format(successful_episodes))
+    print(load_obj(file))
 
 log.warn("Done Testing.")
 
