@@ -181,7 +181,6 @@ class UnrealCvLanding_base(gym.Env):
             log.warn("MAMMA MIA, RESET POSE SAMPLED: {}".format(current_pose))
 
             self.unrealcv.set_pose(self.cam_id, current_pose)
-            time.sleep(1)
 
             # DEBUG STUFF BEGIN
             log.warn("MAMMA MIA, Getting Pose that was set.")
