@@ -13,14 +13,15 @@ class Reward():
     # IN: object mask delivered by unrealcv client, mask, and pose
     # OUT: reward
     def reward_mask(self, mask,
-                    factor=200):
+                    factor=200,
+                    right_shift=1.5):
         reward = 0
         height, width = mask.shape
         tot_num_pixels = height*width
         fov_score = (cv2.sumElems(mask)[0] / 255) / tot_num_pixels
         log.warn("FOV Score: {}".format(fov_score))
 
-        reward = factor*np.tanh(fov_score*2*np.pi-np.pi)
+        reward = factor*np.tanh(2*np.pi*fov_score-right_shift*np.pi)
         log.warn("Reward for FOV: {}".format(reward))
 
         return reward, fov_score
@@ -40,13 +41,14 @@ class Reward():
 
     def reward_mask_height(self, mask, pose, done_thr,
                            factor=100,
+                           right_shift=1.5,
                            scale=150,
                            stretch=1000,
                            success_thr=0.9):
         done = False
         success = False
         reward = 0
-        reward_fov, fov_score = self.reward_mask(mask, factor)
+        reward_fov, fov_score = self.reward_mask(mask, factor, right_shift)
         reward_height = self.reward_height(pose, scale, stretch)
 
         reward = reward_fov + reward_height
