@@ -29,4 +29,4 @@ for env in ['cpptest']:
                                 },
                         max_episode_steps=200
                     )
-                    log.warn('Registered env: '+ 'MyUnrealLand-{env}{category}-{action}{obs}-v{reset}'.format(env=env, category=category, action=action, obs=obs, reset=i))
+                    log.info('Registered env: '+ 'MyUnrealLand-{env}{category}-{action}{obs}-v{reset}'.format(env=env, category=category, action=action, obs=obs, reset=i))

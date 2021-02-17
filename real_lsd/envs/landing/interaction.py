@@ -20,7 +20,7 @@ class Landing(UnrealCv):
     def __init__(self, env, cam_id=0, port=9000,
                  ip='127.0.0.1', targets=None, resolution=(160, 120)):
         super(Landing, self).__init__(env=env, port=port, ip=ip, cam_id=cam_id, resolution=resolution)
-
+        self.lock = 0
         if targets == 'all':
             self.targets = self.get_objects()
             self.color_dict = self.build_color_dic(self.targets)
@@ -199,7 +199,19 @@ class Landing(UnrealCv):
         location_exp = [location_now[0] + delt_x, location_now[1]+delt_y, location_now[2]+delt_z]
         log.warn("Expecting to move to this location: {}".format(location_exp))
 
-        self.moveto(cam_id, location_exp)
+        while self.lock:
+            log.warn("waiting for lock to open.")
+            continue
+
+        if not self.lock:
+            self.lock = 1
+            while self.lock:
+                log.warn("locked.")
+                self.moveto(cam_id, location_exp)
+                self.lock = 0
+        else
+            log.warn("process was locked, skipping this move")
+
         log.warn("Get Pose being called.")
 
         pose = self.get_pose(cam_id)
