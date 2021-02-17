@@ -57,7 +57,7 @@ class UnrealCvLanding_base(gym.Env):
         env_ip, env_port           = self.unreal.start(docker, resolution)
 
         # connect UnrealCV
-        time.sleep(1)
+        time.sleep(4)
         self.unrealcv = Landing(cam_id=self.cam_id,
                                    port=env_port,
                                    ip=env_ip,
