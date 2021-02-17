@@ -97,6 +97,7 @@ while frame_idx < max_frames and not early_stop:
     entropy = 0
 
     for st in range(num_steps):
+        action = 0
         state = torch.FloatTensor(state).to(device)
         # log.info("state:      {}".format(state))
         # log.info("state TYPE: {}".format(type(state)))
@@ -232,6 +233,7 @@ with torch.no_grad():
             log_probs = []
 
             while not done:
+                action = 0
                 states.append(state)
 
                 state = torch.FloatTensor(state).to(device)
