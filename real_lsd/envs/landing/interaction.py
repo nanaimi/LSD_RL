@@ -170,7 +170,7 @@ class Landing(UnrealCv):
     def set_pose(self, cam_id, pose, mode='hard'):
         log.warn("this set_pose was called")
         self.set_location(cam_id, pose[:3])
-        log.warn("going to set this rotation: {}".format(pose[-3:0]))
+        log.warn("going to set this rotation: {}".format(pose[-3:]))
         self.set_rotation(cam_id, pose[-3:])
 
     def get_pose(self,cam_id, type='hard'):  # pose = [x, y, z, roll, yaw, pitch]
