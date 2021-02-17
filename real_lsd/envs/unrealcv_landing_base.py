@@ -57,7 +57,7 @@ class UnrealCvLanding_base(gym.Env):
         env_ip, env_port           = self.unreal.start(docker, resolution)
 
         # connect UnrealCV
-        time.sleep(4)
+        time.sleep(1)
         self.unrealcv = Landing(cam_id=self.cam_id,
                                    port=env_port,
                                    ip=env_ip,
@@ -96,7 +96,7 @@ class UnrealCvLanding_base(gym.Env):
         self.targets_pos            = self.unrealcv.build_pose_dic(self.target_list)
 
         # for reset point generation and selection
-        log.info("Itialized with RESET TYPE: {}".format(reset_type))
+        log.info("Initialized with RESET TYPE: {}".format(reset_type))
         self.reset_module           = reset_point.ResetPoint(setting, reset_type, current_pose)
 
     def _step(self, action ):
