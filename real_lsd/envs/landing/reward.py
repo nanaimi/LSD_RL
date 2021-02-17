@@ -31,6 +31,8 @@ class Reward():
                       stretch=1000):
         reward = 0
         height = pose[2]
+        log.warn("Height for reward height {}".format(height))
+
         interim = scale*np.tanh((1/stretch)*height)
         log.warn("Interim Height: {}".format(interim))
 
