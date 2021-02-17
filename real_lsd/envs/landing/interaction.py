@@ -224,7 +224,7 @@ class Landing(UnrealCv):
                 log.warn("locked.")
                 log.warn("not executing moveto, instead set_location")
                 # self.moveto(cam_id, location_exp)
-                log.warn(about)
+                log.warn("about to set location for cam_id {}".format(cam_id))
                 self.set_location(cam_id, location_exp)
                 self.lock = 0
                 log.warn("unlocked.")
