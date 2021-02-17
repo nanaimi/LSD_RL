@@ -40,7 +40,7 @@ class Reward():
         return reward
 
     def reward_mask_height(self, mask, pose, done_thr,
-                           factor=100,
+                           factor=300,
                            right_shift=1.5,
                            scale=50,
                            stretch=1000,
