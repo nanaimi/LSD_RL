@@ -43,7 +43,8 @@ class ResetPoint():
         y = random.uniform(self.reset_area[2], self.reset_area[3])
         z = random.uniform(self.reset_area[4], self.reset_area[5])
         # yaw = random.randint(0, 360)
-        yaw = 0
+        yaw +=90
+        self.pitch = 0
 
         return [x,y,z, 0, yaw, self.pitch]
 
