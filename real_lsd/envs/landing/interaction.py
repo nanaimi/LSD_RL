@@ -192,6 +192,7 @@ class Landing(UnrealCv):
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']
         log.warn("Current location: {}".format(location_now))
+        log.warn("Current rotation: {}".format(pose[-3:]))
 
         location_exp = [location_now[0] + delt_x, location_now[1]+delt_y, location_now[2]+delt_z]
         log.warn("Expecting to move to this location: {}".format(location_exp))
@@ -201,7 +202,8 @@ class Landing(UnrealCv):
 
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']
-        log.warn("moved to location now: {}".format(location_now))
+        log.warn("moved to location: {}".format(location_now))
+        log.warn("rotated to rotation: {}".format(pose[-3:]))
 
         error = self.get_distance(location_now, location_exp, n=3)
         log.info("Error: {}".format(error))
