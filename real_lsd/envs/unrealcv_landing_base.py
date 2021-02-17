@@ -160,7 +160,7 @@ class UnrealCvLanding_base(gym.Env):
             if self.trigger_count >= 3:
                 info['Done']   = True
 
-        if info['Collision'] or self.count_steps >= 150:
+        if info['Collision'] or self.count_steps >= 100:
             info['Reward'] = -1000
             info['Done']   = True
             return state, info['Reward'], info['Done'], info
