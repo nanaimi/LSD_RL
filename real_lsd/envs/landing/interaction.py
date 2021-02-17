@@ -210,7 +210,7 @@ class Landing(UnrealCv):
                 log.warn("locked.")
                 self.moveto(cam_id, location_exp)
                 self.lock = 0
-        else
+        else:
             log.warn("process was locked, skipping this move")
 
         log.warn("Get Pose being called.")
