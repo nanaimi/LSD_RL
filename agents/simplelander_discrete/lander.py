@@ -117,7 +117,7 @@ while frame_idx < max_frames and not early_stop:
         # log.info("Value TYPE: {}".format(type(value)))
 
         action = dist.sample()
-        log.info("Sampled Action: {}".format(action))
+        log.warn("Sampled Action: {}".format(action))
 
         next_state, reward, done, _ = env.step(action.cpu().numpy())
         log.info("Step REWARD: {} DONE: {}".format(reward, done))
