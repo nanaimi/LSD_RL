@@ -131,7 +131,8 @@ class UnrealCvLanding_base(gym.Env):
         self.count_steps  += 1
 
         # take action and read new pose
-        info['Collision']  = self.unrealcv.move_3d(self.cam_id, delt_x, delt_y, delt_z)
+        log.warn("Not passing sampled action, instead passing dx: {}, dy: {}, dz: {}, trigger: {}".format(0, 0, 10, info['Trigger']))
+        info['Collision']  = self.unrealcv.move_3d(self.cam_id, 0, 0, 10)
         info['Pose']       = self.unrealcv.get_pose(self.cam_id, 'hard')
 
         # Update observation

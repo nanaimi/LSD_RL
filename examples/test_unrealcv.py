@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 import time
+import glog as log
 
 help_message = '''
 A demo showing how to control a game using python
@@ -13,6 +14,53 @@ q, e: move camera up and down.
 left, right, up, down: move around
 '''
 plt.rcParams['keymap.save'] = ''
+
+lock = 0
+
+def move_3d(client, cam_id, delt_x, delt_y, delt_z):
+    log.warn("Executing move_3d.")
+
+    pose = self.get_pose(cam_id)
+    location_now = self.cam[cam_id]['location']
+    log.warn("Current location: {}".format(location_now))
+    log.warn("Current rotation: {}".format(pose[-3:]))
+
+    location_exp = [location_now[0] + delt_x, location_now[1]+delt_y, location_now[2]+delt_z]
+    log.warn("Expecting to move to this location: {}".format(location_exp))
+
+    while self.lock:
+        log.warn("waiting for lock to open.")
+        continue
+
+    if not self.lock:
+        log.warn("acquiring lock")
+        lock = 1
+        while self.lock:
+            log.warn("locked.")
+            self.moveto(cam_id, location_exp)
+            self.lock = 0
+    else:
+        log.warn("process was locked, skipping this move")
+
+    log.warn("Get Pose being called.")
+
+    pose = self.get_pose(cam_id)
+    location_now = self.cam[cam_id]['location']
+    log.warn("moved to location: {}".format(location_now))
+    log.warn("rotated to rotation: {}".format(pose[-3:]))
+
+    if error < 36: # weird offset
+        return False
+    else:
+        return True
+
+def moveto(self, client, cam_id, loc):
+    cmd = 'vset /camera/{cam_id}/moveto {x} {y} {z}'
+    client.request(cmd.format(cam_id=cam_id, x=loc[0], y=loc[1], z=loc[2]))
+
+
+
+
 
 def main():
     loc = None
