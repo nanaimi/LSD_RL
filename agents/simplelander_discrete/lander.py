@@ -79,6 +79,7 @@ agent.model.train()
 max_frames = 15000
 frame_idx  = 0
 test_rewards = []
+prior_action = 0
 
 state = env.reset()
 
@@ -117,8 +118,9 @@ while frame_idx < max_frames and not early_stop:
 
         action = dist.sample()
         log.warn("Sampled Action: {}".format(action))
-        action_not_down = not (action == 18)
-        log.warn("Sampled Action is not Down: {}".format(action_not_down))
+        action_not_same = not (action == prior_action)
+        log.warn("Sampled Action is not same as prior action: {}".format(action_not_same))
+        prior_action = action
 
         next_state, reward, done, _ = env.step(action.cpu().numpy())
         log.info("Step REWARD: {} DONE: {}".format(reward, done))

@@ -120,6 +120,7 @@ class UnrealCvLanding_base(gym.Env):
 
         if self.action_type == 'Discrete':
             (delt_x, delt_y, delt_z, info['Trigger']) = self.discrete_actions[action]
+            log.warn("Sampled action corresponds to: {delt_x}, dy: {delt_y}, dz: {delt_z}, trigger: {}".format(delt_x, delt_y, delt_z, info['Trigger']))
         else:
             (delt_x, delt_y, delt_z, info['Trigger']) = action
 
