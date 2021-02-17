@@ -173,13 +173,16 @@ class Landing(UnrealCv):
         log.warn("going to set this rotation: {}".format(pose[-3:]))
         self.set_rotation(cam_id, pose[-3:])
 
-    def get_pose(self,cam_id, type='hard'):  # pose = [x, y, z, roll, yaw, pitch]
+    def get_pose(self, cam_id, type='hard'):  # pose = [x, y, z, roll, yaw, pitch]
         if type == 'soft':
+            pose = none
             pose = self.cam[cam_id]['location']
             pose.extend(self.cam[cam_id]['rotation'])
             return pose
 
         if type == 'hard':
+            log.warn("Get Pose, Mode=hard, cam_id: {}".format(cam_id))
+            pose = None
             self.cam[cam_id]['location'] = self.get_location(cam_id)
             self.cam[cam_id]['rotation'] = self.get_rotation(cam_id)
             pose = self.cam[cam_id]['location'] + self.cam[cam_id]['rotation']
@@ -189,11 +192,12 @@ class Landing(UnrealCv):
     # IN: cam_id, delta_x, delta_y, delta_z
     # OUT:move agent to correct location, returns boolean for collision
     def move_3d(self, cam_id, delta_x, delta_y, delta_z):
-        log.warn("Executing move_3d.")
+        log.warn("Executing move_3d for cam_id {}".format(cam_id))
         location_now = None
         location_exp = None
 
         pose = self.get_pose(cam_id)
+        log.warn("Pose I got: {}".format(pose))
         location_now = self.cam[cam_id]['location']
         log.warn("Current location: {}".format(location_now))
         log.warn("Current rotation: {}".format(pose[-3:]))
@@ -201,8 +205,11 @@ class Landing(UnrealCv):
         # define new desired location
         log.warn("Passed Deltas: {}, {}, {}".format(delta_x, delta_y, delta_z))
         new_x = location_now[0] + delta_x
+        log.warn("new_x: {}".format(new_x))
         new_y = location_now[1] + delta_y
+        log.warn("new_y: {}".format(new_y))
         new_z = location_now[2] + delta_z
+        log.warn("new_z: {}".format(new_z))
         location_exp = [new_x, new_y, new_z]
         log.warn("Expecting to move to this location: {}".format(location_exp))
 
@@ -217,6 +224,7 @@ class Landing(UnrealCv):
                 log.warn("locked.")
                 log.warn("not executing moveto, instead set_location")
                 # self.moveto(cam_id, location_exp)
+                log.warn(about)
                 self.set_location(cam_id, location_exp)
                 self.lock = 0
                 log.warn("unlocked.")
