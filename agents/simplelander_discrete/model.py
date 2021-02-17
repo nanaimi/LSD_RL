@@ -38,7 +38,7 @@ class ActorCritic(nn.Module):
             nn.Linear(num_inputs, hidden_size),
             nn.ReLU(),
             nn.Linear(hidden_size, num_outputs),
-            nn.Softmax(num_outputs)
+            nn.Softmax(0)
         )
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
 
