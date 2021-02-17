@@ -223,10 +223,9 @@ class Landing(UnrealCv):
             while self.lock:
                 log.warn("locked.")
                 log.warn("not executing moveto, instead set_location")
-                # self.moveto(cam_id, location_exp)
-                log.warn("about to set location for cam_id {}".format(cam_id))
-                self.set_location(cam_id, location_exp)
-                time.sleep(2)
+                self.moveto(cam_id, location_exp)
+                # log.warn("about to set location for cam_id {}".format(cam_id))
+                # self.set_location(cam_id, location_exp)
                 self.lock = 0
                 log.warn("unlocked.")
         else:
@@ -242,9 +241,7 @@ class Landing(UnrealCv):
         error = self.get_distance(location_now, location_exp, n=3)
         log.info("Error: {}".format(error))
 
-        return False
-
-        if error < 36: # weird offset
+        if error < 10: # weird offset
             return False
         else:
             return True
