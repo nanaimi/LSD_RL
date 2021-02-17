@@ -115,6 +115,10 @@ class UnrealCvLanding_base(gym.Env):
         # Defaults
         info['Done']       = False
         info['Success']    = False
+        delt_x = 0
+        delt_y = 0
+        delt_z = 0
+        info['Trigger'] = 0
 
         action             = np.squeeze(action)
 
