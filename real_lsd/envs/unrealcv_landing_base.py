@@ -117,25 +117,25 @@ class UnrealCvLanding_base(gym.Env):
         # Defaults
         info['Done']       = False
         info['Success']    = False
-        delt_x = 0
-        delt_y = 0
-        delt_z = 0
+        delta_x = 0
+        delta_y = 0
+        delta_z = 0
         info['Trigger'] = 0
 
         action             = np.squeeze(action)
 
         if self.action_type == 'Discrete':
-            (delt_x, delt_y, delt_z, info['Trigger']) = self.discrete_actions[action]
-            log.warn("Sampled action corresponds to dx: {}, dy: {}, dz: {}, trigger: {}".format(delt_x, delt_y, delt_z, info['Trigger']))
+            (delta_x, delta_y, delta_z, info['Trigger']) = self.discrete_actions[action]
+            log.warn("Sampled action corresponds to dx: {}, dy: {}, dz: {}, trigger: {}".format(delta_x, delta_y, delta_z, info['Trigger']))
         else:
-            (delt_x, delt_y, delt_z, info['Trigger']) = action
+            (delta_x, delta_y, delta_z, info['Trigger']) = action
 
         self.count_steps  += 1
 
         # take action and read new pose
-        log.warn("Not passing sampled action, instead passing dx: {}, dy: {}, dz: {}, trigger: {}".format(0, 0, 10, info['Trigger']))
-        info['Collision']  = self.unrealcv.move_3d(self.cam_id, 0, 0, 10)
-        info['Pose']       = self.unrealcv.get_pose(self.cam_id, 'hard')
+        # log.warn("Not passing sampled action, instead passing dx: {}, dy: {}, dz: {}, trigger: {}".format(0, 0, 10, info['Trigger']))
+        info['Collision']  = self.unrealcv.move_3d(self.cam_id, delta_x, delta_y, delta_z)
+        info['Pose']       = self.unrealcv.get_pose(self.cam_id)
 
         # Update observation
         state              = self.unrealcv.get_observation(self.cam_id, self.observation_type)
