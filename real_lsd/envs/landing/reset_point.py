@@ -25,12 +25,12 @@ class ResetPoint():
         elif self.reset_type == 'waypoint':
             self.new_waypoint(init_pose, 1000)
         elif self.reset_type == 'random':
-            print("Reset Module initiailised tihe reset_type: RANDOM")
+            log.info("Reset Module initiailised tihe reset_type: RANDOM")
             self.reset_area = setting['reset_area']
 
     def select_resetpoint(self):
         if   'random' in self.reset_type:
-            print("Resetting RANDOMLY")
+            log.info("Resetting RANDOMLY")
             current_pose = self.reset_random()
         elif 'testpoint' in self.reset_type:
             current_pose = self.reset_testpoint()
