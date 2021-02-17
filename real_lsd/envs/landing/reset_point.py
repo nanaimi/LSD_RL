@@ -42,10 +42,10 @@ class ResetPoint():
         x = random.uniform(self.reset_area[0], self.reset_area[1])
         y = random.uniform(self.reset_area[2], self.reset_area[3])
         z = random.uniform(self.reset_area[4], self.reset_area[5])
-        # yaw = random.randint(0, 360)
-        yaw = 0
+        yaw = random.randint(0, 360)
+        roll= random.randint(0, 360)
 
-        return [x,y,z, 0, yaw, self.pitch]
+        return [x,y,z, roll, yaw, self.pitch]
 
     def reset_testpoint(self):
         x, y, z, yaw = self.waypoints[self.start_id]['pose']
