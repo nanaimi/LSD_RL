@@ -190,13 +190,19 @@ class Landing(UnrealCv):
     # OUT:move agent to correct location, returns boolean for collision
     def move_3d(self, cam_id, delt_x, delt_y, delt_z):
         log.warn("Executing move_3d.")
+        location_now = None
+        location_exp = None
 
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']
         log.warn("Current location: {}".format(location_now))
         log.warn("Current rotation: {}".format(pose[-3:]))
 
-        location_exp = [location_now[0] + delt_x, location_now[1]+delt_y, location_now[2]+delt_z]
+        # define new desired location
+        new_x = location_now[0] + delt_x
+        new_y = location_now[1] + delt_y
+        new_z = location_now[2] + delt_z
+        location_exp = [new_x, new_y, new_z]
         log.warn("Expecting to move to this location: {}".format(location_exp))
 
         while self.lock:
@@ -214,7 +220,7 @@ class Landing(UnrealCv):
             log.warn("process was locked, skipping this move")
 
         log.warn("Get Pose being called.")
-
+        
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']
         log.warn("moved to location: {}".format(location_now))
