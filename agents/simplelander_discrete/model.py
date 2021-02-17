@@ -15,7 +15,7 @@ from torch.distributions import Categorical
 def init_weights(m):
     if isinstance(m, nn.Linear):
         # Fills the the weight Tensor with values drawn from the normal distribution
-        nn.init.normal_(m.weight, mean=0., std=0.1)
+        nn.init.normal_(m.weight, mean=0., std=0.4)
         # Fills the bias Tensor with the constant value
         nn.init.constant_(m.bias, 0.1)
 
