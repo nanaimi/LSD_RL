@@ -86,7 +86,6 @@ early_stop = False
 
 while frame_idx < max_frames and not early_stop:
     log.warn("Frame: {}".format(frame_idx))
-    print("frame: ", frame_idx)
     log_probs = []
     values    = []
     states    = []
@@ -118,6 +117,8 @@ while frame_idx < max_frames and not early_stop:
 
         action = dist.sample()
         log.warn("Sampled Action: {}".format(action))
+        action_not_down = not (action == 18)
+        log.warn("Sampled Action is not Down: {}".format(action_not_down))
 
         next_state, reward, done, _ = env.step(action.cpu().numpy())
         log.info("Step REWARD: {} DONE: {}".format(reward, done))
