@@ -199,6 +199,7 @@ class Landing(UnrealCv):
         log.warn("Current rotation: {}".format(pose[-3:]))
 
         # define new desired location
+        log.warn("Passed Deltas: {}, {}, {}".format(delt_x, delt_y, delt_z))
         new_x = location_now[0] + delt_x
         new_y = location_now[1] + delt_y
         new_z = location_now[2] + delt_z
@@ -214,13 +215,15 @@ class Landing(UnrealCv):
             self.lock = 1
             while self.lock:
                 log.warn("locked.")
-                self.moveto(cam_id, location_exp)
+                log.warn("not executing moveto")
+                # self.moveto(cam_id, location_exp)
                 self.lock = 0
+                log.warn("unlocked.")
         else:
             log.warn("process was locked, skipping this move")
 
         log.warn("Get Pose being called.")
-        
+
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']
         log.warn("moved to location: {}".format(location_now))
