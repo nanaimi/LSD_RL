@@ -190,7 +190,7 @@ class UnrealCvLanding_base(gym.Env):
         while collision:
             current_pose = self.reset_module.select_resetpoint()
 
-            log.info("Reset pose sampled: {}".format(current_pose))
+            log.warn("Reset pose sampled: {}, calling set_pose".format(current_pose))
 
             self.unrealcv.set_pose(self.cam_id, current_pose)
 

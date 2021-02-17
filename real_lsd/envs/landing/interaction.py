@@ -168,6 +168,7 @@ class Landing(UnrealCv):
         return features
 
     def set_pose(self, cam_id, pose, mode='hard'):
+        log.warn("this set_pose was called")
         self.set_location(cam_id, pose[:3])
         self.set_rotation(cam_id, pose[-3:])
 
