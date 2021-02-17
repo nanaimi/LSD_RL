@@ -47,7 +47,7 @@ class ResetPoint():
         self.yaw +=90
         self.pitch = 0
 
-        return [x,y,z, 0, yaw, self.pitch]
+        return [x,y,z, 0, self.yaw, self.pitch]
 
     def reset_testpoint(self):
         x, y, z, yaw = self.waypoints[self.start_id]['pose']
