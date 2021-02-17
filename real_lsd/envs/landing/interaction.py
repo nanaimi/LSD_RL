@@ -204,6 +204,7 @@ class Landing(UnrealCv):
             continue
 
         if not self.lock:
+            log.warn("acquiring lock")
             self.lock = 1
             while self.lock:
                 log.warn("locked.")

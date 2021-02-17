@@ -12,7 +12,6 @@ class ResetPoint():
         self.collisionpoints = []
         self.start_id = 0
         self.yaw_id = 0
-        self.yaw = 0
 
         self.waypoint_th = setting['waypoint_th']
 
@@ -44,10 +43,9 @@ class ResetPoint():
         y = random.uniform(self.reset_area[2], self.reset_area[3])
         z = random.uniform(self.reset_area[4], self.reset_area[5])
         # yaw = random.randint(0, 360)
-        self.yaw +=90
-        self.pitch = 0
+        yaw = 0
 
-        return [x,y,z, 0, self.yaw, self.pitch]
+        return [x,y,z, 0, yaw, self.pitch]
 
     def reset_testpoint(self):
         x, y, z, yaw = self.waypoints[self.start_id]['pose']
