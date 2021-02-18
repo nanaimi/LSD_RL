@@ -87,7 +87,14 @@ agent = PPOAgent(num_inputs,
 print(agent.model)
 print(agent.model.actor)
 print(agent.model.critic)
-print(agent.model.named_modules())
+
+for name, layer in agent.model.named_modules():
+    print(name)
+    print(layer)
+
+for name, layer in agent.model.actor.named_modules():
+    print(name)
+    print(layer)
 
 # agent.model.actor.register_forward_hook(get_activation('fc3'))
 # output = model(x)
