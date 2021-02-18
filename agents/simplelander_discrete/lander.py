@@ -88,7 +88,10 @@ print(agent.model.actor[1])
 
 
 for name, layer in agent.model.actor.named_modules():
-    agent.model.actor[name].register_forward_hook(get_activation('actor_layer_{}'.format(name)))
+    print(name)
+    print(type(name))
+    idx = int(name)
+    agent.model.actor[idx].register_forward_hook(get_activation('actor_layer_{}'.format(name)))
 
 
 # output = model(x)
