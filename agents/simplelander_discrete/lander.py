@@ -2,7 +2,7 @@ import os
 import gym
 import time
 import torch
-import torch.nn
+import torch.nn as nn
 import pickle
 import numpy as np
 import glog as log
