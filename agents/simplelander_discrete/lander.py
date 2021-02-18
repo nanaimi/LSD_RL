@@ -117,6 +117,7 @@ while frame_idx < max_frames and not early_stop:
     for st in range(num_steps):
         action = None
         state = torch.FloatTensor(state).to(device)
+        assert torch.sum(torch.isnan(next_state)) == 0
         # log.info("state:      {}".format(state))
         # log.info("state TYPE: {}".format(type(state)))
         log.info("state SIZE: {}".format(state.size()))
@@ -194,6 +195,8 @@ while frame_idx < max_frames and not early_stop:
         #     if test_reward > threshold_reward: early_stop = True
 
     next_state = torch.FloatTensor(next_state).to(device)
+
+    assert torch.sum(torch.isnan(next_state)) == 0
 
     _, next_value = agent.model(next_state)
 

@@ -39,7 +39,7 @@ class ActorCritic(nn.Module):
             nn.Linear(num_inputs, hidden_size),
             nn.ReLU(),
             nn.Linear(hidden_size, num_outputs),
-            nn.Softmax(dim=0)
+            nn.LogSoftmax(dim=0)
         )
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
 
@@ -47,26 +47,11 @@ class ActorCritic(nn.Module):
 
     def forward(self, x):
         value = self.critic(x)
-        discrete_probabilitiies = self.actor(x)
-        log.warn("Output Probabilities: {}".format(discrete_probabilitiies))
+        discrete_log_probabilitiies = self.actor(x)
         assert (torch.sum(torch.isnan(discrete_probabilitiies)) == 0)
+        discrete_probabilitiies = torch.exp(discrete_log_probabilitiies)
         dist = Categorical(discrete_probabilitiies)
         # continuous action space
         # std   = self.log_std.exp().expand_as(mu)
         # dist  = Normal(mu, std)
         return dist, value
-
-#
-# activation = {}
-# def get_activation(name):
-#     def hook(model, input, output):
-#         activation[name] = output.detach()
-#         return hook
-#
-# model.fc3.register_forward_hook(get_activation('fc3'))
-# output = model(x)
-# activation['fc3']
-#
-# self.hooks = {}
-# for name, module in model.named_modules():
-#     hooks[name] = module.register_forward_hook(self,hook_fn)
