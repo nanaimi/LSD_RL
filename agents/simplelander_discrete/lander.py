@@ -41,7 +41,7 @@ def load_obj(filename):
 def get_activation(name):
     def hook(model, input, output):
         activation[name] = output.detach()
-        return hook
+    return hook
 
 # Set to INFO for debugging
 log.setLevel("WARN")
