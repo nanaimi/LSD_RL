@@ -117,15 +117,16 @@ while frame_idx < max_frames and not early_stop:
     for st in range(num_steps):
         action = None
         state = torch.FloatTensor(state).to(device)
+        
         assert torch.sum(torch.isnan(state)) == 0
-        # log.info("state:      {}".format(state))
-        # log.info("state TYPE: {}".format(type(state)))
         log.info("state SIZE: {}".format(state.size()))
 
         log.warn("Model Input: {}".format(state))
         dist, value = agent.model(state)
         log.info("Forward Pass Dist: {}, Forward Pass value: {}".format(dist, value))
-        for i in range(4):
+
+        # Output all layer activations to console
+        for i in range(5):
             log.warn("actor layer {} activation: {}".format(i, activation['actor_layer_'+str(i)]))
 
         state = state.unsqueeze(1)
