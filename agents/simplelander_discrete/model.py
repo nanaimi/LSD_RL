@@ -39,6 +39,7 @@ class ActorCritic(nn.Module):
             nn.Linear(num_inputs, hidden_size),
             nn.ReLU(),
             nn.Linear(hidden_size, num_outputs),
+            nn.ReLU(),
             nn.LogSoftmax(dim=0)
         )
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
@@ -50,7 +51,7 @@ class ActorCritic(nn.Module):
         discrete_log_probabilitiies = self.actor(x)
 
         assert (torch.sum(torch.isnan(discrete_log_probabilitiies)) == 0)
-        
+
         discrete_probabilitiies = torch.exp(discrete_log_probabilitiies)
         dist = Categorical(discrete_probabilitiies)
         # continuous action space
