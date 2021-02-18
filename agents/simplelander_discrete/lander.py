@@ -125,7 +125,7 @@ while frame_idx < max_frames and not early_stop:
         dist, value = agent.model(state)
         log.info("Forward Pass Dist: {}, Forward Pass value: {}".format(dist, value))
         for i in range(4):
-            log.warn("actor layer {} activation: {}".format(i, activation['actor_layer_'.format(i)]))
+            log.warn("actor layer {} activation: {}".format(i, activation['actor_layer_'+str(i)]))
 
         state = state.unsqueeze(1)
         state = torch.transpose(state, 0, 1)
