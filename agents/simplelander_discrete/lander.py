@@ -37,17 +37,12 @@ def load_obj(filename):
         return pickle.load(f)
 
 # get activation of layers in model
-
 activation = {}
 def get_activation(name):
     def hook(model, input, output):
+        # print(name)
         activation[name] = output.detach()
         return hook
-
-    #
-    # agent.model.fc3.register_forward_hook(get_activation('fc3'))
-    # output = model(x)
-    # activation['fc3']
 
 # Set to INFO for debugging
 log.setLevel("WARN")
@@ -88,6 +83,15 @@ print(agent.model)
 print(agent.model.actor)
 print(agent.model.critic)
 
+
+for name, layer in agent.model.actor.named_modules():
+    agent.model.actor.name.register_forward_hook(get_activation('actor_layer_{}'.format(name)))
+
+
+output = model(x)
+
+activation['fc3']
+
 for name, layer in agent.model.named_modules():
     print(name)
     print(layer, type(layer))
@@ -97,9 +101,9 @@ for name, layer in agent.model.actor.named_modules():
     print(layer, type(layer))
 
 
-agent.model.actor.register_forward_hook(get_activation('fc3'))
-output = model(x)
-activation['fc3']
+# agent.model.actor.register_forward_hook(get_activation('fc3'))
+# output = model(x)
+# activation['fc3']
 
 # turn model train mode
 agent.model.train()
