@@ -140,6 +140,9 @@ while frame_idx < max_frames and not early_stop:
 
         action = dist.sample()
         log.warn("Sampled Action: {}".format(action))
+        log.warn("Action TYPE: {}, SHAPE: {}".format(type(action), action.shape))
+
+
         action_not_same = not (action == prior_action)
         log.warn("Sampled Action is not same as prior action: {}".format(action_not_same))
         prior_action = action
@@ -148,13 +151,14 @@ while frame_idx < max_frames and not early_stop:
         log.info("Step REWARD: {} DONE: {}".format(reward, done))
 
         log_prob = dist.log_prob(action)
-        log.info("Step LOG_PROB: {}".format(log_prob))
+        log.warn("Step LOG_PROB: {}".format(log_prob))
+        log.warn("LOG_PROB TYPE: {}, SHAPE: {}".format(type(log_prob), log_prob.shape))
 
         entropy += dist.entropy().mean()
 
         # Append data to arrays
-        np_log_prob = log_prob.detach().numpy()
-        log_prob = torch.FloatTensor([np.float(np_log_prob)])
+        # np_log_prob = log_prob.detach().numpy()
+        # log_prob = torch.FloatTensor([np.float(np_log_prob)])
         log_prob = log_prob.unsqueeze(1)
         log_prob = log_prob.to(device)
         log_probs.append(log_prob)
@@ -173,8 +177,8 @@ while frame_idx < max_frames and not early_stop:
 
         states.append(state)
 
-        action = action.detach().numpy()
-        action = torch.FloatTensor([np.float(action)])
+        # action = action.detach().numpy()
+        # action = torch.FloatTensor([np.float(action)])
         action = action.unsqueeze(1)
         action = action.to(device)
         actions.append(action)
