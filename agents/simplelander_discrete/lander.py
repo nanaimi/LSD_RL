@@ -90,7 +90,7 @@ agent.model.train()
 activation = {}
 
 for name, layer in agent.model.actor.named_modules():
-    if isinstance(layer, nn.ReLU) or isinstance(layer, nn.Linear) or isinstance(layer, nn.Softmax):
+    if isinstance(layer, nn.ReLU) or isinstance(layer, nn.Linear) or isinstance(layer, nn.LogSoftmax):
         print(name, layer)
         layer.register_forward_hook(get_activation('actor_layer_{}'.format(name)))
 
