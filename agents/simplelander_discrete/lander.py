@@ -87,7 +87,7 @@ agent.model.train()
 
 
 activation = {}
-agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(0)))
+agent.model[1][0].register_forward_hook(get_activation('actor_layer_{}'.format(0)))
 # agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(1)))
 # agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(2)))
 # agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(3)))
