@@ -117,7 +117,7 @@ while frame_idx < max_frames and not early_stop:
     for st in range(num_steps):
         action = None
         state = torch.FloatTensor(state).to(device)
-        assert torch.sum(torch.isnan(next_state)) == 0
+        assert torch.sum(torch.isnan(state)) == 0
         # log.info("state:      {}".format(state))
         # log.info("state TYPE: {}".format(type(state)))
         log.info("state SIZE: {}".format(state.size()))
