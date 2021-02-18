@@ -90,15 +90,16 @@ print(agent.model.critic)
 
 for name, layer in agent.model.named_modules():
     print(name)
-    print(layer)
+    print(layer, type(layer))
 
 for name, layer in agent.model.actor.named_modules():
-    print(name)
-    print(layer)
+    print("name",name)
+    print(layer, type(layer))
 
-# agent.model.actor.register_forward_hook(get_activation('fc3'))
-# output = model(x)
-# activation['fc3']
+
+agent.model.actor.register_forward_hook(get_activation('fc3'))
+output = model(x)
+activation['fc3']
 
 # turn model train mode
 agent.model.train()
