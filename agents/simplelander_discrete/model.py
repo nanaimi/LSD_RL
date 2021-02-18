@@ -55,3 +55,18 @@ class ActorCritic(nn.Module):
         # std   = self.log_std.exp().expand_as(mu)
         # dist  = Normal(mu, std)
         return dist, value
+
+
+activation = {}
+def get_activation(name):
+    def hook(model, input, output):
+        activation[name] = output.detach()
+        return hook
+
+model.fc3.register_forward_hook(get_activation('fc3'))
+output = model(x)
+activation['fc3']
+
+self.hooks = {}
+for name, module in model.named_modules():
+    hooks[name] = module.register_forward_hook(self,hook_fn)

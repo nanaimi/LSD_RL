@@ -36,6 +36,19 @@ def load_obj(filename):
     with open(path + filename + '.pkl', 'rb') as f:
         return pickle.load(f)
 
+# get activation of layers in model
+
+activation = {}
+def get_activation(name):
+    def hook(model, input, output):
+        activation[name] = output.detach()
+        return hook
+
+    #
+    # agent.model.fc3.register_forward_hook(get_activation('fc3'))
+    # output = model(x)
+    # activation['fc3']
+
 # Set to INFO for debugging
 log.setLevel("WARN")
 
@@ -74,6 +87,11 @@ agent = PPOAgent(num_inputs,
 print(agent.model)
 print(agent.model.actor)
 print(agent.model.critic)
+print(agent.model.named_modules())
+
+agent.model.actor.register_forward_hook(get_activation('fc3'))
+output = model(x)
+activation['fc3']
 
 # turn model train mode
 agent.model.train()
@@ -105,9 +123,9 @@ while frame_idx < max_frames and not early_stop:
         # log.info("state TYPE: {}".format(type(state)))
         log.info("state SIZE: {}".format(state.size()))
 
+        log.warn("Model Input: {}".format(state))
         dist, value = agent.model(state)
-        log.info("Forward Pass Dist: {}".format(dist))
-        log.info("Forward Pass value: {}".format(value))
+        log.info("Forward Pass Dist: {}, Forward Pass value: {}".format(dist, value))
 
         state = state.unsqueeze(1)
         state = torch.transpose(state, 0, 1)
