@@ -157,8 +157,7 @@ while frame_idx < max_frames and not early_stop:
         entropy += dist.entropy().mean()
 
         # Append data to arrays
-        # np_log_prob = log_prob.detach().numpy()
-        # log_prob = torch.FloatTensor([np.float(np_log_prob)])
+        log_prob = log_prob.unsqueeze(0)
         log_prob = log_prob.unsqueeze(1)
         log_prob = log_prob.to(device)
         log_probs.append(log_prob)
@@ -177,8 +176,7 @@ while frame_idx < max_frames and not early_stop:
 
         states.append(state)
 
-        # action = action.detach().numpy()
-        # action = torch.FloatTensor([np.float(action)])
+        action = action.unsqueeze(0)
         action = action.unsqueeze(1)
         action = action.to(device)
         actions.append(action)
