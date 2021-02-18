@@ -83,16 +83,12 @@ agent = PPOAgent(num_inputs,
 print(agent.model)
 print(agent.model.actor)
 print(agent.model.actor[0])
-print(agent.model.actor[1])
+# print(agent.model.actor[1])
 
-
-
-
-for name, layer in agent.model.actor.named_modules():
-    if isinstance(layer, nn.ReLU) or isinstance(layer, nn.Linear) or isinstance(layer, nn.Softmax):
-        print(name)
-        idx = int(name)
-        layer.register_forward_hook(get_activation('actor_layer_{}'.format(idx)))
+agent.model.actor[0].register_forward_hook(get_activation('actor_layer_{}'.format(0)))
+agent.model.actor[1].register_forward_hook(get_activation('actor_layer_{}'.format(1)))
+agent.model.actor[2].register_forward_hook(get_activation('actor_layer_{}'.format(2)))
+agent.model.actor[3].register_forward_hook(get_activation('actor_layer_{}'.format(3)))
 
 
 # output = model(x)
