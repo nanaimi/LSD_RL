@@ -92,7 +92,7 @@ for name, layer in agent.model.actor.named_modules():
     if isinstance(layer, nn.ReLU) or isinstance(layer, nn.Linear) or isinstance(layer, nn.Softmax):
         print(name)
         idx = int(name)
-        agent.model.actor[idx].register_forward_hook(get_activation('actor_layer_{}'.format(idx)))
+        layer.register_forward_hook(get_activation('actor_layer_{}'.format(idx)))
 
 
 # output = model(x)
