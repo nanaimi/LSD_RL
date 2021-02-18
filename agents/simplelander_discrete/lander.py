@@ -89,9 +89,9 @@ print(agent.model.actor)
 print(agent.model.critic)
 print(agent.model.named_modules())
 
-agent.model.actor.register_forward_hook(get_activation('fc3'))
-output = model(x)
-activation['fc3']
+# agent.model.actor.register_forward_hook(get_activation('fc3'))
+# output = model(x)
+# activation['fc3']
 
 # turn model train mode
 agent.model.train()
