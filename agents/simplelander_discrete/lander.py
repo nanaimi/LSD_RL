@@ -88,10 +88,11 @@ agent.model.train()
 
 
 activation = {}
-agent.model.actor[0].register_forward_hook(get_activation('actor_layer_{}'.format(0)))
-# agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(1)))
-# agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(2)))
-# agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(3)))
+
+for name, layer in agent.model.actor.named_modules():
+    if isinstance(layer, nn.ReLU) or isinstance(layer, nn.Linear) or isinstance(layer, nn.Softmax):
+        print(name, layer)
+        layer.register_forward_hook(get_activation('actor_layer_{}'.format(name)))
 
 max_frames = 15000
 frame_idx  = 0
@@ -114,7 +115,7 @@ while frame_idx < max_frames and not early_stop:
     entropy = 0
 
     for st in range(num_steps):
-        action = 0
+        action = None
         state = torch.FloatTensor(state).to(device)
         # log.info("state:      {}".format(state))
         # log.info("state TYPE: {}".format(type(state)))
