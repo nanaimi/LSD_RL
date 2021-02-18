@@ -38,7 +38,6 @@ def load_obj(filename):
         return pickle.load(f)
 
 # get activation of layers in model
-activation = {}
 def get_activation(name):
     def hook(model, input, output):
         activation[name] = output.detach()
@@ -86,10 +85,12 @@ print(agent.model.actor[0])
 # turn model train mode
 agent.model.train()
 
-agent.model.actor[0].register_forward_hook(get_activation('actor_layer_{}'.format(0)))
-agent.model.actor[1].register_forward_hook(get_activation('actor_layer_{}'.format(1)))
-agent.model.actor[2].register_forward_hook(get_activation('actor_layer_{}'.format(2)))
-agent.model.actor[3].register_forward_hook(get_activation('actor_layer_{}'.format(3)))
+
+activation = {}
+agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(0)))
+# agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(1)))
+# agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(2)))
+# agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(3)))
 
 max_frames = 15000
 frame_idx  = 0
@@ -121,6 +122,8 @@ while frame_idx < max_frames and not early_stop:
         log.warn("Model Input: {}".format(state))
         dist, value = agent.model(state)
         log.info("Forward Pass Dist: {}, Forward Pass value: {}".format(dist, value))
+        for key in activation:
+            log.warn("{} activation: {}".format(key, activation[key]))
 
         state = state.unsqueeze(1)
         state = torch.transpose(state, 0, 1)
