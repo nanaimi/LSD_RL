@@ -41,7 +41,6 @@ def load_obj(filename):
 activation = {}
 def get_activation(name):
     def hook(model, input, output):
-        # print(name)
         activation[name] = output.detach()
         return hook
 
@@ -83,33 +82,14 @@ agent = PPOAgent(num_inputs,
 print(agent.model)
 print(agent.model.actor)
 print(agent.model.actor[0])
-# print(agent.model.actor[1])
+
+# turn model train mode
+agent.model.train()
 
 agent.model.actor[0].register_forward_hook(get_activation('actor_layer_{}'.format(0)))
 agent.model.actor[1].register_forward_hook(get_activation('actor_layer_{}'.format(1)))
 agent.model.actor[2].register_forward_hook(get_activation('actor_layer_{}'.format(2)))
 agent.model.actor[3].register_forward_hook(get_activation('actor_layer_{}'.format(3)))
-
-
-# output = model(x)
-#
-# activation['fc3']
-
-# for name, layer in agent.model.named_modules():
-#     print(name)
-#     print(layer, type(layer))
-#
-# for name, layer in agent.model.actor.named_modules():
-#     print("name",name)
-#     print(layer, type(layer))
-
-
-# agent.model.actor.register_forward_hook(get_activation('fc3'))
-# output = model(x)
-# activation['fc3']
-
-# turn model train mode
-agent.model.train()
 
 max_frames = 15000
 frame_idx  = 0

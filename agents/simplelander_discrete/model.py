@@ -49,14 +49,14 @@ class ActorCritic(nn.Module):
         value = self.critic(x)
         discrete_probabilitiies = self.actor(x)
         log.warn("Output Probabilities: {}".format(discrete_probabilitiies))
-        # clamp maybe
+        assert (torch.sum(torch.isnan(discrete_probabilitiies)) > 0)
         dist = Categorical(discrete_probabilitiies)
         # continuous action space
         # std   = self.log_std.exp().expand_as(mu)
         # dist  = Normal(mu, std)
         return dist, value
 
-# 
+#
 # activation = {}
 # def get_activation(name):
 #     def hook(model, input, output):
