@@ -48,7 +48,9 @@ class ActorCritic(nn.Module):
     def forward(self, x):
         value = self.critic(x)
         discrete_log_probabilitiies = self.actor(x)
-        assert (torch.sum(torch.isnan(discrete_probabilitiies)) == 0)
+
+        assert (torch.sum(torch.isnan(discrete_log_probabilitiies)) == 0)
+        
         discrete_probabilitiies = torch.exp(discrete_log_probabilitiies)
         dist = Categorical(discrete_probabilitiies)
         # continuous action space
