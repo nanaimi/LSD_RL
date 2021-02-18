@@ -81,13 +81,14 @@ agent = PPOAgent(num_inputs,
 print(agent.model)
 print(agent.model.actor)
 print(agent.model.actor[0])
+print(type(agent.model.actor[0]))
 
 # turn model train mode
 agent.model.train()
 
 
 activation = {}
-agent.model[1][0].register_forward_hook(get_activation('actor_layer_{}'.format(0)))
+agent.model.actor[0].register_forward_hook(get_activation('actor_layer_{}'.format(0)))
 # agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(1)))
 # agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(2)))
 # agent.model.actor.register_forward_hook(get_activation('actor_layer_{}'.format(3)))
