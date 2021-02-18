@@ -117,7 +117,7 @@ while frame_idx < max_frames and not early_stop:
     for st in range(num_steps):
         action = None
         state = torch.FloatTensor(state).to(device)
-        
+
         assert torch.sum(torch.isnan(state)) == 0
         log.info("state SIZE: {}".format(state.size()))
 
@@ -272,9 +272,9 @@ with torch.no_grad():
                 next_state, reward, done, info = env.step(action.cpu().numpy())
 
                 dists.append(dist)
-                values.append(value.detach().numpy())
-                actions.append(action.detach().numpy())
-                log_probs.append(log_prob.detach().numpy())
+                values.append(value.cpu().numpy())
+                actions.append(action.cpu().numpy())
+                log_probs.append(log_prob.cpu().numpy())
                 rewards.append(reward)
 
                 # next state logic
