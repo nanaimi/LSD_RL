@@ -194,52 +194,51 @@ class Landing(UnrealCv):
     def move_3d(self, cam_id, delta_x, delta_y, delta_z):
         log.warn("Executing move_3d for cam_id {}".format(cam_id))
         location_now = None
+        rotation_now = None
         location_exp = None
 
         pose = self.get_pose(cam_id)
-        log.warn("Pose I got: {}".format(pose))
         location_now = self.cam[cam_id]['location']
-        log.warn("Current location: {}".format(location_now))
-        log.warn("Current rotation: {}".format(pose[-3:]))
+        rotation_now = self.cam[cam_id]['rotation']
+        log.warn("Current location: {}, Current rotation: {}".format(location_now, rotation_now))
 
         # define new desired location
         log.warn("Passed Deltas: {}, {}, {}".format(delta_x, delta_y, delta_z))
         new_x = location_now[0] + delta_x
-        log.warn("new_x: {}".format(new_x))
         new_y = location_now[1] + delta_y
-        log.warn("new_y: {}".format(new_y))
         new_z = location_now[2] + delta_z
-        log.warn("new_z: {}".format(new_z))
+        log.info("new_x: {}".format(new_x))
+        log.info("new_y: {}".format(new_y))
+        log.info("new_z: {}".format(new_z))
         location_exp = [new_x, new_y, new_z]
         log.warn("Expecting to move to this location: {}".format(location_exp))
 
         while self.lock:
-            log.warn("waiting for lock to open.")
+            log.info("waiting for lock to open.")
             continue
 
         if not self.lock:
-            log.warn("acquiring lock")
+            log.info("acquiring lock")
             self.lock = 1
             while self.lock:
-                log.warn("locked.")
-                log.warn("not executing moveto, instead set_location")
+                log.info("locked.")
                 self.moveto(cam_id, location_exp)
                 # log.warn("about to set location for cam_id {}".format(cam_id))
                 # self.set_location(cam_id, location_exp)
                 self.lock = 0
-                log.warn("unlocked.")
+                log.info("unlocked.")
         else:
-            log.warn("process was locked, skipping this move")
+            log.info("process was locked, skipping this move")
 
-        log.warn("Get Pose being called.")
+        log.info("Get Pose being called.")
 
         pose = self.get_pose(cam_id)
         location_now = self.cam[cam_id]['location']
-        log.warn("moved to location: {}".format(location_now))
-        log.warn("rotated to rotation: {}".format(pose[-3:]))
+        rotation_now = self.cam[cam_id]['rotation']
+        log.warn("moved to location: {}, rotated to rotation: {}".format(location_now, rotation_now))
 
         error = self.get_distance(location_now, location_exp, n=3)
-        log.info("Error: {}".format(error))
+        log.warn("Error: {}".format(error))
 
         if error < 10: # weird offset
             return False

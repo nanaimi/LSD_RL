@@ -1,6 +1,7 @@
 import math
 import random
 import os
+import glog as log
 
 import gym
 import numpy as np
@@ -15,7 +16,7 @@ from torch.distributions import Categorical
 def init_weights(m):
     if isinstance(m, nn.Linear):
         # Fills the the weight Tensor with values drawn from the normal distribution
-        nn.init.normal_(m.weight, mean=0., std=0.4)
+        nn.init.normal_(m.weight, mean=0., std=0.1)
         # Fills the bias Tensor with the constant value
         nn.init.constant_(m.bias, 0.1)
 
@@ -38,7 +39,7 @@ class ActorCritic(nn.Module):
             nn.Linear(num_inputs, hidden_size),
             nn.ReLU(),
             nn.Linear(hidden_size, num_outputs),
-            nn.Softmax(0)
+            nn.Softmax(dim=0)
         )
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
 
@@ -47,6 +48,8 @@ class ActorCritic(nn.Module):
     def forward(self, x):
         value = self.critic(x)
         discrete_probabilitiies = self.actor(x)
+        log.warn("Output Probabilities: {}".format(discrete_probabilitiies))
+        # clamp maybe
         dist = Categorical(discrete_probabilitiies)
         # continuous action space
         # std   = self.log_std.exp().expand_as(mu)

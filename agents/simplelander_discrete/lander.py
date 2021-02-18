@@ -72,6 +72,8 @@ agent = PPOAgent(num_inputs,
                 device=device)
 
 print(agent.model)
+print(agent.model.actor)
+print(agent.model.critic)
 
 # turn model train mode
 agent.model.train()
