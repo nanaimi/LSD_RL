@@ -32,7 +32,7 @@ class UnrealCvLanding_base(gym.Env):
                  reset_type='random',   # testpoint, waypoint, random
                  augment_env=None,        # texture, target, light
                  action_type='Discrete',  # 'Discrete', 'Continuous'
-                 observation_type='PoseColor', # 'color', 'depth', 'rgbd', 'PoseColor'
+                 observation_type='HeightFeatures', # 'color', 'depth', 'rgbd', 'PoseColor'
                  reward_type='mask',      # distance, bbox, bbox_distance, 'mask'
                  docker=False,            # True/False
                  resolution=(320, 240)    # Res of window
@@ -120,14 +120,14 @@ class UnrealCvLanding_base(gym.Env):
             Depth=None,
         )
         # Defaults
-        info['Done']       = False
-        info['Success']    = False
+        info['Done']    = False
+        info['Success'] = False
         delta_x = 0
         delta_y = 0
         delta_z = 0
         info['Trigger'] = 0
 
-        action             = np.squeeze(action)
+        action          = np.squeeze(action)
 
         if self.action_type == 'Discrete':
             (delta_x, delta_y, delta_z, info['Trigger']) = self.discrete_actions[action]
@@ -149,13 +149,13 @@ class UnrealCvLanding_base(gym.Env):
         # Update observation
         state              = self.unrealcv.get_observation(self.cam_id, self.observation_type)
 
-        if self.observation_type in ['Color', 'Rgbd', 'PoseColor', 'PoseFeatures']:
+        if self.observation_type in ['Color', 'Rgbd', 'PoseColor', 'HeightFeatures']:
             info['Color']  = self.unrealcv.img_color
 
         if self.observation_type in ['Depth', 'Rgbd']:
             info['Depth']  = self.unrealcv.img_depth
 
-        if self.observation_type in ['PoseFeatures']:
+        if self.observation_type in ['HeightFeatures']:
             info['Features'] = self.unrealcv.features
 
         # save the trajectory
@@ -166,10 +166,11 @@ class UnrealCvLanding_base(gym.Env):
         if info['Trigger'] > self.trigger_th:
             self.trigger_count += 1
             if self.trigger_count >= 3:
+                info['Reward']+= -500
                 info['Done']   = True
 
         if info['Collision'] or self.count_steps >= self.maxsteps:
-            info['Reward'] = -1000
+            info['Reward'] += -1000
             info['Done']   = True
             return state, info['Reward'], info['Done'], info
 
@@ -182,8 +183,10 @@ class UnrealCvLanding_base(gym.Env):
 
             # TODO: CHANGE reward function here
             rew, done, suc = self.reward_function.reward_mask_height(mask, info['Pose'], self.done_th, self.success_th)
-            info['Reward'] = rew
-            info['Done']   = done
+            info['Reward'] += rew
+            if not info['Done']:
+                info['Done'] = done
+
             info['Success']= suc
 
         elif 'distance' in self.reward_type:
