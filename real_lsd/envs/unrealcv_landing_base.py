@@ -41,6 +41,8 @@ class UnrealCvLanding_base(gym.Env):
         # load in settings from json
         setting                    = self.load_env_setting(setting_file)
         self.cam_id                = setting['cam_id']
+        self.maxsteps              = setting['maxsteps']
+        self.stepscale             = setting['stepscale']
         self.target_list           = setting['targets'][category]
         self.trigger_th            = setting['trigger_th']   # Not Sure about trigger
         self.done_th               = setting['done_th']
@@ -103,6 +105,7 @@ class UnrealCvLanding_base(gym.Env):
         info = dict(
             Collision=False,
             Done=False,
+            Success=False,
             Trigger=0.0,
             Reward=0.0,
             Action=action,
@@ -127,6 +130,10 @@ class UnrealCvLanding_base(gym.Env):
 
         if self.action_type == 'Discrete':
             (delta_x, delta_y, delta_z, info['Trigger']) = self.discrete_actions[action]
+            # Scale the steps
+            delta_x = self.stepscale*delta_x
+            delta_y = self.stepscale*delta_y
+            delta_z = self.stepscale*delta_z
             log.warn("Sampled action corresponds to dx: {}, dy: {}, dz: {}, trigger: {}".format(delta_x, delta_y, delta_z, info['Trigger']))
         else:
             (delta_x, delta_y, delta_z, info['Trigger']) = action
@@ -160,7 +167,7 @@ class UnrealCvLanding_base(gym.Env):
             if self.trigger_count >= 3:
                 info['Done']   = True
 
-        if info['Collision'] or self.count_steps >= 100:
+        if info['Collision'] or self.count_steps >= step.maxsteps:
             info['Reward'] = -1000
             info['Done']   = True
             return state, info['Reward'], info['Done'], info
@@ -184,7 +191,6 @@ class UnrealCvLanding_base(gym.Env):
             info['Reward'] = 0
 
         return state, info['Reward'], info['Done'], info
-
 
 
     def _reset(self, ):
