@@ -234,13 +234,18 @@ agent.save_model()
 log.info("FINITA LA MUSICA")
 
 # Testing the policy after training
+num_tests = 5
+episodes_per_test = 40
+
 log.warn("Time to test.")
 agent.model.eval()
+
+
 with torch.no_grad():
-    for test in range(5):
+    successful_episodes = 0
+    for test in range(num_tests):
         episode_count = 0
-        successful_episodes = 0
-        num_test_episodes = 20
+        num_test_episodes = episodes_per_test
 
         episodes = {}
 
@@ -297,7 +302,7 @@ with torch.no_grad():
             episodes[key] = episode
 
         file = save_obj(episodes, '{}'.format(test))
-        log.warn("Successes out of 20: {}".format(successful_episodes))
+        log.warn("Successes out of {}: {}".format(num_tests*episodes_per_test,successful_episodes))
         # print(load_obj(file))
 
 log.warn("Done Testing.")
