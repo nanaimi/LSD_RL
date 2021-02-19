@@ -13,22 +13,26 @@ class Reward():
     # IN: object mask delivered by unrealcv client, mask, and pose
     # OUT: reward
     def reward_mask(self, mask,
-                    factor=200,
-                    right_shift=1.5):
+                    factor,
+                    right_shift_one,
+                    right_shift_two,
+                    stretch_one,
+                    stretch_two):
         reward = 0
         height, width = mask.shape
         tot_num_pixels = height*width
         fov_score = (cv2.sumElems(mask)[0] / 255) / tot_num_pixels
         log.warn("FOV Score: {}".format(fov_score))
 
-        reward = factor*np.tanh(2*np.pi*fov_score-right_shift*np.pi)
+        reward = factor*(np.tanh((1/stretch_one)*(2*np.pi*fov_score-right_shift_one*np.pi)) +
+                         np.tanh((1/stretch_two)*(2*np.pi*fov_score-right_shift_two*np.pi)))
         log.warn("Reward for FOV: {}".format(reward))
 
         return reward, fov_score
 
     def reward_height(self, pose,
-                      scale=150,
-                      stretch=1000):
+                      scale,
+                      stretch):
         reward = 0
         height = pose[2]
         log.warn("Height for reward height {}".format(height))
@@ -42,15 +46,18 @@ class Reward():
         return reward
 
     def reward_mask_height(self, mask, pose, done_thr,
-                           factor=300,
-                           right_shift=1.5,
-                           scale=300,
-                           stretch=1000,
+                           factor=100,
+                           right_shift_one=1,
+                           right_shift_two=1.5,
+                           stretch_one=9,
+                           stretch_two=2,
+                           scale=100,
+                           stretch=3000,
                            success_thr=0.9):
         done = False
         success = False
         reward = 0
-        reward_fov, fov_score = self.reward_mask(mask, factor, right_shift)
+        reward_fov, fov_score = self.reward_mask(mask, factor, right_shift_one, right_shift_two, stretch_one, stretch_two)
         reward_height = self.reward_height(pose, scale, stretch)
 
         reward = reward_fov + reward_height
