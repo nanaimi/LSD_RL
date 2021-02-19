@@ -118,10 +118,10 @@ while frame_idx < max_frames and not early_stop:
         action = None
         state = torch.FloatTensor(state).to(device)
 
-        assert torch.sum(torch.isnan(state)) == 0
+        assert torch.sum(torch.isnan(state)) == 0, "State contains NANs!"
         log.info("state SIZE: {}".format(state.size()))
 
-        log.warn("Model Input: {}".format(state))
+        log.info("Model Input: {}".format(state))
         dist, value = agent.model(state)
         log.info("Forward Pass Dist: {}, Forward Pass value: {}".format(dist, value))
 
@@ -152,8 +152,8 @@ while frame_idx < max_frames and not early_stop:
         log.info("Step REWARD: {} DONE: {}".format(reward, done))
 
         log_prob = dist.log_prob(action)
-        log.warn("Step LOG_PROB: {}".format(log_prob))
-        log.warn("LOG_PROB TYPE: {}, SHAPE: {}".format(type(log_prob), log_prob.shape))
+        log.info("Step LOG_PROB: {}".format(log_prob))
+        log.info("LOG_PROB TYPE: {}, SHAPE: {}".format(type(log_prob), log_prob.shape))
 
         entropy += dist.entropy().mean()
 
@@ -236,13 +236,12 @@ log.info("FINITA LA MUSICA")
 # Testing the policy after training
 num_tests = 5
 episodes_per_test = 40
+successful_episodes = 0
 
 log.warn("Time to test.")
 agent.model.eval()
 
-
 with torch.no_grad():
-    successful_episodes = 0
     for test in range(num_tests):
         episode_count = 0
         num_test_episodes = episodes_per_test
