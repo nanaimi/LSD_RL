@@ -50,7 +50,7 @@ class ActorCritic(nn.Module):
         value = self.critic(x)
         discrete_log_probabilitiies = self.actor(x)
 
-        assert (torch.sum(torch.isnan(discrete_log_probabilitiies)) == 0)
+        assert (torch.sum(torch.isnan(discrete_log_probabilitiies)) == 0), "Actor output contains NANs!"
 
         discrete_probabilitiies = torch.exp(discrete_log_probabilitiies)
         dist = Categorical(discrete_probabilitiies)
