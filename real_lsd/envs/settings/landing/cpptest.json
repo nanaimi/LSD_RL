@@ -3,9 +3,9 @@
 	"env_bin": "cpptest/cpptest/Binaries/Linux/cpptest",
 	"cam_id": 0,
 	"pitch": -90,
-	"maxsteps": 500,
+	"maxsteps": 400,
 	"stepscale": 10,
-	"trigger_th": 0.6,
+	"trigger_th": 0.5,
 	"done_th": 60,
 	"success_th": 0.8,
 	"reward_th": 0.1,
@@ -17,7 +17,7 @@
 		"FloorGood": ["FloorGood"],
 		"FloorBad": ["FloorBad"]
 	},
-	"reset_area":[-1500, 1500, -1500, 1500, 500, 3200],
+	"reset_area":[-1500, 1500, -1500, 1500, 500, 3000],
 	"test_xyz": [
 		[-106.195,   437.424, 150],
 		[  27.897,  -162.437, 227],
