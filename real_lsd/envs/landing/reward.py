@@ -45,15 +45,14 @@ class Reward():
 
         return reward
 
-    def reward_mask_height(self, mask, pose, done_thr,
+    def reward_mask_height(self, mask, pose, done_thr, success_thr,
                            factor=100,
                            right_shift_one=1,
                            right_shift_two=1.5,
                            stretch_one=9,
                            stretch_two=2,
                            scale=100,
-                           stretch=3000,
-                           success_thr=0.9):
+                           stretch=3000):
         done = False
         success = False
         reward = 0
@@ -66,6 +65,7 @@ class Reward():
             done = True
             if fov_score > success_thr:
                 reward += 500
+                log.warn("SUCCESS")
                 success = True
             else:
                 reward -= 500
