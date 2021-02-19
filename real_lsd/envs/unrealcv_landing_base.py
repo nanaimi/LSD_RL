@@ -169,13 +169,7 @@ class UnrealCvLanding_base(gym.Env):
                 info['Reward']+= -500
                 info['Done']   = True
 
-        if info['Collision'] or self.count_steps >= self.maxsteps:
-            info['Reward'] += -1000
-            info['Done']   = True
-            return state, info['Reward'], info['Done'], info
-
-
-        if 'mask' in self.reward_type and not info['Collision']:
+        if 'mask' in self.reward_type: # and not info['Collision']:
             # get segmented image
             object_mask    = self.unrealcv.read_image(self.cam_id, 'object_mask')
             # get_mask gets you a binary image, either 0 or 255 per pixel
@@ -183,19 +177,22 @@ class UnrealCvLanding_base(gym.Env):
 
             # TODO: CHANGE reward function here
             rew, done, suc = self.reward_function.reward_mask_height(mask, info['Pose'], self.done_th, self.success_th)
+            info['Success'] = suc
             info['Reward'] += rew
-            if not info['Done']:
-                info['Done'] = done
 
-            info['Success']= suc
+            if (info['Collision'] or self.count_steps >= self.maxsteps) and not info['Success']:
+                info['Reward'] += -1000
+                info['Done']   = True
+
+            if not info['Done']:
+                info['Done']= done
 
         elif 'distance' in self.reward_type:
-            info['Reward'] = self.reward_function.reward_distance(distance)
+            info['Reward']  = self.reward_function.reward_distance(distance)
         else:
-            info['Reward'] = 0
+            info['Reward']  = 0
 
         return state, info['Reward'], info['Done'], info
-
 
     def _reset(self, ):
         # double check the resetpoint, it is necessary for random reset type
