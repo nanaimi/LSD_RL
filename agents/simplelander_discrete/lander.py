@@ -60,8 +60,8 @@ num_outputs = env.action_space.n
 #Hyper params:
 hidden_size      = 256
 lr               = 3e-4
-num_steps        = 20
-mini_batch_size  = 5
+num_steps        = 100
+mini_batch_size  = 20
 ppo_epochs       = 4
 max_frames       = 40000
 threshold_reward = -200 # TODO update/review
