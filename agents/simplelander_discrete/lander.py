@@ -249,7 +249,6 @@ with torch.no_grad():
 
         state, start_pose = env.reset()
 
-
         while episode_count < num_test_episodes:
 
             done = False
