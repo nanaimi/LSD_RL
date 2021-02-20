@@ -63,7 +63,7 @@ lr               = 3e-4
 num_steps        = 100
 mini_batch_size  = 20
 ppo_epochs       = 4
-max_frames       = 40000
+max_frames       = 400
 threshold_reward = -200 # TODO update/review
 
 
