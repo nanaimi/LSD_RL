@@ -56,7 +56,7 @@ def test_env():
     total_reward = 0
     while not done:
         state = torch.FloatTensor(state).unsqueeze(0).to(device)
-        dist, _ = self.model(state)
+        dist, _ = agent.model(state)
         next_state, reward, done, _ = env.step(dist.sample().cpu().numpy()[0])
         state = next_state
         total_reward += reward
