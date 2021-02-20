@@ -84,6 +84,7 @@ num_steps        = 20
 mini_batch_size  = 5
 ppo_epochs       = 4
 max_frames       = 1000000
+
 threshold_reward = -200 # TODO update/review
 
 
@@ -145,7 +146,8 @@ while frame_idx < max_frames and not early_stop:
         log.info("Model Input: {}".format(state))
         dist, value = agent.model(state)
 
-        values_at_beginning.append(value) if (episode_now != episode_count)
+        if (episode_now != episode_count):
+            values_at_beginning.append(value) 
         episode_now = episode_count
 
         log.info("Forward Pass Dist: {}, Forward Pass value: {}".format(dist, value))
