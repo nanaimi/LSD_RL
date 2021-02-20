@@ -71,7 +71,6 @@ class Reward():
             # else:
                 # reward -= 500
 
-
         log.warn("Reward Total: {}".format(reward))
         return reward, done, success
 

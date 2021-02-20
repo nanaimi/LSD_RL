@@ -16,11 +16,10 @@ import real_lsd
 
 from PPOagent import PPOAgent
 
-# Helper functions
-def save_obj(obj, name=''):
+'''---------------Helper functions---------------'''
+def save_obj(obj, filename):
     dir = 'data'
     path = os.getcwd()
-    filename = time.strftime("%Y%m%d_%H%M%S") + name
     if dir not in os.listdir(path):
         os.mkdir(dir)
     path = path + '/' + dir + '/'
@@ -43,6 +42,27 @@ def get_activation(name):
         activation[name] = output.detach()
     return hook
 
+def plot(frame_idx, rewards):
+    clear_output(True)
+    plt.figure(figsize=(20,5))
+    plt.subplot(131)
+    plt.title('frame %s. reward: %s' % (frame_idx, rewards[-1]))
+    plt.plot(rewards)
+    plt.show()
+
+def test_env():
+    state = env.reset()
+    done = False
+    total_reward = 0
+    while not done:
+        state = torch.FloatTensor(state).unsqueeze(0).to(device)
+        dist, _ = model(state)
+        next_state, reward, done, _ = env.step(dist.sample().cpu().numpy()[0])
+        state = next_state
+        total_reward += reward
+    return total_reward
+
+'''---------------Helper functions---------------'''
 # Set to INFO for debugging
 log.setLevel("WARN")
 
@@ -94,11 +114,14 @@ for name, layer in agent.model.actor.named_modules():
 
 
 frame_idx  = 0
-# test_rewards = []
+test_rewards = []
+episode_count = 0
+episode_now = 0
+values_at_beginning = []
 prior_action = 0
 activation = {}
 
-state, _ = env.reset()
+state = env.reset()
 
 early_stop = False
 
@@ -122,6 +145,10 @@ while frame_idx < max_frames and not early_stop:
 
         log.info("Model Input: {}".format(state))
         dist, value = agent.model(state)
+
+        values_at_beginning.append(value) if (episode_now != episode_count)
+        episode_now = episode_count
+
         log.info("Forward Pass Dist: {}, Forward Pass value: {}".format(dist, value))
 
         # Output all layer activations to console
@@ -181,20 +208,22 @@ while frame_idx < max_frames and not early_stop:
         action = action.to(device)
         actions.append(action)
 
+        # collect data on training progress
+        if frame_idx % 1000 == 0:
+            test_reward = np.mean([test_env() for _ in range(10)])
+            test_rewards.append(test_reward)
+            # plot(frame_idx, test_rewards)
+            # if test_reward > threshold_reward: early_stop = True
+
         # next state logic
         if done:
+            episode_count += 1
             log.warn("Resetting.")
-            state, _ = env.reset()
+            state = env.reset()
         else:
             state = next_state
 
         frame_idx += 1
-
-        # if frame_idx % 1000 == 0:
-        #     test_reward = np.mean([test_env() for _ in range(10)])
-        #     test_rewards.append(test_reward)
-        #     plot(frame_idx, test_rewards)
-        #     if test_reward > threshold_reward: early_stop = True
 
     next_state = torch.FloatTensor(next_state).to(device)
 
@@ -228,6 +257,10 @@ while frame_idx < max_frames and not early_stop:
     log.warn("Calling PPO update.")
     agent.ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantage)
 
+training_data['test_rewards'] = test_rewards
+training_data['values_at_beginning'] = values_at_beginning
+_ = save_obj(episodes, 'training_data')
+
 agent.save_model()
 
 log.info("FINITA LA MUSICA")
@@ -247,14 +280,14 @@ with torch.no_grad():
 
         episodes = {}
 
-        state, start_pose = env.reset()
+        state = env.reset()
 
         while episode_count < num_test_episodes:
 
             done = False
             episode = {}
 
-            poses     = [start_pose]
+            # poses     = [start_pose]
             states    = [state]
             dists     = []
             values    = []
@@ -276,7 +309,7 @@ with torch.no_grad():
 
                 next_state, reward, done, info = env.step(action.cpu().numpy())
 
-                poses.append(info['Pose'])
+                # poses.append(info['Pose'])
                 dists.append(dist)
                 values.append(value.cpu().numpy())
                 actions.append(action.cpu().numpy())
@@ -288,12 +321,12 @@ with torch.no_grad():
                     if info['Success']:
                         successful_episodes += 1
                     traj = info['Trajectory']
-                    state, start_pose = env.reset()
+                    state = env.reset()
                     episode_count += 1
                 else:
                     state = next_state
 
-            episode['poses']    = poses
+            # episode['poses']    = poses
             episode['states']   = states
             episode['dists']    = dists
             episode['values']   = values
@@ -305,7 +338,8 @@ with torch.no_grad():
             key = 'episode_{}'.format(episode_count)
             episodes[key] = episode
 
-        file = save_obj(episodes, '{}'.format(test))
+        filename = time.strftime("%Y%m%d_%H%M%S") + '{}'.format(test)
+        file = save_obj(episodes, filename)
         log.warn("Successes out of {}: {}".format(num_tests*episodes_per_test,successful_episodes))
         # print(load_obj(file))
 
