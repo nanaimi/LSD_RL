@@ -56,7 +56,7 @@ def test_env():
     total_reward = 0
     while not done:
         state = torch.FloatTensor(state).unsqueeze(0).to(device)
-        dist, _ = model(state)
+        dist, _ = self.model(state)
         next_state, reward, done, _ = env.step(dist.sample().cpu().numpy()[0])
         state = next_state
         total_reward += reward
@@ -147,7 +147,7 @@ while frame_idx < max_frames and not early_stop:
         dist, value = agent.model(state)
 
         if (episode_now != episode_count):
-            values_at_beginning.append(value) 
+            values_at_beginning.append(value)
         episode_now = episode_count
 
         log.info("Forward Pass Dist: {}, Forward Pass value: {}".format(dist, value))
