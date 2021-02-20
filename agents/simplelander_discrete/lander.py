@@ -98,7 +98,7 @@ frame_idx  = 0
 prior_action = 0
 activation = {}
 
-state = env.reset()
+state, _ = env.reset()
 
 early_stop = False
 
@@ -184,7 +184,7 @@ while frame_idx < max_frames and not early_stop:
         # next state logic
         if done:
             log.warn("Resetting.")
-            state = env.reset()
+            state, _ = env.reset()
         else:
             state = next_state
 
@@ -247,19 +247,22 @@ with torch.no_grad():
 
         episodes = {}
 
-        state = env.reset()
+        state, start_pose = env.reset()
+
 
         while episode_count < num_test_episodes:
 
             done = False
             episode = {}
 
-            states    = []
+            poses     = [start_pose]
+            states    = [state]
             dists     = []
             values    = []
             actions   = []
             rewards   = []
             log_probs = []
+            traj      = []
 
             while not done:
                 action = 0
@@ -274,6 +277,7 @@ with torch.no_grad():
 
                 next_state, reward, done, info = env.step(action.cpu().numpy())
 
+                poses.append(info['Pose'])
                 dists.append(dist)
                 values.append(value.cpu().numpy())
                 actions.append(action.cpu().numpy())
@@ -284,17 +288,20 @@ with torch.no_grad():
                 if done:
                     if info['Success']:
                         successful_episodes += 1
-                    state = env.reset()
+                    traj = info['Trajectory']
+                    state, start_pose = env.reset()
                     episode_count += 1
                 else:
                     state = next_state
 
-            episode['states'] = states
-            episode['dists'] = dists
-            episode['values'] = values
-            episode['actions'] = actions
-            episode['rewards'] = rewards
+            episode['poses']    = poses
+            episode['states']   = states
+            episode['dists']    = dists
+            episode['values']   = values
+            episode['actions']  = actions
+            episode['rewards']  = rewards
             episode['log_probs'] = log_probs
+            episode['trajectory']= traj
 
             key = 'episode_{}'.format(episode_count)
             episodes[key] = episode
