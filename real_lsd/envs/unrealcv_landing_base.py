@@ -228,7 +228,7 @@ class UnrealCvLanding_base(gym.Env):
         self.trigger_count = 0
         self.count_steps = 0
 
-        return state
+        return state, current_pose
 
     def _seed(self, seed=None):
         return seed
