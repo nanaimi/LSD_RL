@@ -80,10 +80,10 @@ num_outputs = env.action_space.n
 #Hyper params:
 hidden_size      = 256
 lr               = 3e-4
-num_steps        = 100
-mini_batch_size  = 20
+num_steps        = 20
+mini_batch_size  = 5
 ppo_epochs       = 4
-max_frames       = 40000
+max_frames       = 1000000
 threshold_reward = -200 # TODO update/review
 
 
@@ -111,7 +111,6 @@ for name, layer in agent.model.actor.named_modules():
     if isinstance(layer, nn.ReLU) or isinstance(layer, nn.Linear) or isinstance(layer, nn.LogSoftmax):
         print(name, layer)
         layer.register_forward_hook(get_activation('actor_layer_{}'.format(name)))
-
 
 frame_idx  = 0
 test_rewards = []
