@@ -61,14 +61,16 @@ class Reward():
 
         reward = reward_fov + reward_height
 
+        # Adding a step reward is bad! not differentiable
         if pose[2] < done_thr:
             done = True
             if fov_score > success_thr:
-                reward += 500
+                # reward += 500
                 log.warn("SUCCESS")
                 success = True
-            else:
-                reward -= 500
+            # else:
+                # reward -= 500
+
 
         log.warn("Reward Total: {}".format(reward))
         return reward, done, success
