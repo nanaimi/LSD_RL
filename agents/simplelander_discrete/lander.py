@@ -233,8 +233,8 @@ agent.save_model()
 log.info("FINITA LA MUSICA")
 
 # Testing the policy after training
-num_tests = 5
-episodes_per_test = 20
+num_tests = 1
+episodes_per_test = 100
 successful_episodes = 0
 
 log.warn("Time to test.")
