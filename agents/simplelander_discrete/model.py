@@ -39,7 +39,7 @@ class ActorCritic(nn.Module):
             nn.Linear(num_inputs, hidden_size),
             nn.LeakyReLU(),
             nn.Linear(hidden_size, num_outputs),
-            nn.LeakyReLU(),
+            nn.ReLU(),
             nn.LogSoftmax(dim=0)
         )
         self.log_std = nn.Parameter(torch.ones(1, num_outputs) * std)
