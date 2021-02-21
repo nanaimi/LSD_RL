@@ -51,25 +51,25 @@ class Reward():
                            right_shift_two=1.5,
                            stretch_one=9,
                            stretch_two=2,
-                           scale=100,
+                           scale=300,
                            stretch=3000):
-        done = False
+        done    = False
         success = False
-        reward = 0
+        reward  = 0
         reward_fov, fov_score = self.reward_mask(mask, factor, right_shift_one, right_shift_two, stretch_one, stretch_two)
         reward_height = self.reward_height(pose, scale, stretch)
 
         reward = reward_fov + reward_height
 
-        # Adding a step reward is bad! not differentiable
+        # Adding a step reward readded
         if pose[2] < done_thr:
             done = True
             if fov_score > success_thr:
-                # reward += 500
+                reward += 500
                 log.warn("SUCCESS")
                 success = True
-            # else:
-                # reward -= 500
+            else:
+                reward -= 500
 
         log.warn("Reward Total: {}".format(reward))
         return reward, done, success

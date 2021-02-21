@@ -83,7 +83,7 @@ lr               = 3e-4
 num_steps        = 20
 mini_batch_size  = 5
 ppo_epochs       = 4
-max_frames       = 1000000
+max_frames       = 80000
 
 threshold_reward = -200 # TODO update/review
 
@@ -109,7 +109,7 @@ agent.model.train()
 
 # Register hooks for actor layer activations
 for name, layer in agent.model.actor.named_modules():
-    if isinstance(layer, nn.ReLU) or isinstance(layer, nn.Linear) or isinstance(layer, nn.LogSoftmax):
+    if isinstance(layer, nn.ReLU) or isinstance(layer, nn.Linear) or isinstance(layer, nn.LogSoftmax) or isinstance(layer, nn.LeakyReLU):
         print(name, layer)
         layer.register_forward_hook(get_activation('actor_layer_{}'.format(name)))
 
