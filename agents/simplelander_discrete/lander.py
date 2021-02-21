@@ -120,6 +120,7 @@ episode_now = 0
 values_at_beginning = []
 prior_action = 0
 activation = {}
+training_data = dict()
 
 state = env.reset()
 
