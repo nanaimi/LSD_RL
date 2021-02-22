@@ -141,6 +141,10 @@ class UnrealCvLanding_base(gym.Env):
 
         self.count_steps  += 1
 
+        # Time Penalty
+        info['Reward']    += -10*self.count_steps
+
+        self.unrealcv.set_step(self.count_steps)
         # take action and read new pose
         # log.warn("Not passing sampled action, instead passing dx: {}, dy: {}, dz: {}, trigger: {}".format(0, 0, 10, info['Trigger']))
         info['Collision']  = self.unrealcv.move_3d(self.cam_id, delta_x, delta_y, delta_z)
@@ -221,6 +225,7 @@ class UnrealCvLanding_base(gym.Env):
         log.info("Chosen reset pose: {}".format(current_pose))
 
         self.unrealcv.set_pose(self.cam_id, current_pose)
+        self.unrealcv.set_step(0)
 
         state = self.unrealcv.get_observation(self.cam_id, self.observation_type)
 

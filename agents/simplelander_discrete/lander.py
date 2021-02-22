@@ -175,7 +175,7 @@ while frame_idx < max_frames and not early_stop:
         action_not_same = not (action == prior_action)
         log.warn("Sampled Action is not same as prior action: {}".format(action_not_same))
         prior_action = action
-
+    
         next_state, reward, done, _ = env.step(action.cpu().numpy())
         log.info("Step REWARD: {} DONE: {}".format(reward, done))
 

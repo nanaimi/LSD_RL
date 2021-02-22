@@ -65,14 +65,46 @@ class Reward():
         if pose[2] < done_thr:
             done = True
             if fov_score > success_thr:
-                reward += 500
+                reward += 100
                 log.warn("SUCCESS")
                 success = True
             else:
-                reward -= 500
+                reward -= 100
 
         log.warn("Reward Total: {}".format(reward))
         return reward, done, success
+
+    def reward_sinc(self, mask, pose, done_thr, success_thr,
+                        normalization_factor=3000,
+                        scale=10):
+        reward = 0
+        normalized_height = pose[2]/normalization_factor
+
+        height, width = mask.shape
+        tot_num_pixels = height*width
+
+        fov_score = (cv2.sumElems(mask)[0] / 255) / tot_num_pixels
+        log.warn("FOV Score: {}".format(fov_score))
+
+        reward = scale*np.sinc(4*((fov_score-1)**2+ normalized_height**2) / np.pi) - 10
+
+        if pose[2] < done_thr:
+            done = True
+            if fov_score > success_thr:
+                reward += 100
+                log.warn("SUCCESS")
+                success = True
+            else:
+                reward -= 100
+
+        log.warn("Reward Sinc Total: {}".format(reward))
+
+        return reward
+
+    def reward_temporal(self, mask, pose, done_thr, success_thr,
+                        normalization_factor=3000,
+                        scale=10):
+            pass
 
     def reward_depth(self, depth):
         pass
