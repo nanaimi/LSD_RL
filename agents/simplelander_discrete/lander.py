@@ -265,7 +265,7 @@ _ = save_obj(training_data, 'training_data')
 
 agent.save_model()
 
-log.info("FINITA LA MUSICA")
+log.warn("FINITA LA MUSICA")
 
 # Testing the policy after training
 num_tests = 1
