@@ -77,7 +77,7 @@ class Landing(UnrealCv):
         elif observation_type == 'HeightFeatures':
             self.img_depth = self.read_depth(cam_id)
             self.height =  np.asarray([self.get_pose(cam_id, type='hard')[2]], dtype=np.float64)
-            step = np.asarray([self.get_step(), dtype=np.float64)
+            step = np.asarray([self.get_step()], dtype=np.float64)
             log.info("height is: {} with dimension: {}".format(self.height, self.height.shape))
             self.features = self.get_features(cam_id, 'lit')
             log.info("Features are dimension: {}".format(self.features.shape))
