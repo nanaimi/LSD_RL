@@ -261,7 +261,7 @@ while frame_idx < max_frames and not early_stop:
 
 training_data['test_rewards'] = test_rewards
 training_data['values_at_beginning'] = values_at_beginning
-_ = save_obj(episodes, 'training_data')
+_ = save_obj(training_data, 'training_data')
 
 agent.save_model()
 
