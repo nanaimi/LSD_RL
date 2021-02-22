@@ -104,7 +104,7 @@ class Reward():
     def reward_temporal(self, mask, pose, done_thr, success_thr,
                         normalization_factor=3000,
                         scale=10):
-            pass
+        pass
 
     def reward_depth(self, depth):
         pass
