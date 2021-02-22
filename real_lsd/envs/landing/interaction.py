@@ -47,7 +47,7 @@ class Landing(UnrealCv):
         self.img_depth = np.zeros(1)
         self.features  = np.zeros(1)
         self.height    = np.zeros(1)
-        self.step      = np.zeros(1)
+        self.step      = 0
 
         self.use_gym_10_api = distutils.version.LooseVersion(gym.__version__) >= distutils.version.LooseVersion('0.10.0') # not sure what this is
 
