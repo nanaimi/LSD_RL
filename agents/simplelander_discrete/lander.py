@@ -263,6 +263,8 @@ training_data['test_rewards'] = test_rewards
 training_data['values_at_beginning'] = values_at_beginning
 _ = save_obj(training_data, 'training_data')
 
+log.warn("About to save the model.")
+
 agent.save_model()
 
 log.warn("FINITA LA MUSICA")
@@ -341,8 +343,9 @@ with torch.no_grad():
             episodes[key] = episode
 
         filename = time.strftime("%Y%m%d_%H%M%S") + '{}'.format(test)
+        log.warn("About to save the test data.")
         file = save_obj(episodes, filename)
-        log.warn("Successes out of {}: {}".format(num_tests*episodes_per_test,successful_episodes))
+        log.warn("Successes out of {}: {}".format(num_tests*episodes_per_test, successful_episodes))
         # print(load_obj(file))
 
 log.warn("Done Testing.")
