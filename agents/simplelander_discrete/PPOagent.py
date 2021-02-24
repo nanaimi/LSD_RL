@@ -114,12 +114,14 @@ class PPOAgent():
         PATH     = '/media/scratch1/nasib'
         dir      = 'models'
         filename = time.strftime("%Y%m%d_%H%M%S")
-
         if dir not in os.listdir(PATH):
-            os.mkdir(dir)
+            PATH = os.path.join(PATH,, dir)
+            os.mkdir(PATH)
+        else:
+            PATH = os.path.join(PATH,, dir)
 
-        PATH = PATH + '/' + dir + '/' + filename + '.pth'
-        torch.save(self.model.state_dict(), PATH)
+        file_abs_path = PATH + '/' + filename + '.pth'
+        torch.save(self.model.state_dict(), file_abs_path)
 
     def load_model(self, filename):
         PATH = os.getcwd()

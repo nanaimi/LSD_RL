@@ -21,11 +21,16 @@ from PPOagent import PPOAgent
 def save_obj(obj, filename):
     dir = 'data'
     # path = os.getcwd()
-    path = '/media/scratch1/nasib'
-    if dir not in os.listdir(path):
-        os.mkdir(dir)
-    path = path + '/' + dir + '/'
-    with open(path + filename + '.pkl', 'wb') as f:
+    PATH = '/media/scratch1/nasib'
+
+    if dir not in os.listdir(PATH):
+        PATH =  os.path.join(PATH,, dir)
+        os.mkdir(PATH)
+    else:
+        PATH =  os.path.join(PATH,, dir)
+
+    abs_file_path = PATH + '/' + filename + '.pkl'
+    with open(abs_file_path, 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
     return filename
