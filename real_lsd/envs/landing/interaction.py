@@ -80,13 +80,13 @@ class Landing(UnrealCv):
             self.height = np.asarray([self.get_pose(cam_id, type='hard')[2]], dtype=np.float64)
             log.warn("height is: {} with dimension: {}".format(self.height, self.height.shape))
 
-            # step = np.asarray([self.step], dtype=np.float64)
-            # log.warn("step is: {} with dimension: {}".format(step, step.shape))
+            step = np.asarray([self.step], dtype=np.float64)
+            log.warn("step is: {} with dimension: {}".format(step, step.shape))
 
             self.features = self.get_features(cam_id, 'lit')
             log.info("Features are dimension: {}".format(self.features.shape))
 
-            state = np.concatenate((self.height, self.features), axis=0)
+            state = np.concatenate((step, self.height, self.features), axis=0)
             assert (np.count_nonzero(state) > 1)
 
         return state
