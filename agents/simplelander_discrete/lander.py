@@ -8,10 +8,6 @@ import numpy as np
 import glog as log
 import subprocess
 
-# from stable_baselines import PPO2
-# from stable_baselines.common import make_vec_env
-# from stable_baselines.common.policies import MlpPolicy
-
 import gym_unrealcv
 import real_lsd
 
@@ -85,6 +81,7 @@ log.warn("The exit code was: %d" % list_files.returncode)
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda" if use_cuda else "cpu")
 '''---------------------------------------------------------------'''
+
 # initialise environment
 env = gym.make('MyUnrealLand-cpptestFloorGood-DiscreteHeightFeatures-v0')
 
@@ -99,7 +96,7 @@ lr               = 3e-4
 num_steps        = 20
 mini_batch_size  = 5
 ppo_epochs       = 4
-max_frames       = 15000
+max_frames       = 100000
 threshold_reward = -200 # TODO update/review
 
 # Initialise agent
