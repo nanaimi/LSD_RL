@@ -6,6 +6,7 @@ import torch.nn as nn
 import pickle
 import numpy as np
 import glog as log
+import subprocess
 
 # from stable_baselines import PPO2
 # from stable_baselines.common import make_vec_env
@@ -16,10 +17,11 @@ import real_lsd
 
 from PPOagent import PPOAgent
 
-'''---------------Helper functions---------------'''
+'''---------------------------Helper functions--------------------'''
 def save_obj(obj, filename):
     dir = 'data'
-    path = os.getcwd()
+    # path = os.getcwd()
+    path = '/media/scratch1/nasib'
     if dir not in os.listdir(path):
         os.mkdir(dir)
     path = path + '/' + dir + '/'
@@ -62,13 +64,22 @@ def test_env():
         total_reward += reward
     return total_reward
 
-'''---------------Helper functions---------------'''
+'''---------------------------------------------------------------'''
 # Set to INFO for debugging
 log.setLevel("WARN")
 
+'''---------------Copy settings file to data folder---------------'''
+path     = os.path.dirname(real_lsd.__file__)
+abs_path = path + '/envs/settings/landing/cpptest.json'
+cp_path  = '/media/scratch1/nasib/data/'
+list_files = subprocess.run(["cp", abs_path, cp_path])
+log.warn("The exit code was: %d" % list_files.returncode)
+'''---------------------------------------------------------------'''
+
+'''---------------Check cuda availability/set device--------------'''
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda" if use_cuda else "cpu")
-
+'''---------------------------------------------------------------'''
 # initialise environment
 env = gym.make('MyUnrealLand-cpptestFloorGood-DiscreteHeightFeatures-v0')
 
@@ -77,17 +88,16 @@ num_inputs  = env.observation_space.shape[0]
 print("Action Space:", env.action_space, "Number of actions:", env.action_space.n)
 num_outputs = env.action_space.n
 
-#Hyper params:
+# Hyper params:
 hidden_size      = 256
 lr               = 3e-4
 num_steps        = 20
 mini_batch_size  = 5
 ppo_epochs       = 4
-max_frames       = 15000
-
+max_frames       = 300
 threshold_reward = -200 # TODO update/review
 
-
+# Initialise agent
 agent = PPOAgent(num_inputs,
                 num_outputs,
                 hidden_size,
