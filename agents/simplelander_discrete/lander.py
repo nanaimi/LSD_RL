@@ -24,10 +24,10 @@ def save_obj(obj, filename):
     PATH = '/media/scratch1/nasib'
 
     if dir not in os.listdir(PATH):
-        PATH =  os.path.join(PATH,, dir)
+        PATH =  os.path.join(PATH, dir)
         os.mkdir(PATH)
     else:
-        PATH =  os.path.join(PATH,, dir)
+        PATH =  os.path.join(PATH, dir)
 
     abs_file_path = PATH + '/' + filename + '.pkl'
     with open(abs_file_path, 'wb') as f:

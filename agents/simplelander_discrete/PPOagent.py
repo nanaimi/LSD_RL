@@ -115,10 +115,10 @@ class PPOAgent():
         dir      = 'models'
         filename = time.strftime("%Y%m%d_%H%M%S")
         if dir not in os.listdir(PATH):
-            PATH = os.path.join(PATH,, dir)
+            PATH = os.path.join(PATH, dir)
             os.mkdir(PATH)
         else:
-            PATH = os.path.join(PATH,, dir)
+            PATH = os.path.join(PATH, dir)
 
         file_abs_path = PATH + '/' + filename + '.pth'
         torch.save(self.model.state_dict(), file_abs_path)
