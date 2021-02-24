@@ -278,6 +278,9 @@ training_data['test_rewards'] = test_rewards
 training_data['values_at_beginning'] = values_at_beginning
 _ = save_obj(training_data, 'training_data')
 
+# Delete training data once data is saved! Free up RAM
+del training_data
+
 log.warn("About to save the model.")
 
 agent.save_model()
@@ -286,7 +289,7 @@ log.warn("FINITA LA MUSICA")
 
 # Testing the policy after training
 num_tests = 1
-episodes_per_test = 100
+episodes_per_test = 50
 successful_episodes = 0
 
 log.warn("Time to test.")
@@ -360,6 +363,7 @@ with torch.no_grad():
         filename = time.strftime("%Y%m%d_%H%M%S") + '{}'.format(test)
         log.warn("About to save the test data.")
         file = save_obj(episodes, filename)
+        del episodes
         log.warn("Successes out of {}: {}".format(num_tests*episodes_per_test, successful_episodes))
         # print(load_obj(file))
 
