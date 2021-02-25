@@ -142,7 +142,7 @@ class UnrealCvLanding_base(gym.Env):
         self.count_steps  += 1
 
         # Time Penalty
-        info['Reward']    += -1*self.count_steps
+        info['Reward']    += -10*self.count_steps
 
         self.unrealcv.set_step(self.count_steps)
 

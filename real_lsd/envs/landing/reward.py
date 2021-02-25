@@ -65,11 +65,11 @@ class Reward():
         if pose[2] < done_thr:
             done = True
             if fov_score > success_thr:
-                reward += 100
+                reward += 500
                 log.warn("SUCCESS")
                 success = True
             else:
-                reward -= 100
+                reward -= 500
 
         log.warn("Reward Total: {}".format(reward))
         return reward, done, success

@@ -96,7 +96,7 @@ lr               = 3e-4
 num_steps        = 20
 mini_batch_size  = 5
 ppo_epochs       = 4
-max_frames       = 100000
+max_frames       = 15000
 threshold_reward = -200 # TODO update/review
 
 # Initialise agent
@@ -223,7 +223,7 @@ while frame_idx < max_frames and not early_stop:
         actions.append(action)
 
         # collect data on training progress
-        if frame_idx % 1000 == 0:
+        if frame_idx % 2000 == 0:
             test_reward = np.mean([test_env() for _ in range(10)])
             test_rewards.append(test_reward)
             # plot(frame_idx, test_rewards)
