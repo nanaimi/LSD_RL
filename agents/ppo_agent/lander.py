@@ -1,4 +1,5 @@
 import os
+import sys
 import gym
 import time
 import torch
@@ -56,14 +57,18 @@ def plot(frame_idx, rewards):
 def test_env():
     state = env.reset()
     done = False
+    steps = 0
     total_reward = 0
     while not done:
         state = torch.FloatTensor(state).unsqueeze(0).to(device)
         dist, _ = agent.model(state)
         next_state, reward, done, _ = env.step(dist.sample().cpu().numpy()[0])
         state = next_state
+        steps +=1
         total_reward += reward
-    return total_reward
+
+    mean_reward = total_reward / steps
+    return [total_reward, mean_reward]
 
 '''---------------------------------------------------------------'''
 # Set to INFO for debugging
@@ -93,10 +98,10 @@ num_outputs = env.action_space.n
 # Hyper params:
 hidden_size      = 256
 lr               = 3e-4
-num_steps        = 20
-mini_batch_size  = 5
-ppo_epochs       = 4
-max_frames       = 15000
+num_steps        = 256
+mini_batch_size  = 32
+ppo_epochs       = 8
+max_frames       = 100000
 threshold_reward = -200 # TODO update/review
 
 # Initialise agent
@@ -127,6 +132,7 @@ for name, layer in agent.model.actor.named_modules():
 
 frame_idx  = 0
 test_rewards = []
+test_mean_rewards = []
 episode_count = 0
 episode_now = 0
 values_at_beginning = []
@@ -223,8 +229,18 @@ while frame_idx < max_frames and not early_stop:
         actions.append(action)
 
         # collect data on training progress
-        if frame_idx % 2000 == 0:
-            test_reward = np.mean([test_env() for _ in range(10)])
+        if frame_idx % 2048 == 0:
+            test_ep_total_rewards = []
+            test_ep_mean_rewards = []
+            for _ in range(10):
+                test_res = test_env()
+                test_ep_total_rewards.append(test_res[0])
+                test_ep_mean_rewards.append(test_res[1])
+
+            test_mean_reward = np.mean(test_ep_mean_rewards)
+            test_reward = np.mean(test_ep_total_rewards)
+
+            test_mean_rewards.append(test_mean_reward)
             test_rewards.append(test_reward)
             # plot(frame_idx, test_rewards)
             # if test_reward > threshold_reward: early_stop = True
@@ -272,12 +288,15 @@ while frame_idx < max_frames and not early_stop:
     agent.ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantage)
 
 training_data['test_rewards'] = test_rewards
+training_data['test_mean_rewards'] = test_mean_rewards
 training_data['values_at_beginning'] = values_at_beginning
 _ = save_obj(training_data, 'training_data')
 
 # Delete training data once data is saved! Free up RAM
 del training_data
-
+del test_rewards
+del test_mean_rewards
+del values_at_beginning
 log.warn("About to save the model.")
 
 agent.save_model()
@@ -367,3 +386,5 @@ with torch.no_grad():
 log.warn("Done Testing.")
 
 env.close()
+
+sys.exit('Training and testing completed.')
