@@ -51,7 +51,7 @@ class Reward():
                            right_shift_two=1.5,
                            stretch_one=9,
                            stretch_two=2,
-                           scale=300,
+                           scale=100,
                            stretch=3000):
         done    = False
         success = False
