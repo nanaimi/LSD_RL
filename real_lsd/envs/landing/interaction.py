@@ -47,7 +47,7 @@ class Landing(UnrealCv):
         self.img_depth = np.zeros(1)
         self.features  = np.zeros(1)
         self.height    = np.zeros(1)
-        self.step      = 0
+        # self.step      = 0
 
         self.use_gym_10_api = distutils.version.LooseVersion(gym.__version__) >= distutils.version.LooseVersion('0.10.0') # not sure what this is
 
@@ -80,13 +80,13 @@ class Landing(UnrealCv):
             self.height = np.asarray([self.get_pose(cam_id, type='hard')[2]], dtype=np.float64)
             log.warn("height is: {} with dimension: {}".format(self.height, self.height.shape))
 
-            step = np.asarray([self.step], dtype=np.float64)
-            log.warn("step is: {} with dimension: {}".format(step, step.shape))
+            # step = np.asarray([self.step], dtype=np.float64)
+            # log.warn("step is: {} with dimension: {}".format(step, step.shape))
 
             self.features = self.get_features(cam_id, 'lit')
             log.info("Features are dimension: {}".format(self.features.shape))
 
-            state = np.concatenate((step, self.height, self.features), axis=0)
+            state = np.concatenate((self.height, self.features), axis=0)
             assert (np.count_nonzero(state) > 1)
 
         return state
@@ -195,11 +195,11 @@ class Landing(UnrealCv):
             pose = self.cam[cam_id]['location'] + self.cam[cam_id]['rotation']
             return pose
 
-    def set_step(self, step):
-        self.step = step
-
-    def get_step(self):
-        return self.step
+    # def set_step(self, step):
+    #     self.step = step
+    #
+    # def get_step(self):
+    #     return self.step
 
     # Take step size for x y z and use moveto function to get there
     # IN: cam_id, delta_x, delta_y, delta_z
