@@ -169,12 +169,12 @@ class UnrealCvLanding_base(gym.Env):
 
         # triggering causing resets seems to prevent exploration
         # If triggered the agent believes that the episode should be DONE
-        # if info['Trigger'] > self.trigger_th:
-        #     self.trigger_count += 1
-        #     if self.trigger_count >= 3:
-        #         # Step rewards are NOT good.
-        #         # info['Reward']+= -500
-        #         info['Done']   = True
+        if info['Trigger'] > self.trigger_th:
+            self.trigger_count += 1
+            if self.trigger_count >= 3:
+                # Step rewards are NOT good.
+                # info['Reward']+= -500
+                info['Done']   = True
 
         if 'mask' in self.reward_type: # and not info['Collision']:
             # get segmented image
