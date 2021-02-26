@@ -12,9 +12,9 @@ use_docker = False  # True: use nvidia docker   False: do not use nvidia-docker
 for env in ['cpptest']:
     setting_file = 'landing/{env}.json'.format(env=env)
     settings = load_env_setting(setting_file)
-    for i, reset in enumerate(['random', 'waypoint', 'testpoint']):
+    for i, reset in enumerate(['random']): # , 'waypoint', 'testpoint'
         for action in ['Discrete', 'Continuous']:  # action type
-            for obs in ['Color', 'Depth', 'Rgbd', 'PoseColor', 'HeightFeatures']: # observation type
+            for obs in ['Color', 'Depth', 'Rgbd', 'PoseColor', 'HeightFeatures', 'StepHeightFeatures', 'StepHeightVelocityFeatures']: # observation type
                 for category in settings['targets']:
                     register(
                         id='MyUnrealLand-{env}{category}-{action}{obs}-v{reset}'.format(env=env, category=category, action=action, obs=obs, reset=i),
