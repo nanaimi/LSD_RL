@@ -80,7 +80,7 @@ class UnrealCvLanding_base(gym.Env):
                                                 high=np.array(self.continous_actions['high']))
 
         # define observation space
-        observation_types = ['Color', 'Depth', 'Rgbd', 'PoseColor', 'HeightFeatures']
+        observation_types = ['Color', 'Depth', 'Rgbd', 'PoseColor', 'HeightFeatures', 'StepHeightFeatures', 'StepHeightVelocityFeatures']
         self.observation_type       = observation_type
         assert (self.observation_type in observation_types)
         self.observation_space      = self.unrealcv.define_observation(self.cam_id, self.observation_type, 'direct')
@@ -132,12 +132,14 @@ class UnrealCvLanding_base(gym.Env):
         if self.action_type == 'Discrete':
             (delta_x, delta_y, delta_z, info['Trigger']) = self.discrete_actions[action]
             # Scale the steps
+            velocity = [delta_x, delta_y, delta_z]
             delta_x = self.stepscale*delta_x
             delta_y = self.stepscale*delta_y
             delta_z = self.stepscale*delta_z
             log.warn("Sampled action corresponds to dx: {}, dy: {}, dz: {}, trigger: {}".format(delta_x, delta_y, delta_z, info['Trigger']))
         else:
             (delta_x, delta_y, delta_z, info['Trigger']) = action
+            velocity = [delta_x, delta_y, delta_z]
 
         self.count_steps  += 1
 
@@ -145,6 +147,7 @@ class UnrealCvLanding_base(gym.Env):
         info['Reward']    += -10*self.count_steps
 
         self.unrealcv.set_step(self.count_steps)
+        self.unrealcv.set_velocity(velocity)
 
         # take action and read new pose
         # log.warn("Not passing sampled action, instead passing dx: {}, dy: {}, dz: {}, trigger: {}".format(0, 0, 10, info['Trigger']))
@@ -154,14 +157,20 @@ class UnrealCvLanding_base(gym.Env):
         # Update observation
         state              = self.unrealcv.get_observation(self.cam_id, self.observation_type)
 
-        if self.observation_type in ['Color', 'Rgbd', 'PoseColor', 'HeightFeatures']:
+        if self.observation_type in ['Color', 'Rgbd', 'PoseColor', 'HeightFeatures', 'StepHeightFeatures', 'StepHeightVelocityFeatures']:
             info['Color']  = self.unrealcv.img_color
 
         if self.observation_type in ['Depth', 'Rgbd']:
             info['Depth']  = self.unrealcv.img_depth
 
-        if self.observation_type in ['HeightFeatures']:
+        if self.observation_type in ['HeightFeatures', 'StepHeightFeatures', 'StepHeightVelocityFeatures']:
             info['Features'] = self.unrealcv.features
+
+        if self.observation_type in ['StepHeightFeatures', 'StepHeightVelocityFeatures']:
+            info['Step'] = self.unrealcv.step
+
+        if self.observation_type in ['StepHeightVelocityFeatures']:
+            info['Velocity'] = self.unrealcv.velocity
 
         # save the trajectory
         self.trajectory.append(info['Pose'][:6])
@@ -227,6 +236,7 @@ class UnrealCvLanding_base(gym.Env):
 
         self.unrealcv.set_pose(self.cam_id, current_pose)
         self.unrealcv.set_step(0)
+        self.unrealcv.set_velocity([0,0,0])
 
         state = self.unrealcv.get_observation(self.cam_id, self.observation_type)
 

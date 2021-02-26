@@ -48,6 +48,7 @@ class Landing(UnrealCv):
         self.features  = np.zeros(1)
         self.height    = np.zeros(1)
         self.step      = 0
+        self.velocity  = np.zeros(3)
 
         self.use_gym_10_api = distutils.version.LooseVersion(gym.__version__) >= distutils.version.LooseVersion('0.10.0') # not sure what this is
 
@@ -80,13 +81,43 @@ class Landing(UnrealCv):
             self.height = np.asarray([self.get_pose(cam_id, type='hard')[2]], dtype=np.float64)
             log.warn("height is: {} with dimension: {}".format(self.height, self.height.shape))
 
+            self.features = self.get_features(cam_id, 'lit')
+            log.info("Features are dimension: {}".format(self.features.shape))
+
+            state = np.concatenate((self.height, self.features), axis=0)
+            assert (np.count_nonzero(state) > 1)
+
+        elif observation_type == 'StepHeightFeatures':
+            self.img_depth = self.read_depth(cam_id)
+
+            self.height = np.asarray([self.get_pose(cam_id, type='hard')[2]], dtype=np.float64)
+            log.warn("height is: {} with dimension: {}".format(self.height, self.height.shape))
+
             step = np.asarray([self.step], dtype=np.float64)
             log.warn("step is: {} with dimension: {}".format(step, step.shape))
 
             self.features = self.get_features(cam_id, 'lit')
             log.info("Features are dimension: {}".format(self.features.shape))
 
-            state = np.concatenate((self.height, self.features), axis=0)
+            state = np.concatenate((step, self.height, self.features), axis=0)
+            assert (np.count_nonzero(state) > 1)
+
+        elif observation_type == 'StepHeightVelocityFeatures':
+            self.img_depth = self.read_depth(cam_id)
+
+            self.height = np.asarray([self.get_pose(cam_id, type='hard')[2]], dtype=np.float64)
+            log.warn("height is: {} with dimension: {}".format(self.height, self.height.shape))
+
+            step = np.asarray([self.step], dtype=np.float64)
+            log.warn("step is: {} with dimension: {}".format(step, step.shape))
+
+            vel = self.get_velocity()
+            log.warn("Velocit is: {} {} {}".format(vel[0], vel[1], vel[2]))
+
+            self.features = self.get_features(cam_id, 'lit')
+            log.info("Features are dimension: {}".format(self.features.shape))
+
+            state = np.concatenate((step, self.height, vel, self.features), axis=0)
             assert (np.count_nonzero(state) > 1)
 
         return state
@@ -128,6 +159,22 @@ class Landing(UnrealCv):
                 observation_space = spaces.Box(low=low_bound, high=high_bound, shape=state.shape)
 
         elif observation_type == 'HeightFeatures':
+            low_bound = np.full(state.shape, -np.inf)
+            high_bound = np.full(state.shape, np.inf)
+            if self.use_gym_10_api:
+                observation_space = spaces.Box(low=low_bound, high=high_bound, shape=state.shape, dtype=np.float64)  # for gym>=0.10
+            else:
+                observation_space = spaces.Box(low=low_bound, high=high_bound, shape=state.shape)
+        
+        elif observation_type == 'StepHeightFeatures':
+            low_bound = np.full(state.shape, -np.inf)
+            high_bound = np.full(state.shape, np.inf)
+            if self.use_gym_10_api:
+                observation_space = spaces.Box(low=low_bound, high=high_bound, shape=state.shape, dtype=np.float64)  # for gym>=0.10
+            else:
+                observation_space = spaces.Box(low=low_bound, high=high_bound, shape=state.shape)
+
+        elif observation_type == 'StepHeightVelocityFeatures':
             low_bound = np.full(state.shape, -np.inf)
             high_bound = np.full(state.shape, np.inf)
             if self.use_gym_10_api:
@@ -200,6 +247,13 @@ class Landing(UnrealCv):
 
     def get_step(self):
         return self.step
+
+    def set_velocity(self, velocity):
+        vel = np.asarray(velocity, dtype=np.float64)
+        self.velocity = vel
+
+    def get_velocity(self):
+        return self.velocity
 
     # Take step size for x y z and use moveto function to get there
     # IN: cam_id, delta_x, delta_y, delta_z

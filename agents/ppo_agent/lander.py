@@ -88,7 +88,7 @@ device = torch.device("cuda" if use_cuda else "cpu")
 '''---------------------------------------------------------------'''
 
 # initialise environment
-env = gym.make('MyUnrealLand-cpptestFloorGood-DiscreteHeightFeatures-v0')
+env = gym.make('MyUnrealLand-cpptestFloorGood-DiscreteStepHeightFeatures-v0')
 
 print("Observation Space:", env.observation_space, "dimension of observation:", env.observation_space.shape[0])
 num_inputs  = env.observation_space.shape[0]
@@ -98,10 +98,10 @@ num_outputs = env.action_space.n
 # Hyper params:
 hidden_size      = 256
 lr               = 3e-4
-num_steps        = 256
-mini_batch_size  = 32
-ppo_epochs       = 8
-max_frames       = 100000
+num_steps        = 20
+mini_batch_size  = 5
+ppo_epochs       = 4
+max_frames       = 15000
 threshold_reward = -200 # TODO update/review
 
 # Initialise agent
@@ -297,8 +297,8 @@ del training_data
 del test_rewards
 del test_mean_rewards
 del values_at_beginning
-log.warn("About to save the model.")
 
+log.warn("About to save the model.")
 agent.save_model()
 
 log.warn("FINITA LA MUSICA")
