@@ -11,8 +11,6 @@ import subprocess
 import gym_unrealcv
 import real_lsd
 
-from PPOagent import PPOAgent
-
 
 '''---------------------------Helper functions--------------------'''
 def save_obj(obj, filename):
