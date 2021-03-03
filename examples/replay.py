@@ -11,7 +11,6 @@ import inspect
 import numpy as np
 import pandas as pd
 
-%matplotlib notebook
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
@@ -94,6 +93,7 @@ for i in range(steps):
     z[i] = data['episode_{}'.format(ep)]['trajectory'][i][2]
 
 client.connect()
+
 if not client.isconnected():
     print('UnrealCV server is not running. Run the game from http://unrealcv.github.io first.')
     return
