@@ -63,8 +63,8 @@ def load_obj(dataset, filename):
 
 
 # select dataset and episode
-dataset = 'dataset_seventeen'
-ep      = 36
+dataset = 'dataset_eighteen'
+ep      = 11
 
 # select correct file
 list_of_files = files_in_dataset(dataset)
