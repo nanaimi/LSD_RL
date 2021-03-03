@@ -53,3 +53,82 @@ probabilities = torch.tensor(probabilities)
 action_dist = Categorical(probabilities)
 sample = action_dist.sample()
 print("sampled action: {}".format(sample))
+
+# Testing the policy after training
+num_tests = 1
+episodes_per_test = 50
+successful_episodes = 0
+
+log.warn("Time to test.")
+
+for test in range(num_tests):
+    episode_count = 0
+    num_test_episodes = episodes_per_test
+
+    episodes = {}
+
+    state = env.reset()
+
+    while episode_count < num_test_episodes:
+
+        done = False
+        episode = {}
+
+        # poses     = [start_pose]
+        states    = [state]
+        dists     = []
+        values    = []
+        actions   = []
+        rewards   = []
+        log_probs = []
+        traj      = []
+
+        while not done:
+            action = 0
+            states.append(state)
+
+            state = torch.FloatTensor(state).to(device)
+            dist, value = agent.model(state)
+
+            action = action_dist.sample()
+            log.info("action type: {}".format(action))
+
+            next_state, reward, done, info = env.step(action.cpu().numpy())
+
+            actions.append(action.cpu().numpy())
+            rewards.append(reward)
+
+            # next state logic
+            if done:
+                if info['Success']:
+                    successful_episodes += 1
+                traj = info['Trajectory']
+                state = env.reset()
+                episode_count += 1
+            else:
+                state = next_state
+
+        # episode['poses']    = poses
+        episode['states']   = states
+        episode['dists']    = dists
+        episode['values']   = values
+        episode['actions']  = actions
+        episode['rewards']  = rewards
+        episode['log_probs'] = log_probs
+        episode['trajectory']= traj
+
+        key = 'episode_{}'.format(episode_count)
+        episodes[key] = episode
+
+    filename = time.strftime("%Y%m%d_%H%M%S") + '{}'.format(test)
+    log.warn("About to save the test data.")
+    file = save_obj(episodes, filename)
+    del episodes
+    log.warn("Successes out of {}: {}".format(num_tests*episodes_per_test, successful_episodes))
+    # print(load_obj(file))
+
+log.warn("Done Testing.")
+
+env.close()
+
+sys.exit('Training and testing completed.')
