@@ -96,10 +96,10 @@ client.connect()
 print('should have connected to client')
 
 if not client.isconnected():
-    print('isconnected is true')
+    print('isconnected is False')
     print('UnrealCV server is not running. Run the game from http://unrealcv.github.io first.')
 else:
-    print(help_message)
+    print('unrealcv server is running')
 
 print('about to run steps')
 for j in range(steps):
