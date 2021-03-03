@@ -101,7 +101,7 @@ else:
     print(help_message)
 
 for j in range(steps):
-    cmd = 'vset /camera/0/moveto {} {} {}'.format(x[j], y[j], z[j]) )
+    cmd = 'vset /camera/0/moveto {} {} {}'.format(x[j], y[j], z[j])
     client.request(cmd)
     img_cam_1 = client.request('vget /camera/0/lit file1%02d.png' % j)
     img_cam_2 = client.request('vget /camera/2/lit file2%02d.png' % j)
