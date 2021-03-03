@@ -16,7 +16,7 @@ from torch.distributions import Categorical
 def save_obj(obj, filename):
     dir = 'data'
     # path = os.getcwd()
-    PATH = '/home/nasib/rl_project/agents/random_naive'
+    PATH = '/home/nasib/rl_project/real-lsd/agents/random_naive'
 
     if dir not in os.listdir(PATH):
         PATH =  os.path.join(PATH, dir)
