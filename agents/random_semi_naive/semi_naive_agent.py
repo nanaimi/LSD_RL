@@ -11,6 +11,8 @@ import subprocess
 import gym_unrealcv
 import real_lsd
 
+from torch.distributions import Categorical
+
 
 '''---------------------------Helper functions--------------------'''
 def save_obj(obj, filename):
