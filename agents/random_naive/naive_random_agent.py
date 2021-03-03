@@ -87,9 +87,6 @@ for test in range(num_tests):
             action = 0
             states.append(state)
 
-            state = torch.FloatTensor(state).to(device)
-            dist, value = agent.model(state)
-
             action = action_dist.sample()
             log.info("action type: {}".format(action))
 
