@@ -87,9 +87,9 @@ for test in range(num_tests):
 
             log.info("action type: {}".format(action))
 
-            next_state, reward, done, info = env.step(action    )
+            next_state, reward, done, info = env.step(action)
 
-            actions.append(action.cpu().numpy())
+            actions.append(action)
             rewards.append(reward)
 
             # next state logic
