@@ -165,6 +165,8 @@ while frame_idx < max_frames and not early_stop:
         log.info("Model Input: {}".format(state))
         dist, value = agent.model(state)
 
+        agent.model.vis(dist, value)
+
         if (episode_now != episode_count):
             values_at_beginning.append(value)
         episode_now = episode_count
