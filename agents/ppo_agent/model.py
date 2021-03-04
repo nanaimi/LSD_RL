@@ -51,6 +51,8 @@ class ActorCritic(nn.Module):
     def forward(self, x):
         value = self.critic(x)
         discrete_log_probabilitiies = self.actor(x)
+        make_dot(discrete_log_probabilitiies, params=dict(list(self.actor.named_parameters()))).render("actor", format="png")
+        make_dot(value, params=dict(list(self.critic.named_parameters()))).render("critic", format="png")
 
         assert (torch.sum(torch.isnan(discrete_log_probabilitiies)) == 0), "Actor output contains NANs!"
 
@@ -60,7 +62,3 @@ class ActorCritic(nn.Module):
         # std   = self.log_std.exp().expand_as(mu)
         # dist  = Normal(mu, std)
         return dist, value
-
-    def vis(self, dist, value):
-        make_dot(dist, params=dict(list(self.actor.named_parameters()))).render("actor", format="png")
-        make_dot(value, params=dict(list(self.critic.named_parameters()))).render("critic", format="png")
