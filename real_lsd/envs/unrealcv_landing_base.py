@@ -181,8 +181,7 @@ class UnrealCvLanding_base(gym.Env):
         if info['Trigger'] > self.trigger_th:
             self.trigger_count += 1
             if self.trigger_count >= 3:
-                # Step rewards are NOT good.
-                # info['Reward']+= -500
+                info['Reward']+= -500
                 info['Done']   = True
 
         if 'mask' in self.reward_type: # and not info['Collision']:
@@ -197,7 +196,6 @@ class UnrealCvLanding_base(gym.Env):
             info['Reward'] += rew
 
             if (info['Collision'] or self.count_steps >= self.maxsteps) and not info['Success']:
-                # Step rewards are NOT good.
                 info['Reward'] += -500
                 info['Done']   = True
 

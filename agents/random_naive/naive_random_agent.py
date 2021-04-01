@@ -127,5 +127,3 @@ for test in range(num_tests):
 log.warn("Done Testing.")
 
 env.close()
-
-sys.exit('Training and testing completed.')

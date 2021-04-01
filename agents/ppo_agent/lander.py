@@ -14,6 +14,19 @@ import real_lsd
 
 from PPOagent import PPOAgent
 
+# TODO: change data save path
+
+'''------------------------Hyperparameters------------------------'''
+hidden_size      = 256
+lr               = 3e-4
+num_steps        = 20
+mini_batch_size  = 5
+ppo_epochs       = 4
+max_frames       = 15000
+
+'''---------------------------------------------------------------'''
+
+
 '''---------------------------Helper functions--------------------'''
 def save_obj(obj, filename):
     dir = 'data'
@@ -46,13 +59,13 @@ def get_activation(name):
         activation[name] = output.detach()
     return hook
 
-def plot(frame_idx, rewards):
-    clear_output(True)
-    plt.figure(figsize=(20,5))
-    plt.subplot(131)
-    plt.title('frame %s. reward: %s' % (frame_idx, rewards[-1]))
-    plt.plot(rewards)
-    plt.show()
+# def plot(frame_idx, rewards):
+#     clear_output(True)
+#     plt.figure(figsize=(20,5))
+#     plt.subplot(131)
+#     plt.title('frame %s. reward: %s' % (frame_idx, rewards[-1]))
+#     plt.plot(rewards)
+#     plt.show()
 
 def test_env():
     state = env.reset()
@@ -71,38 +84,30 @@ def test_env():
     return [total_reward, mean_reward]
 
 '''---------------------------------------------------------------'''
-# Set to INFO for debugging
+
+# LOG LEVEL: Set to INFO for debugging
 log.setLevel("WARN")
 
-'''---------------Copy settings file to data folder---------------'''
-path     = os.path.dirname(real_lsd.__file__)
-abs_path = path + '/envs/settings/landing/cpptest.json'
-cp_path  = '/media/scratch1/nasib/data/'
+
+# Copy settings file to data folder
+abs_path = os.path.dirname(real_lsd.__file__) + '/envs/settings/landing/cpptest.json'
+cp_path  = '/media/scratch1/nasib/data/' # DATAPATH TODO
 list_files = subprocess.run(["cp", abs_path, cp_path])
 log.warn("The exit code was: %d" % list_files.returncode)
-'''---------------------------------------------------------------'''
 
-'''---------------Check cuda availability/set device--------------'''
+
+# Check cuda availability/set device
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda" if use_cuda else "cpu")
-'''---------------------------------------------------------------'''
 
-# initialise environment
+
+# Initialising environment
 env = gym.make('MyUnrealLand-cpptestFloorGood-DiscreteHeightFeatures-v0')
-
-print("Observation Space:", env.observation_space, "dimension of observation:", env.observation_space.shape[0])
 num_inputs  = env.observation_space.shape[0]
-print("Action Space:", env.action_space, "Number of actions:", env.action_space.n)
 num_outputs = env.action_space.n
+log.info("Observation Space:", env.observation_space, "dimension of observation:", env.observation_space.shape[0])
+log.info("Action Space:", env.action_space, "Number of actions:", env.action_space.n)
 
-# Hyper params:
-hidden_size      = 256
-lr               = 3e-4
-num_steps        = 20
-mini_batch_size  = 5
-ppo_epochs       = 4
-max_frames       = 15000
-threshold_reward = -200 # TODO update/review
 
 # Initialise agent
 agent = PPOAgent(num_inputs,
@@ -116,13 +121,15 @@ agent = PPOAgent(num_inputs,
                 std=0.0,
                 device=device)
 
-print(agent.model)
-print(agent.model.actor)
-print(agent.model.actor[0])
-print(type(agent.model.actor[0]))
+# print(agent.model)
+# print(agent.model.actor)
+# print(agent.model.actor[0])
+# print(type(agent.model.actor[0]))
 
-# turn model train mode
+
+# set model train mode
 agent.model.train()
+
 
 # Register hooks for actor layer activations
 for name, layer in agent.model.actor.named_modules():
@@ -130,6 +137,8 @@ for name, layer in agent.model.actor.named_modules():
         print(name, layer)
         layer.register_forward_hook(get_activation('actor_layer_{}'.format(name)))
 
+
+# Define and initialise auxiliary variables
 frame_idx  = 0
 test_rewards = []
 test_mean_rewards = []
@@ -139,11 +148,14 @@ values_at_beginning = []
 prior_action = 0
 activation = {}
 training_data = dict()
-
-state = env.reset()
-
 early_stop = False
 
+
+# Reset environment and load starting state into state
+state = env.reset()
+
+
+# Training loop
 while frame_idx < max_frames and not early_stop:
     log.warn("Frame: {}".format(frame_idx))
     log_probs = []
@@ -152,50 +164,44 @@ while frame_idx < max_frames and not early_stop:
     actions   = []
     rewards   = []
     masks     = []
-    # total entropy ? what is interesting about this
     entropy = 0
 
     for st in range(num_steps):
         action = None
         state = torch.FloatTensor(state).to(device)
+        log.info("Model Input: {}".format(state))
 
         assert torch.sum(torch.isnan(state)) == 0, "State contains NANs!"
         log.info("state SIZE: {}".format(state.size()))
 
-        log.info("Model Input: {}".format(state))
         dist, value = agent.model(state)
+        log.info("Forward pass distribution: {}, forward pass value: {}".format(dist, value))
 
         if (episode_now != episode_count):
             values_at_beginning.append(value)
         episode_now = episode_count
 
-        log.info("Forward Pass Dist: {}, Forward Pass value: {}".format(dist, value))
-
-        # Output all layer activations to console
+        # Output all layer activations to logstream
         for i in range(5):
             log.warn("actor layer {} activation: {}".format(i, activation['actor_layer_'+str(i)]))
 
         state = state.unsqueeze(1)
         state = torch.transpose(state, 0, 1)
-        # log.info("state after unsqueeze and transpose:      {}".format(state))
-        # log.info("state after unsqueeze and transpose TYPE: {}".format(type(state)))
-        log.info("state after unsqueeze and transpose SIZE: {}".format(state.size()))
+        log.info("state post unsqueeze and transpose SIZE: {}".format(state.size()))
 
         value = value.unsqueeze(1)
         log.info("Value: {}".format(value))
-        # log.info("Value TYPE: {}".format(type(value)))
 
         action = dist.sample()
         log.warn("Sampled Action: {}".format(action))
-        log.warn("Action TYPE: {}, SHAPE: {}".format(type(action), action.shape))
-
+        log.info("Action TYPE: {}, SHAPE: {}".format(type(action), action.shape))
 
         action_not_same = not (action == prior_action)
         log.warn("Sampled Action is not same as prior action: {}".format(action_not_same))
         prior_action = action
 
         next_state, reward, done, _ = env.step(action.cpu().numpy())
-        log.info("Step REWARD: {} DONE: {}".format(reward, done))
+        log.warn("Step REWARD: {} DONE: {}".format(reward, done))
 
         log_prob = dist.log_prob(action)
         log.info("Step LOG_PROB: {}".format(log_prob))
@@ -219,7 +225,7 @@ while frame_idx < max_frames and not early_stop:
         mask = float(1-done)
         mask = torch.FloatTensor([mask])
         mask = mask.unsqueeze(1)
-        masks.append(mask.to(device)) # changed from 1-done
+        masks.append(mask.to(device))
 
         states.append(state)
 
@@ -239,6 +245,7 @@ while frame_idx < max_frames and not early_stop:
 
             test_mean_reward = np.mean(test_ep_mean_rewards)
             test_reward = np.mean(test_ep_total_rewards)
+            log.warn("Test results -> Total reward: {}, Mean reward: {}".format(test_reward, test_mean_reward))
 
             test_mean_rewards.append(test_mean_reward)
             test_rewards.append(test_reward)
@@ -255,6 +262,8 @@ while frame_idx < max_frames and not early_stop:
 
         frame_idx += 1
 
+        ### END for loop
+
     next_state = torch.FloatTensor(next_state).to(device)
 
     assert torch.sum(torch.isnan(next_state)) == 0
@@ -264,6 +273,7 @@ while frame_idx < max_frames and not early_stop:
     next_state = next_state.unsqueeze(1)
     next_state = torch.transpose(next_state, 0, 1)
 
+    # compute returns for advantage function
     returns = agent.compute_gae(next_value,
                                 rewards,
                                 masks,
@@ -287,28 +297,34 @@ while frame_idx < max_frames and not early_stop:
     log.warn("Calling PPO update.")
     agent.ppo_update(ppo_epochs, mini_batch_size, states, actions, log_probs, returns, advantage)
 
+    ### END while loop
+
+# Save data collected during training
 training_data['test_rewards'] = test_rewards
 training_data['test_mean_rewards'] = test_mean_rewards
 training_data['values_at_beginning'] = values_at_beginning
 _ = save_obj(training_data, 'training_data')
 
-# Delete training data once data is saved! Free up RAM
+# Delete training data once data is saved! Free up Memory
 del training_data
 del test_rewards
 del test_mean_rewards
 del values_at_beginning
 
-log.warn("About to save the model.")
+# Save model
+log.warn("Saving the model.")
 agent.save_model()
 
-log.warn("FINITA LA MUSICA")
+log.warn("Training completed.")
 
-# Testing the policy after training
+
+'''------------------- Testing the policy after training --------------------'''
+# Testing parameters
 num_tests = 1
 episodes_per_test = 50
 successful_episodes = 0
 
-log.warn("Time to test.")
+log.warn("Setting model to eval, setup for testing.")
 agent.model.eval()
 
 with torch.no_grad():
