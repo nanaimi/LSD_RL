@@ -1,6 +1,13 @@
-from setuptools import setup
+#!/usr/bin/env python
+from setuptools import setup, find_packages
 
-setup(name='real_lsd',
-      version='1.0.0',
-      # install_requires=['gym', 'matplotlib', 'numpy', 'unrealcv'],  # And any other dependencies foo needs
-)
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
+version = '0.0.3'
+
+setup(
+    name='real_lsd',
+    version=version,
+    install_requires=requirements,
+    )   
